@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+   <metadata xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+      <id>Cake.AWS.S3</id>
+      <version>0.0.0</version>
+      <authors>Phillip Sharpe</authors>
+      <owners>Phillip Sharpe</owners>
+      <title>Cake.AWS.S3</title>
+      <description>Cake Build addon for transfering files to and from Amazon S3.</description>
+      <summary>Amazon S3 addon for cake build.</summary>
+      <licenseUrl>https://github.com/SharpeRAD/Cake.AWS.S3/LICENSE</licenseUrl>
+      <projectUrl>https://github.com/SharpeRAD/Cake.AWS.S3</projectUrl>
+      <iconUrl>https://raw.githubusercontent.com/cake-build/graphics/master/png/cake-medium.png</iconUrl>
+      <requireLicenseAcceptance>false</requireLicenseAcceptance>
+      <copyright>Copyright (c) Phillip Sharpe 2015</copyright>
+      <releaseNotes>Initial Release</releaseNotes>
+      <tags>Cake Script Build Amazon S3</tags>
+
+      <dependencies>
+         <dependency id="Cake.Core" />
+      </dependencies>
+   </metadata>
+
+   <files>
+      <file src="AWSSDK.Core.dll" target="lib/net45" />
+      <file src="AWSSDK.S3.dll" target="lib/net45" />
+      <file src="Cake.AWS.S3.dll" target="lib/net45" />
+      <file src="LICENSE" />
+   </files>
+</package>
