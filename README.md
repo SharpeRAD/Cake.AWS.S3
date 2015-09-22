@@ -1,7 +1,7 @@
 # Cake.AWS.S3
-Cake-Build addin that extends Cake with windows service commands
+Cake Build addon for transfering files to and from Amazon S3
 
-[![Build status](https://ci.appveyor.com/api/projects/status/bg004fntkfkjji83?svg=true)](https://ci.appveyor.com/project/PhillipSharpe/cake-aws-s3)
+[![Build status](https://ci.appveyor.com/api/projects/status/4ymtu0it99v31726?svg=true)](https://ci.appveyor.com/project/PhillipSharpe/cake-aws-s3)
 
 [![cakebuild.net](https://img.shields.io/badge/WWW-cakebuild.net-blue.svg)](http://cakebuild.net/)
 
