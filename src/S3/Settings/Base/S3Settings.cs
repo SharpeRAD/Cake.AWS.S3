@@ -1,6 +1,8 @@
 ﻿#region Using Statements
     using Amazon;
     using Amazon.S3;
+
+    using Cake.Core.IO;
 #endregion
 
 
@@ -29,6 +31,13 @@ namespace Cake.AWS.S3
 
 
         #region Properties (8)
+            /// <summary>
+            /// Gets or sets the working directory for the process to be started.
+            /// </summary>
+            public DirectoryPath WorkingDirectory { get; set; }
+
+
+
             /// <summary>
             /// The AWS Access Key ID
             /// </summary>

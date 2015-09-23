@@ -1,8 +1,10 @@
 ﻿#region Using Statements
     using System;
     using System.IO;
+    using System.Security.Cryptography;
 
     using Cake.Core;
+    using Cake.Core.IO;
     using Cake.Core.Diagnostics;
 
     using Amazon.S3;
@@ -60,6 +62,7 @@ namespace Cake.AWS.S3
 
 
         #region Functions (6)
+            //Helpers
             private TransferUtility GetUtility(S3Settings settings)
             {
                 if (settings == null)
@@ -120,6 +123,29 @@ namespace Cake.AWS.S3
 
 
 
+            private void SetWorkingDirectory(S3Settings settings)
+            {
+                DirectoryPath workingDirectory = settings.WorkingDirectory ?? _Environment.WorkingDirectory;
+
+                settings.WorkingDirectory = workingDirectory.MakeAbsolute(_Environment);
+            }
+ 
+            private void UploadProgressEvent(object sender, UploadProgressArgs e)
+            {
+                decimal percent = (100 / e.TotalBytes) * e.TransferredBytes;
+
+                _Log.Verbose("{0} ({0}/{1})", percent.ToString("N1") + "%", e.TransferredBytes.ToString("N0"), e.TotalBytes.ToString("N0"));
+            }
+
+            private void WriteObjectProgressEvent(object sender, WriteObjectProgressArgs e)
+            {
+                decimal percent = (100 / e.TotalBytes) * e.TransferredBytes;
+
+                _Log.Verbose("{0} ({0}/{1})", percent.ToString("N1") + "%", e.TransferredBytes.ToString("N0"), e.TotalBytes.ToString("N0"));
+            }
+
+
+
             /// <summary>
             /// Uploads the specified file. For large uploads, the file will be divided and uploaded in parts 
             /// using Amazon S3's multipart API. The parts will be reassembled as one object in Amazon S3.
@@ -127,16 +153,20 @@ namespace Cake.AWS.S3
             /// <param name="filePath">The file path of the file to upload.</param>
             /// <param name="key">The key under which the Amazon S3 object is stored.</param>
             /// <param name="settings">The <see cref="UploadSettings"/> required to upload to Amazon S3.</param>
-            public void Upload(string filePath, string key, UploadSettings settings)
+            public void Upload(FilePath filePath, string key, UploadSettings settings)
             {
                 TransferUtility utility = this.GetUtility(settings);
                 TransferUtilityUploadRequest request = this.CreateUploadRequest(settings);
 
-                request.FilePath = filePath;
+                this.SetWorkingDirectory(settings);
+                string fullPath = filePath.MakeAbsolute(settings.WorkingDirectory).FullPath;
+
+                request.FilePath = fullPath;
                 request.Key = key;
 
                 request.UploadProgressEvent += new EventHandler<UploadProgressArgs>(UploadProgressEvent);
 
+                _Log.Verbose("Uploading file {0} to bucket {1}...", key, settings.BucketName);
                 utility.Upload(request);
             }
 
@@ -157,6 +187,7 @@ namespace Cake.AWS.S3
 
                 request.UploadProgressEvent += new EventHandler<UploadProgressArgs>(UploadProgressEvent);
 
+                _Log.Verbose("Uploading file {0} to bucket {1}...", key, settings.BucketName);
                 utility.Upload(request);
             }
 
@@ -168,29 +199,39 @@ namespace Cake.AWS.S3
             /// <param name="filePath">The file path of the file to upload.</param>
             /// <param name="key">The key under which the Amazon S3 object is stored.</param>
             /// <param name="settings">The <see cref="DownloadSettings"/> required to download from Amazon S3.</param>
-            public void Download(string filePath, string key, DownloadSettings settings)
+            public void Download(FilePath filePath, string key, DownloadSettings settings)
             {
                 TransferUtility utility = this.GetUtility(settings);
                 TransferUtilityDownloadRequest request = this.CreateDownloadRequest(settings);
 
-                request.FilePath = filePath;
+                this.SetWorkingDirectory(settings);
+                string fullPath = filePath.MakeAbsolute(settings.WorkingDirectory).FullPath;
+
+                request.FilePath = fullPath;
                 request.Key = key;
 
                 request.WriteObjectProgressEvent += new EventHandler<WriteObjectProgressArgs>(this.WriteObjectProgressEvent);
 
+                _Log.Verbose("Downloading file {0} from bucket {1}...", key, settings.BucketName);
                 utility.Download(request);
             }
 
 
 
-            private void UploadProgressEvent(object sender, UploadProgressArgs e)
+            /// <summary>
+            /// Generates a base64-encoded encryption key for Amazon S3 to use to encrypt / decrypt objects
+            /// </summary>
+            /// <param name="filePath">The file path to store the key in.</param>
+            public void GenenrateEncryptionKey(FilePath filePath)
             {
-                _Log.Verbose("{0}/{1}", e.TransferredBytes, e.TotalBytes);
-            }
+                string fullPath = filePath.MakeAbsolute(_Environment.WorkingDirectory).FullPath;
 
-            private void WriteObjectProgressEvent(object sender, WriteObjectProgressArgs e)
-            {
-                _Log.Verbose("{0}/{1}", e.TransferredBytes, e.TotalBytes);
+                Aes aesEncryption = Aes.Create();
+                aesEncryption.KeySize = 256;
+                aesEncryption.GenerateKey();
+
+                string base64Key = Convert.ToBase64String(aesEncryption.Key);
+                File.WriteAllText(fullPath, base64Key);
             }
         #endregion
     }

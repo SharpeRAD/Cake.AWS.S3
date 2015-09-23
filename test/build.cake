@@ -17,7 +17,7 @@ Task("Upload-File")
     .Description("Upload a file from S3")
     .Does(() =>
 {
-    S3Download("C:/Files/test.zip", "test.zip", Environment.CreateUploadSettings()
+    S3Upload("C:/Files/test.zip", "test.zip", Context.CreateUploadSettings()
     {
         BucketName = "cake-s3"
     });
@@ -28,7 +28,7 @@ Task("Download-File")
     .Description("Download a file from S3")
     .Does(() =>
 {
-    S3Download("C:/Files/test.zip", "test.zip", Environment.CreateDownloadSettings()
+    S3Download("C:/Files/test.zip", "test.zip", Context.CreateDownloadSettings()
     {
         BucketName = "cake-s3"
     });

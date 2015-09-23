@@ -30,8 +30,7 @@ namespace Cake.AWS.S3
 
             settings.AccessKey = environment.GetEnvironmentVariable("AWS_ACCESSKEY");
             settings.SecretKey = environment.GetEnvironmentVariable("AWS_SECRETKEY");
-
-
+            settings.EncryptionKey = environment.GetEnvironmentVariable("AWS_ENCRYPTIONKEY");
 
             string region = environment.GetEnvironmentVariable("AWS_REGION");
 

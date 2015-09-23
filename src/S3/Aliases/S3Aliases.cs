@@ -2,6 +2,7 @@
     using System.IO;
 
     using Cake.Core;
+    using Cake.Core.IO;
     using Cake.Core.Annotations;
 #endregion
 
@@ -33,7 +34,7 @@ namespace Cake.AWS.S3
         /// <param name="key">The key under which the Amazon S3 object is stored.</param>
         /// <param name="settings">The <see cref="UploadSettings"/> required to upload to Amazon S3.</param>
         [CakeMethodAlias]
-        public static void S3Upload(this ICakeContext context, string filePath, string key, UploadSettings settings)
+        public static void S3Upload(this ICakeContext context, FilePath filePath, string key, UploadSettings settings)
         {
             context.CreateManager().Upload(filePath, key, settings);
         }
@@ -62,9 +63,22 @@ namespace Cake.AWS.S3
         /// <param name="key">The key under which the Amazon S3 object is stored.</param>
         /// <param name="settings">The <see cref="DownloadSettings"/> required to download from Amazon S3.</param>
         [CakeMethodAlias]
-        public static void S3Download(this ICakeContext context, string filePath, string key, DownloadSettings settings)
+        public static void S3Download(this ICakeContext context, FilePath filePath, string key, DownloadSettings settings)
         {
             context.CreateManager().Download(filePath, key, settings);
+        }
+
+
+
+        /// <summary>
+        /// Generates a base64-encoded encryption key for Amazon S3 to use to encrypt / decrypt objects
+        /// </summary>
+        /// <param name="context">The cake context.</param>
+        /// <param name="filePath">The file path to store the key in.</param>
+        [CakeMethodAlias]
+        public static void GenenrateEncryptionKey(this ICakeContext context, FilePath filePath)
+        {
+            context.CreateManager().GenenrateEncryptionKey(filePath);
         }
     }
 }

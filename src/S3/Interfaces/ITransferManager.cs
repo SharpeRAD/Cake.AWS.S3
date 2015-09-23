@@ -1,5 +1,7 @@
 ﻿#region Using Statements
     using System.IO;
+
+    using Cake.Core.IO;
 #endregion
 
 
@@ -24,7 +26,7 @@ namespace Cake.AWS.S3
             /// <param name="filePath">The file path of the file to upload.</param>
             /// <param name="key">The key under which the Amazon S3 object is stored.</param>
             /// <param name="settings">The <see cref="UploadSettings"/> required to upload to Amazon S3.</param>
-            void Upload(string filePath, string key, UploadSettings settings);
+            void Upload(FilePath filePath, string key, UploadSettings settings);
 
             /// <summary>
             /// Uploads the contents of the specified stream. For large uploads, the file will be divided and uploaded in parts 
@@ -43,7 +45,15 @@ namespace Cake.AWS.S3
             /// <param name="filePath">The file path of the file to upload.</param>
             /// <param name="key">The key under which the Amazon S3 object is stored.</param>
             /// <param name="settings">The <see cref="DownloadSettings"/> required to download from Amazon S3.</param>
-            void Download(string filePath, string key, DownloadSettings settings);
+            void Download(FilePath filePath, string key, DownloadSettings settings);
+
+
+
+            /// <summary>
+            /// Generates a base64-encoded encryption key for Amazon S3 to use to encrypt / decrypt objects
+            /// </summary>
+            /// <param name="filePath">The file path to store the key in.</param>
+            void GenenrateEncryptionKey(FilePath filePath);
         #endregion
     }
 }

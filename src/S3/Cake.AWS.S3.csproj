@@ -49,10 +49,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Aliases\S3Aliases.cs" />
-    <Compile Include="Extensions\CakeEnvironmentExtensions.cs" />
-    <Compile Include="Extensions\UploadSettingsExtensions.cs" />
-    <Compile Include="Extensions\DownloadSettingsExtensions.cs" />
-    <Compile Include="Extensions\S3SettingsExtensions.cs" />
+    <Compile Include="Extensions\Context\CakeContextExtensions.cs" />
+    <Compile Include="Extensions\Context\CakeEnvironmentExtensions.cs" />
+    <Compile Include="Extensions\Settings\UploadSettingsExtensions.cs" />
+    <Compile Include="Extensions\Settings\DownloadSettingsExtensions.cs" />
+    <Compile Include="Extensions\Settings\S3SettingsExtensions.cs" />
     <Compile Include="Settings\Types\DownloadSettings.cs" />
     <Compile Include="Settings\Types\UploadSettings.cs" />
     <Compile Include="Settings\Base\S3Settings.cs" />

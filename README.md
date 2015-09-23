@@ -96,10 +96,19 @@ Task("Download-File-Environment")
     .Description("Download a file from S3")
     .Does(() =>
 {
-    S3Download("C:/Files/test.zip", "test.zip", Environment.CreateDownloadSettings()
+    S3Download("C:/Files/test.zip", "test.zip", Context.CreateDownloadSettings()
     {
         BucketName = "cake-s3"
     });
+});
+
+
+
+Task("Generate-Encryption-Key")
+    .Description("Helper method to generate an encryption key")
+    .Does(() =>
+{
+    GenenrateEncryptionKey("./Key.txt");
 });
 
 RunTarget("Upload-File");
