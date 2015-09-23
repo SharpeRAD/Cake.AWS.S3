@@ -1,6 +1,7 @@
 ### New in 0.0.4 (Released 2015/09/23)
 * Use FilePath and WorkingDirectory for file locations
 * Add bucket and keys to Verbose logs about the transfer details
+* Add GenenrateEncryptionKey aliase
 
 ### New in 0.0.3 (Released 2015/09/22)
 * Logging Progress-Events
