@@ -13,7 +13,7 @@ namespace Cake.AWS.S3
     /// <summary>
     /// Amazon S3 aliases
     /// </summary>
-    [CakeAliasCategory("AWS.S3")]
+    [CakeAliasCategory("AWS")]
     [CakeNamespaceImport("Amazon")]
     [CakeNamespaceImport("Amazon.S3")]
     public static class S3Aliases
@@ -34,6 +34,7 @@ namespace Cake.AWS.S3
         /// <param name="key">The key under which the Amazon S3 object is stored.</param>
         /// <param name="settings">The <see cref="UploadSettings"/> required to upload to Amazon S3.</param>
         [CakeMethodAlias]
+        [CakeAliasCategory("S3")]
         public static void S3Upload(this ICakeContext context, FilePath filePath, string key, UploadSettings settings)
         {
             context.CreateManager().Upload(filePath, key, settings);
@@ -48,6 +49,7 @@ namespace Cake.AWS.S3
         /// <param name="key">The key under which the Amazon S3 object is stored.</param>
         /// <param name="settings">The <see cref="UploadSettings"/> required to upload to Amazon S3.</param>
         [CakeMethodAlias]
+        [CakeAliasCategory("S3")]
         public static void S3Upload(this ICakeContext context, Stream stream, string key, UploadSettings settings)
         {
             context.CreateManager().Upload(stream, key, settings);
@@ -63,6 +65,7 @@ namespace Cake.AWS.S3
         /// <param name="key">The key under which the Amazon S3 object is stored.</param>
         /// <param name="settings">The <see cref="DownloadSettings"/> required to download from Amazon S3.</param>
         [CakeMethodAlias]
+        [CakeAliasCategory("S3")]
         public static void S3Download(this ICakeContext context, FilePath filePath, string key, DownloadSettings settings)
         {
             context.CreateManager().Download(filePath, key, settings);
@@ -76,6 +79,7 @@ namespace Cake.AWS.S3
         /// <param name="context">The cake context.</param>
         /// <param name="filePath">The file path to store the key in.</param>
         [CakeMethodAlias]
+        [CakeAliasCategory("S3")]
         public static void GenenrateEncryptionKey(this ICakeContext context, FilePath filePath)
         {
             context.CreateManager().GenenrateEncryptionKey(filePath);
