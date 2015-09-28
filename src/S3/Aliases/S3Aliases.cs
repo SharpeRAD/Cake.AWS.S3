@@ -80,7 +80,7 @@ namespace Cake.AWS.S3
         /// <param name="filePath">The file path to store the key in.</param>
         [CakeMethodAlias]
         [CakeAliasCategory("S3")]
-        public static void GenenrateEncryptionKey(this ICakeContext context, FilePath filePath)
+        public static void GenerateEncryptionKey(this ICakeContext context, FilePath filePath)
         {
             context.CreateManager().GenenrateEncryptionKey(filePath);
         }
