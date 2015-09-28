@@ -53,7 +53,7 @@ namespace Cake.AWS.S3
             /// Generates a base64-encoded encryption key for Amazon S3 to use to encrypt / decrypt objects
             /// </summary>
             /// <param name="filePath">The file path to store the key in.</param>
-            void GenenrateEncryptionKey(FilePath filePath);
+            void GenerateEncryptionKey(FilePath filePath);
         #endregion
     }
 }
