@@ -63,7 +63,7 @@ namespace Cake.AWS.S3
 
         #region Functions (6)
             //Helpers
-            private TransferUtility GetUtility(S3Settings settings)
+            private AmazonS3Client GetClient(S3Settings settings)
             {
                 if (settings == null)
                 {
@@ -78,7 +78,12 @@ namespace Cake.AWS.S3
                     throw new ArgumentNullException("settings.SecretKey");
                 }
 
-                return new TransferUtility(settings.AccessKey, settings.SecretKey, settings.Region);
+                return new AmazonS3Client(settings.AccessKey, settings.SecretKey, settings.Region);
+            }
+
+            private TransferUtility GetUtility(S3Settings settings)
+            {
+                return new TransferUtility(this.GetClient(settings));
             }
 
             private TransferUtilityUploadRequest CreateUploadRequest(UploadSettings settings)
@@ -121,6 +126,30 @@ namespace Cake.AWS.S3
                 return request;
             }
 
+            private GetObjectRequest CreateGetObjectRequest(string key, string version, S3Settings settings)
+            {
+                GetObjectRequest request = new GetObjectRequest();
+
+                request.BucketName = settings.BucketName;
+                request.Key = key;
+
+                if (!String.IsNullOrEmpty(version))
+                {
+                    request.VersionId = version;
+                }
+
+                request.ServerSideEncryptionCustomerProvidedKey = settings.EncryptionKey;
+                request.ServerSideEncryptionCustomerProvidedKeyMD5 = settings.EncryptionKeyMD5;
+                request.ServerSideEncryptionCustomerMethod = settings.EncryptionMethod;
+
+                if (!String.IsNullOrEmpty(settings.EncryptionKey))
+                {
+                    request.ServerSideEncryptionCustomerMethod = ServerSideEncryptionCustomerMethod.AES256;
+                }
+
+                return request;
+            }
+
 
 
             private void SetWorkingDirectory(S3Settings settings)
@@ -130,18 +159,21 @@ namespace Cake.AWS.S3
                 settings.WorkingDirectory = workingDirectory.MakeAbsolute(_Environment);
             }
  
+
+
+            private decimal GetPercent(TransferProgressArgs e)
+            {
+                return (((decimal)1 / (decimal)e.TotalBytes) * (decimal)e.TransferredBytes) * 100;
+            }
+
             private void UploadProgressEvent(object sender, UploadProgressArgs e)
             {
-                decimal percent = (100 / e.TotalBytes) * e.TransferredBytes;
-
-                _Log.Verbose("{0} ({0}/{1})", percent.ToString("N1") + "%", e.TransferredBytes.ToString("N0"), e.TotalBytes.ToString("N0"));
+                _Log.Verbose("{0} ({1}/{2})", this.GetPercent(e).ToString("N2") + "%", (e.TransferredBytes / 1000).ToString("N0"), (e.TotalBytes / 1000).ToString("N0"));
             }
 
             private void WriteObjectProgressEvent(object sender, WriteObjectProgressArgs e)
             {
-                decimal percent = (100 / e.TotalBytes) * e.TransferredBytes;
-
-                _Log.Verbose("{0} ({0}/{1})", percent.ToString("N1") + "%", e.TransferredBytes.ToString("N0"), e.TotalBytes.ToString("N0"));
+                _Log.Verbose("{0} ({1}/{2})", this.GetPercent(e).ToString("N2") + "%", (e.TransferredBytes / 1000).ToString("N0"), (e.TotalBytes / 1000).ToString("N0"));
             }
 
 
@@ -214,6 +246,60 @@ namespace Cake.AWS.S3
 
                 _Log.Verbose("Downloading file {0} from bucket {1}...", key, settings.BucketName);
                 utility.Download(request);
+            }
+        
+
+
+            /// <summary>
+            /// Removes the null version (if there is one) of an object and inserts a delete
+            /// marker, which becomes the latest version of the object. If there isn't a null
+            /// version, Amazon S3 does not remove any objects.
+            /// </summary>
+            /// <param name="key">The key under which the Amazon S3 object is stored.</param>
+            /// <param name="version">The identifier for the specific version of the object to be deleted, if required.</param>
+            /// <param name="settings">The <see cref="DownloadSettings"/> required to download from Amazon S3.</param>
+            public void Delete(string key, string version, S3Settings settings)
+            {
+                AmazonS3Client client = this.GetClient(settings);
+                DeleteObjectRequest request = new DeleteObjectRequest();
+
+                request.BucketName = settings.BucketName;
+                request.Key = key;
+
+                if (!String.IsNullOrEmpty(version))
+                {
+                    request.VersionId = version;
+                }
+
+                _Log.Verbose("Deleting object {0} from bucket {1}...", key, settings.BucketName);
+                client.DeleteObject(request);
+            }
+
+
+
+            /// <summary>
+            /// Gets the last modified date of an S3 object
+            /// </summary>
+            /// <param name="key">The key under which the Amazon S3 object is stored.</param>
+            /// <param name="version">The identifier for the specific version of the object to be deleted, if required.</param>
+            /// <param name="settings">The <see cref="DownloadSettings"/> required to download from Amazon S3.</param>
+            public DateTime GetLastModified(string key, string version, S3Settings settings)
+            {
+                AmazonS3Client client = this.GetClient(settings);
+                GetObjectRequest request = this.CreateGetObjectRequest(key, version, settings);
+
+                _Log.Verbose("Get object {0} from bucket {1}...", key, settings.BucketName);
+
+                try
+                {
+                    GetObjectResponse response = client.GetObject(request);
+                    return response.LastModified;
+                }
+                catch
+                {
+                    _Log.Verbose("The object {0} does not exist in bucket {1}...", key, settings.BucketName);
+                    return DateTime.MinValue;
+                }
             }
 
 

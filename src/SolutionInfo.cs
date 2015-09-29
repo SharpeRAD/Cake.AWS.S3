@@ -5,9 +5,9 @@
 //------------------------------------------------------------------------------
 using System.Reflection;
 
-[assembly: AssemblyProduct("Cake AWS.S3")]
-[assembly: AssemblyVersion("0.0.2")]
-[assembly: AssemblyFileVersion("0.0.2")]
-[assembly: AssemblyInformationalVersion("0.0.2")]
+[assembly: AssemblyProduct("Cake.AWS.S3")]
+[assembly: AssemblyVersion("0.0.5")]
+[assembly: AssemblyFileVersion("0.0.5")]
+[assembly: AssemblyInformationalVersion("0.0.5")]
 [assembly: AssemblyCopyright("Copyright (c) Phillip Sharpe 2015")]
 

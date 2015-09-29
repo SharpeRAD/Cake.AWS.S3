@@ -1,4 +1,5 @@
 ﻿#region Using Statements
+    using System;
     using System.IO;
 
     using Cake.Core;
@@ -69,6 +70,70 @@ namespace Cake.AWS.S3
         public static void S3Download(this ICakeContext context, FilePath filePath, string key, DownloadSettings settings)
         {
             context.CreateManager().Download(filePath, key, settings);
+        }
+
+
+
+
+
+        /// <summary>
+        /// Removes the null version (if there is one) of an object and inserts a delete
+        /// marker, which becomes the latest version of the object. If there isn't a null
+        /// version, Amazon S3 does not remove any objects.
+        /// </summary>
+        /// <param name="context">The cake context.</param>
+        /// <param name="key">The key under which the Amazon S3 object is stored.</param>
+        /// <param name="settings">The <see cref="DownloadSettings"/> required to download from Amazon S3.</param>
+        [CakeMethodAlias]
+        [CakeAliasCategory("S3")]
+        public static void S3Delete(this ICakeContext context, string key, S3Settings settings)
+        {
+            context.CreateManager().Delete(key, "", settings);
+        }
+
+        /// <summary>
+        /// Removes the null version (if there is one) of an object and inserts a delete
+        /// marker, which becomes the latest version of the object. If there isn't a null
+        /// version, Amazon S3 does not remove any objects.
+        /// </summary>
+        /// <param name="context">The cake context.</param>
+        /// <param name="key">The key under which the Amazon S3 object is stored.</param>
+        /// <param name="version">The identifier for the specific version of the object to be deleted, if required.</param>
+        /// <param name="settings">The <see cref="S3Settings"/> required to download from Amazon S3.</param>
+        [CakeMethodAlias]
+        [CakeAliasCategory("S3")]
+        public static void S3Delete(this ICakeContext context, string key, string version, S3Settings settings)
+        {
+            context.CreateManager().Delete(key, version, settings);
+        }
+
+
+
+        /// <summary>
+        /// Gets the last modified date of an S3 object
+        /// </summary>
+        /// <param name="context">The cake context.</param>
+        /// <param name="key">The key under which the Amazon S3 object is stored.</param>
+        /// <param name="settings">The <see cref="S3Settings"/> required to download from Amazon S3.</param>
+        [CakeMethodAlias]
+        [CakeAliasCategory("S3")]
+        public static DateTime S3LastModified(this ICakeContext context, string key, S3Settings settings)
+        {
+            return context.CreateManager().GetLastModified(key, "", settings);
+        }
+
+        /// <summary>
+        /// Gets the last modified date of an S3 object
+        /// </summary>
+        /// <param name="context">The cake context.</param>
+        /// <param name="key">The key under which the Amazon S3 object is stored.</param>
+        /// <param name="version">The identifier for the specific version of the object to be deleted, if required.</param>
+        /// <param name="settings">The <see cref="S3Settings"/> required to download from Amazon S3.</param>
+        [CakeMethodAlias]
+        [CakeAliasCategory("S3")]
+        public static DateTime S3LastModified(this ICakeContext context, string key, string version, S3Settings settings)
+        {
+            return context.CreateManager().GetLastModified(key, version, settings);
         }
 
 

@@ -1,6 +1,10 @@
-### New in 0.0.5 (Released 2015/09/29)
+### New in 0.0.6 (Released 2015/09/29)
+* Delete aliase
+* LastModified aliase
+
+### New in 0.0.5 (Released 2015/09/28)
 * Remove Cake.Core reference
-* Add Aliase Categories
+* Add AliaseCategories
 
 ### New in 0.0.4 (Released 2015/09/23)
 * Use FilePath and WorkingDirectory for file locations

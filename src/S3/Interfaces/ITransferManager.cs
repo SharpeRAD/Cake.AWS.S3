@@ -1,4 +1,5 @@
 ﻿#region Using Statements
+    using System;
     using System.IO;
 
     using Cake.Core.IO;
@@ -46,6 +47,26 @@ namespace Cake.AWS.S3
             /// <param name="key">The key under which the Amazon S3 object is stored.</param>
             /// <param name="settings">The <see cref="DownloadSettings"/> required to download from Amazon S3.</param>
             void Download(FilePath filePath, string key, DownloadSettings settings);
+
+
+
+            /// <summary>
+            /// Removes the null version (if there is one) of an object and inserts a delete
+            /// marker, which becomes the latest version of the object. If there isn't a null
+            /// version, Amazon S3 does not remove any objects.
+            /// </summary>
+            /// <param name="key">The key under which the Amazon S3 object is stored.</param>
+            /// <param name="version">The identifier for the specific version of the object to be deleted, if required.</param>
+            /// <param name="settings">The <see cref="DownloadSettings"/> required to download from Amazon S3.</param>
+            void Delete(string key, string version, S3Settings settings);
+
+            /// <summary>
+            /// Gets the last modified date of an S3 object
+            /// </summary>
+            /// <param name="key">The key under which the Amazon S3 object is stored.</param>
+            /// <param name="version">The identifier for the specific version of the object to be deleted, if required.</param>
+            /// <param name="settings">The <see cref="DownloadSettings"/> required to download from Amazon S3.</param>
+            DateTime GetLastModified(string key, string version, S3Settings settings);
 
 
 
