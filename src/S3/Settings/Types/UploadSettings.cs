@@ -18,6 +18,7 @@ namespace Cake.AWS.S3
             public UploadSettings()
             {
                 CannedACL = S3CannedACL.Private;
+                StorageClass = S3StorageClass.Standard;
             }
         #endregion
 
@@ -25,11 +26,17 @@ namespace Cake.AWS.S3
 
 
 
-        #region Properties (1)
+        #region Properties (2)
             /// <summary>
             /// The ACL to be used for S3 Buckets or S3 Objects.
             /// </summary>
             public S3CannedACL CannedACL { get; set; }
+
+            /// <summary>
+            /// Specifies the Storage Class of of an S3 object. Possible values are: ReducedRedundancy:
+            ///  provides a 99.99% durability guarantee Standard: provides a 99.999999999% durability guarantee
+            /// </summary>
+            public S3StorageClass StorageClass { get; set; }
         #endregion
     }
 }

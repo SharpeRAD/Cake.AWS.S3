@@ -54,5 +54,51 @@ namespace Cake.AWS.S3
             settings.CannedACL = S3CannedACL.FindValue(cannedACL);
             return settings;
         }
+
+
+
+        /// <summary>
+        /// Specifies the Storage Class of of an S3 object. Possible values are: ReducedRedundancy:
+        ///  provides a 99.99% durability guarantee Standard: provides a 99.999999999% durability guarantee
+        /// </summary>
+        /// <param name="settings">The upload settings.</param>
+        /// <param name="storageClass">The storage class.</param>
+        /// <returns>The same <see cref="UploadSettings"/> instance so that multiple calls can be chained.</returns>
+        public static UploadSettings SetStorageClass(this UploadSettings settings, S3StorageClass storageClass)
+        {
+            if (settings == null)
+            {
+                throw new ArgumentNullException("settings");
+            }
+            if (storageClass == null)
+            {
+                throw new ArgumentNullException("storageClass");
+            }
+
+            settings.StorageClass = storageClass;
+            return settings;
+        }
+
+        /// <summary>
+        /// Specifies the Storage Class of of an S3 object. Possible values are: ReducedRedundancy:
+        ///  provides a 99.99% durability guarantee Standard: provides a 99.999999999% durability guarantee
+        /// </summary>
+        /// <param name="settings">The upload settings.</param>
+        /// <param name="storageClass">The storage class.</param>
+        /// <returns>The same <see cref="UploadSettings"/> instance so that multiple calls can be chained.</returns>
+        public static UploadSettings SetStorageClass(this UploadSettings settings, string storageClass)
+        {
+            if (settings == null)
+            {
+                throw new ArgumentNullException("settings");
+            }
+            if (string.IsNullOrEmpty(storageClass))
+            {
+                throw new ArgumentNullException("storageClass");
+            }
+
+            settings.StorageClass = S3StorageClass.FindValue(storageClass);
+            return settings;
+        }
     }
 }

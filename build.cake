@@ -153,7 +153,6 @@ Task("Copy-Files")
     .Does(() =>
 {
     CopyFileToDirectory(buildDir + "/Cake.Core.dll", binDir);
-    CopyFileToDirectory(buildDir + "/Cake.Core.xml", binDir);
 
     CopyFileToDirectory(buildDir + "/Cake.AWS.S3.dll", binDir);
     CopyFileToDirectory(buildDir + "/Cake.AWS.S3.pdb", binDir);
