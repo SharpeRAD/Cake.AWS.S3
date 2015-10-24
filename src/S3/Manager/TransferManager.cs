@@ -77,6 +77,10 @@ namespace Cake.AWS.S3
                 {
                     throw new ArgumentNullException("settings.SecretKey");
                 }
+                if (settings.Region == null)
+                {
+                    throw new ArgumentNullException("settings.Region");
+                }
 
                 return new AmazonS3Client(settings.AccessKey, settings.SecretKey, settings.Region);
             }

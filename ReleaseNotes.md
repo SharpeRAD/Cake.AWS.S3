@@ -1,3 +1,6 @@
+### New in 0.0.7 (Released 2015/10/24)
+* Extra argument checks
+
 ### New in 0.0.6 (Released 2015/09/29)
 * Delete aliase
 * LastModified aliase
