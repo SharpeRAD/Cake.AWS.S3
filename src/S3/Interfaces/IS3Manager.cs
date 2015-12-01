@@ -1,8 +1,11 @@
 ﻿#region Using Statements
     using System;
     using System.IO;
+    using System.Collections.Generic;
 
     using Cake.Core.IO;
+
+    using Amazon.S3.Model;
 #endregion
 
 
@@ -17,9 +20,9 @@ namespace Cake.AWS.S3
     /// a single upload at once. When dealing with large content sizes and high bandwidth, 
     /// this can increase throughput significantly.
     /// </summary>
-    public interface ITransferManager
+    public interface IS3Manager
     {
-        #region Functions (3)
+        #region Functions (7)
             /// <summary>
             /// Uploads the specified file. For large uploads, the file will be divided and uploaded in parts 
             /// using Amazon S3's multipart API. The parts will be reassembled as one object in Amazon S3.
@@ -45,10 +48,9 @@ namespace Cake.AWS.S3
             /// </summary>
             /// <param name="filePath">The file path of the file to upload.</param>
             /// <param name="key">The key under which the Amazon S3 object is stored.</param>
+            /// <param name="version">The identifier for the specific version of the object to be downloaded, if required.</param>
             /// <param name="settings">The <see cref="DownloadSettings"/> required to download from Amazon S3.</param>
-            void Download(FilePath filePath, string key, DownloadSettings settings);
-
-
+            void Download(FilePath filePath, string key, string version, DownloadSettings settings);
 
             /// <summary>
             /// Removes the null version (if there is one) of an object and inserts a delete
@@ -60,13 +62,21 @@ namespace Cake.AWS.S3
             /// <param name="settings">The <see cref="DownloadSettings"/> required to download from Amazon S3.</param>
             void Delete(string key, string version, S3Settings settings);
 
+
+
             /// <summary>
-            /// Gets the last modified date of an S3 object
+            /// Retrieves object from Amazon S3.
             /// </summary>
             /// <param name="key">The key under which the Amazon S3 object is stored.</param>
             /// <param name="version">The identifier for the specific version of the object to be deleted, if required.</param>
-            /// <param name="settings">The <see cref="DownloadSettings"/> required to download from Amazon S3.</param>
-            DateTime GetLastModified(string key, string version, S3Settings settings);
+            /// <param name="settings">The <see cref="S3Settings"/> required to download from Amazon S3.</param>
+            S3Object GetObject(string key, string version, S3Settings settings);
+
+            /// <summary>
+            /// Returns all the objects in a S3 bucket.
+            /// </summary>
+            /// <param name="settings">The <see cref="S3Settings"/> required to download from Amazon S3.</param>
+            IList<S3Object> GetObjects(S3Settings settings);
 
 
 
@@ -75,6 +85,17 @@ namespace Cake.AWS.S3
             /// </summary>
             /// <param name="filePath">The file path to store the key in.</param>
             void GenerateEncryptionKey(FilePath filePath);
+
+
+
+            /// <summary>
+            /// Create a signed URL allowing access to a resource that would usually require authentication. cts
+            /// </summary>
+            /// <param name="key">The key under which the Amazon S3 object is stored.</param>
+            /// <param name="version">The identifier for the specific version of the object to be deleted, if required.</param>
+            /// <param name="expires">The expiry date and time for the pre-signed url. </param>
+            /// <param name="settings">The <see cref="S3Settings"/> required to download from Amazon S3.</param>
+            string GetPreSignedURL(string key, string version, DateTime expires, S3Settings settings);
         #endregion
     }
 }

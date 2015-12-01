@@ -28,9 +28,9 @@ namespace Cake.AWS.S3.Tests
 
 
 
-            public static ITransferManager CreateTransferManager()
+            public static IS3Manager CreateTransferManager()
             {
-                return new TransferManager(CakeHelper.CreateEnvironment(), new DebugLog());
+                return new S3Manager(CakeHelper.CreateEnvironment(), new DebugLog());
             }
         #endregion
     }

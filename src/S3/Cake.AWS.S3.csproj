@@ -58,9 +58,9 @@
     <Compile Include="Settings\Types\DownloadSettings.cs" />
     <Compile Include="Settings\Types\UploadSettings.cs" />
     <Compile Include="Settings\Base\S3Settings.cs" />
-    <Compile Include="Interfaces\ITransferManager.cs" />
+    <Compile Include="Interfaces\IS3Manager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Manager\TransferManager.cs" />
+    <Compile Include="Manager\S3Manager.cs" />
     <Compile Include="Properties\SolutionInfo.cs" />
   </ItemGroup>
   <ItemGroup>

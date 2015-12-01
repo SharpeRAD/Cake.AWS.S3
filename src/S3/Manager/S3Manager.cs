@@ -1,6 +1,7 @@
 ﻿#region Using Statements
     using System;
     using System.IO;
+    using System.Collections.Generic;
     using System.Security.Cryptography;
 
     using Cake.Core;
@@ -24,7 +25,7 @@ namespace Cake.AWS.S3
     /// a single upload at once. When dealing with large content sizes and high bandwidth, 
     /// this can increase throughput significantly.
     /// </summary>
-    public class TransferManager : ITransferManager
+    public class S3Manager : IS3Manager
     {
         #region Fields (2)
             private readonly ICakeEnvironment _Environment;
@@ -41,7 +42,7 @@ namespace Cake.AWS.S3
             /// </summary>
             /// <param name="environment">The environment.</param>
             /// <param name="log">The log.</param>
-            public TransferManager(ICakeEnvironment environment, ICakeLog log)
+            public S3Manager(ICakeEnvironment environment, ICakeLog log)
             {
                 if (environment == null)
                 {
@@ -61,8 +62,8 @@ namespace Cake.AWS.S3
 
 
 
-        #region Functions (6)
-            //Helpers
+        #region Helper Functions (9)
+            //Request
             private AmazonS3Client GetClient(S3Settings settings)
             {
                 if (settings == null)
@@ -156,6 +157,7 @@ namespace Cake.AWS.S3
 
 
 
+            //Directory
             private void SetWorkingDirectory(S3Settings settings)
             {
                 DirectoryPath workingDirectory = settings.WorkingDirectory ?? _Environment.WorkingDirectory;
@@ -165,6 +167,7 @@ namespace Cake.AWS.S3
  
 
 
+            //Progress
             private decimal GetPercent(TransferProgressArgs e)
             {
                 return (((decimal)1 / (decimal)e.TotalBytes) * (decimal)e.TransferredBytes) * 100;
@@ -179,9 +182,13 @@ namespace Cake.AWS.S3
             {
                 _Log.Verbose("{0} ({1}/{2})", this.GetPercent(e).ToString("N2") + "%", (e.TransferredBytes / 1000).ToString("N0"), (e.TotalBytes / 1000).ToString("N0"));
             }
+        #endregion
 
 
 
+
+
+        #region Main Functions (7)
             /// <summary>
             /// Uploads the specified file. For large uploads, the file will be divided and uploaded in parts 
             /// using Amazon S3's multipart API. The parts will be reassembled as one object in Amazon S3.
@@ -234,8 +241,9 @@ namespace Cake.AWS.S3
             /// </summary>
             /// <param name="filePath">The file path of the file to upload.</param>
             /// <param name="key">The key under which the Amazon S3 object is stored.</param>
+            /// <param name="version">The identifier for the specific version of the object to be downloaded, if required.</param>
             /// <param name="settings">The <see cref="DownloadSettings"/> required to download from Amazon S3.</param>
-            public void Download(FilePath filePath, string key, DownloadSettings settings)
+            public void Download(FilePath filePath, string key, string version, DownloadSettings settings)
             {
                 TransferUtility utility = this.GetUtility(settings);
                 TransferUtilityDownloadRequest request = this.CreateDownloadRequest(settings);
@@ -246,12 +254,17 @@ namespace Cake.AWS.S3
                 request.FilePath = fullPath;
                 request.Key = key;
 
+                if (!String.IsNullOrEmpty(version))
+                {
+                    request.VersionId = version;
+                }
+
                 request.WriteObjectProgressEvent += new EventHandler<WriteObjectProgressArgs>(this.WriteObjectProgressEvent);
 
                 _Log.Verbose("Downloading file {0} from bucket {1}...", key, settings.BucketName);
                 utility.Download(request);
             }
-        
+
 
 
             /// <summary>
@@ -261,7 +274,7 @@ namespace Cake.AWS.S3
             /// </summary>
             /// <param name="key">The key under which the Amazon S3 object is stored.</param>
             /// <param name="version">The identifier for the specific version of the object to be deleted, if required.</param>
-            /// <param name="settings">The <see cref="DownloadSettings"/> required to download from Amazon S3.</param>
+            /// <param name="settings">The <see cref="S3Settings"/> required to download from Amazon S3.</param>
             public void Delete(string key, string version, S3Settings settings)
             {
                 AmazonS3Client client = this.GetClient(settings);
@@ -282,12 +295,12 @@ namespace Cake.AWS.S3
 
 
             /// <summary>
-            /// Gets the last modified date of an S3 object
+            /// Retrieves object from Amazon S3.
             /// </summary>
             /// <param name="key">The key under which the Amazon S3 object is stored.</param>
             /// <param name="version">The identifier for the specific version of the object to be deleted, if required.</param>
-            /// <param name="settings">The <see cref="DownloadSettings"/> required to download from Amazon S3.</param>
-            public DateTime GetLastModified(string key, string version, S3Settings settings)
+            /// <param name="settings">The <see cref="S3Settings"/> required to download from Amazon S3.</param>
+            public S3Object GetObject(string key, string version, S3Settings settings)
             {
                 AmazonS3Client client = this.GetClient(settings);
                 GetObjectRequest request = this.CreateGetObjectRequest(key, version, settings);
@@ -297,13 +310,55 @@ namespace Cake.AWS.S3
                 try
                 {
                     GetObjectResponse response = client.GetObject(request);
-                    return response.LastModified;
+
+                    return new S3Object()
+                    {
+                        Key = response.Key,
+                        ETag = response.ETag,
+
+                        LastModified = response.LastModified,
+                        StorageClass = response.StorageClass
+                    };
                 }
                 catch
                 {
                     _Log.Verbose("The object {0} does not exist in bucket {1}...", key, settings.BucketName);
-                    return DateTime.MinValue;
+                    return null;
                 }
+            }
+
+            /// <summary>
+            /// Returns all the objects in a S3 bucket.
+            /// </summary>
+            /// <param name="settings">The <see cref="S3Settings"/> required to download from Amazon S3.</param>
+            public IList<S3Object> GetObjects(S3Settings settings)
+            {
+                IList<S3Object> objects = new List<S3Object>();
+
+                bool call = true;
+                string marker = "";
+
+                AmazonS3Client client = this.GetClient(settings);
+
+                _Log.Verbose("Get objects from bucket {1}...", settings.BucketName);
+
+                while (call)
+                {
+                    ListObjectsRequest request = new ListObjectsRequest();
+                    request.BucketName = settings.BucketName;
+                    request.Marker = marker;
+
+                    ListObjectsResponse response = client.ListObjects(request);
+                    call = response.IsTruncated;
+                    marker = response.NextMarker;
+
+                    response.S3Objects.ForEach((lItem) =>
+                    {
+                        objects.Add(lItem);
+                    });
+                }
+
+                return objects;
             }
 
 
@@ -322,6 +377,37 @@ namespace Cake.AWS.S3
 
                 string base64Key = Convert.ToBase64String(aesEncryption.Key);
                 File.WriteAllText(fullPath, base64Key);
+            }
+
+            /// <summary>
+            /// Create a signed URL allowing access to a resource that would usually require authentication. cts
+            /// </summary>
+            /// <param name="key">The key under which the Amazon S3 object is stored.</param>
+            /// <param name="version">The identifier for the specific version of the object to be deleted, if required.</param>
+            /// <param name="settings">The <see cref="S3Settings"/> required to download from Amazon S3.</param>
+            public string GetPreSignedURL(string key, string version, DateTime expires, S3Settings settings)
+            {
+                AmazonS3Client client = this.GetClient(settings);
+
+                GetPreSignedUrlRequest request = new GetPreSignedUrlRequest()
+                {
+                    BucketName = "eset-files",
+                    Key = key,
+                    VersionId = version,
+                    Expires = expires
+                };
+
+                _Log.Verbose("Get object {0} from bucket {1}...", key, settings.BucketName);
+
+                try
+                {
+                    return client.GetPreSignedURL(request);
+                }
+                catch
+                {
+                    _Log.Verbose("The object {0} does not exist in bucket {1}...", key, settings.BucketName);
+                    return "";
+                }
             }
         #endregion
     }

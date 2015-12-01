@@ -1,10 +1,13 @@
 ﻿#region Using Statements
     using System;
     using System.IO;
+    using System.Collections.Generic;
 
     using Cake.Core;
     using Cake.Core.IO;
     using Cake.Core.Annotations;
+
+    using Amazon.S3.Model;
 #endregion
 
 
@@ -19,9 +22,9 @@ namespace Cake.AWS.S3
     [CakeNamespaceImport("Amazon.S3")]
     public static class S3Aliases
     {
-        private static ITransferManager CreateManager(this ICakeContext context)
+        private static IS3Manager CreateManager(this ICakeContext context)
         {
-            return new TransferManager(context.Environment, context.Log);
+            return new S3Manager(context.Environment, context.Log);
         }
 
 
@@ -64,15 +67,14 @@ namespace Cake.AWS.S3
         /// <param name="context">The cake context.</param>
         /// <param name="filePath">The file path of the file to upload.</param>
         /// <param name="key">The key under which the Amazon S3 object is stored.</param>
+        /// <param name="version">The identifier for the specific version of the object to be downloaded, if required.</param>
         /// <param name="settings">The <see cref="DownloadSettings"/> required to download from Amazon S3.</param>
         [CakeMethodAlias]
         [CakeAliasCategory("S3")]
-        public static void S3Download(this ICakeContext context, FilePath filePath, string key, DownloadSettings settings)
+        public static void S3Download(this ICakeContext context, FilePath filePath, string key, string version, DownloadSettings settings)
         {
-            context.CreateManager().Download(filePath, key, settings);
+            context.CreateManager().Download(filePath, key, version, settings);
         }
-
-
 
 
 
@@ -83,7 +85,7 @@ namespace Cake.AWS.S3
         /// </summary>
         /// <param name="context">The cake context.</param>
         /// <param name="key">The key under which the Amazon S3 object is stored.</param>
-        /// <param name="settings">The <see cref="DownloadSettings"/> required to download from Amazon S3.</param>
+        /// <param name="settings">The <see cref="S3Settings"/> required to download from Amazon S3.</param>
         [CakeMethodAlias]
         [CakeAliasCategory("S3")]
         public static void S3Delete(this ICakeContext context, string key, S3Settings settings)
@@ -110,6 +112,49 @@ namespace Cake.AWS.S3
 
 
         /// <summary>
+        /// Retrieves object from Amazon S3.
+        /// </summary>
+        /// <param name="context">The cake context.</param>
+        /// <param name="key">The key under which the Amazon S3 object is stored.</param>
+        /// <param name="settings">The <see cref="S3Settings"/> required to download from Amazon S3.</param>
+        [CakeMethodAlias]
+        [CakeAliasCategory("S3")]
+        public static S3Object GetObject(this ICakeContext context, string key, S3Settings settings)
+        {
+            return context.CreateManager().GetObject(key, "", settings);
+        }
+
+        /// <summary>
+        /// Retrieves object from Amazon S3.
+        /// </summary>
+        /// <param name="context">The cake context.</param>
+        /// <param name="key">The key under which the Amazon S3 object is stored.</param>
+        /// <param name="version">The identifier for the specific version of the object to be deleted, if required.</param>
+        /// <param name="settings">The <see cref="S3Settings"/> required to download from Amazon S3.</param>
+        [CakeMethodAlias]
+        [CakeAliasCategory("S3")]
+        public static S3Object GetObject(this ICakeContext context, string key, string version, S3Settings settings)
+        {
+            return context.CreateManager().GetObject(key, version, settings);
+        }
+
+
+
+        /// <summary>
+        /// Returns all the objects in a S3 bucket.
+        /// </summary>
+        /// <param name="context">The cake context.</param>
+        /// <param name="settings">The <see cref="S3Settings"/> required to download from Amazon S3.</param>
+        [CakeMethodAlias]
+        [CakeAliasCategory("S3")]
+        public static IList<S3Object> GetObjects(this ICakeContext context, S3Settings settings)
+        {
+            return context.CreateManager().GetObjects(settings);
+        }
+
+
+
+        /// <summary>
         /// Gets the last modified date of an S3 object
         /// </summary>
         /// <param name="context">The cake context.</param>
@@ -119,7 +164,7 @@ namespace Cake.AWS.S3
         [CakeAliasCategory("S3")]
         public static DateTime S3LastModified(this ICakeContext context, string key, S3Settings settings)
         {
-            return context.CreateManager().GetLastModified(key, "", settings);
+            return context.S3LastModified(key, "", settings);
         }
 
         /// <summary>
@@ -133,7 +178,16 @@ namespace Cake.AWS.S3
         [CakeAliasCategory("S3")]
         public static DateTime S3LastModified(this ICakeContext context, string key, string version, S3Settings settings)
         {
-            return context.CreateManager().GetLastModified(key, version, settings);
+            S3Object result = context.CreateManager().GetObject(key, version, settings);
+
+            if (result != null)
+            {
+                return result.LastModified;
+            }
+            else
+            {
+                return DateTime.MinValue;
+            }
         }
 
 
@@ -148,6 +202,37 @@ namespace Cake.AWS.S3
         public static void GenerateEncryptionKey(this ICakeContext context, FilePath filePath)
         {
             context.CreateManager().GenerateEncryptionKey(filePath);
+        }
+
+
+
+        /// <summary>
+        /// Create a signed URL allowing access to a resource that would usually require authentication. cts
+        /// </summary>
+        /// <param name="context">The cake context.</param>
+        /// <param name="key">The key under which the Amazon S3 object is stored.</param>
+        /// <param name="expires">The expiry date and time for the pre-signed url. </param>
+        /// <param name="settings">The <see cref="S3Settings"/> required to download from Amazon S3.</param>
+        [CakeMethodAlias]
+        [CakeAliasCategory("S3")]
+        public static string GetPreSignedURL(this ICakeContext context, string key, DateTime expires, S3Settings settings)
+        {
+            return context.CreateManager().GetPreSignedURL(key, "", expires, settings);
+        }
+
+        /// <summary>
+        /// Create a signed URL allowing access to a resource that would usually require authentication. cts
+        /// </summary>
+        /// <param name="context">The cake context.</param>
+        /// <param name="key">The key under which the Amazon S3 object is stored.</param>
+        /// <param name="version">The identifier for the specific version of the object to be deleted, if required.</param>
+        /// <param name="expires">The expiry date and time for the pre-signed url. </param>
+        /// <param name="settings">The <see cref="S3Settings"/> required to download from Amazon S3.</param>
+        [CakeMethodAlias]
+        [CakeAliasCategory("S3")]
+        public static string GetPreSignedURL(this ICakeContext context, string key, string version, DateTime expires, S3Settings settings)
+        {
+            return context.CreateManager().GetPreSignedURL(key, version, expires, settings);
         }
     }
 }

@@ -1,3 +1,10 @@
+### New in 0.0.9 (Released 2015/11/30)
+* GetObject and GetObjects
+
+### New in 0.0.8 (Released 2015/10/27)
+* Get Pre-Signed Url
+* Rename TransferManager to S3Manager
+
 ### New in 0.0.7 (Released 2015/10/24)
 * Extra argument checks
 * Update Nuget packages
