@@ -38,8 +38,8 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\lib\AWSSDK.S3.dll</HintPath>
     </Reference>
-    <Reference Include="Cake.Core, Version=0.5.5.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Cake.Core.0.5.5\lib\net45\Cake.Core.dll</HintPath>
+    <Reference Include="Cake.Core, Version=0.6.4.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Cake.Core.0.6.4\lib\net45\Cake.Core.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
@@ -55,6 +55,7 @@
     <Compile Include="Extensions\Settings\UploadSettingsExtensions.cs" />
     <Compile Include="Extensions\Settings\DownloadSettingsExtensions.cs" />
     <Compile Include="Extensions\Settings\S3SettingsExtensions.cs" />
+    <Compile Include="Properties\Namespaces.cs" />
     <Compile Include="Settings\Types\DownloadSettings.cs" />
     <Compile Include="Settings\Types\UploadSettings.cs" />
     <Compile Include="Settings\Base\S3Settings.cs" />

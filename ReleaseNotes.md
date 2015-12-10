@@ -1,3 +1,7 @@
+### New in 0.1.0 (Released 2015/12/10)
+* Add Cake namespace docs
+* Update Cake.Core reference
+
 ### New in 0.0.9 (Released 2015/11/30)
 * GetObject and GetObjects
 

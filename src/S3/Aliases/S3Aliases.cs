@@ -15,7 +15,7 @@
 namespace Cake.AWS.S3
 {
     /// <summary>
-    /// Amazon S3 aliases
+    ///  Contains Cake aliases for configuring Amazon Simple Storage Service
     /// </summary>
     [CakeAliasCategory("AWS")]
     [CakeNamespaceImport("Amazon")]
