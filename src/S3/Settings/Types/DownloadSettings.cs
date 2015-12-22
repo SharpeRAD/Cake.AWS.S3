@@ -7,7 +7,7 @@
 namespace Cake.AWS.S3
 {
     /// <summary>
-    /// The settings to use with downlad requests to Amazon S3
+    /// The settings to use with download requests to Amazon S3
     /// </summary>
     public class DownloadSettings : S3Settings
     {

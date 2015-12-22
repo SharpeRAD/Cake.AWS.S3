@@ -38,7 +38,7 @@ namespace Cake.AWS.S3
 
         #region Constructor (1)
             /// <summary>
-            /// Initializes a new instance of the <see cref="TransferManager" /> class.
+            /// Initializes a new instance of the <see cref="S3Manager" /> class.
             /// </summary>
             /// <param name="environment">The environment.</param>
             /// <param name="log">The log.</param>
