@@ -38,7 +38,7 @@ namespace Cake.AWS.S3
 
         #region Constructor (1)
             /// <summary>
-            /// Initializes a new instance of the <see cref="TransferManager" /> class.
+            /// Initializes a new instance of the <see cref="S3Manager" /> class.
             /// </summary>
             /// <param name="environment">The environment.</param>
             /// <param name="log">The log.</param>
@@ -384,6 +384,7 @@ namespace Cake.AWS.S3
             /// </summary>
             /// <param name="key">The key under which the Amazon S3 object is stored.</param>
             /// <param name="version">The identifier for the specific version of the object to be deleted, if required.</param>
+            /// <param name="expires">The expiry date and time for the pre-signed url.</param>
             /// <param name="settings">The <see cref="S3Settings"/> required to download from Amazon S3.</param>
             public string GetPreSignedURL(string key, string version, DateTime expires, S3Settings settings)
             {

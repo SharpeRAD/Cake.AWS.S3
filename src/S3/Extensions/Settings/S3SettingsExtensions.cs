@@ -158,7 +158,7 @@ namespace Cake.AWS.S3
         ///     Important: Amazon S3 does not store the encryption key you provide.
         /// </summary>
         /// <param name="settings">The S3 settings.</param>
-        /// <param name="method">The base64-encoded encryption key for Amazon S3 to use to decrypt the object.</param>
+        /// <param name="key">The base64-encoded encryption key for Amazon S3 to use to decrypt the object.</param>
         /// <returns>The same <see cref="S3Settings"/> instance so that multiple calls can be chained.</returns>
         public static T SetEncryptionKey<T>(this T settings, string key) where T : S3Settings
         {

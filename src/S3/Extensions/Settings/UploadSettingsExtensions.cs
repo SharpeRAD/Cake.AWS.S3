@@ -17,7 +17,7 @@ namespace Cake.AWS.S3
         /// Specifies the ACL to be used for S3 Buckets or S3 Objects.
         /// </summary>
         /// <param name="settings">The upload settings.</param>
-        /// <param name="modifiedDate">The modified date.</param>
+        /// <param name="cannedACL">The canned ACL.</param>
         /// <returns>The same <see cref="UploadSettings"/> instance so that multiple calls can be chained.</returns>
         public static UploadSettings SetCannedACL(this UploadSettings settings, S3CannedACL cannedACL)
         {
@@ -38,7 +38,7 @@ namespace Cake.AWS.S3
         /// Specifies the ACL to be used for S3 Buckets or S3 Objects.
         /// </summary>
         /// <param name="settings">The upload settings.</param>
-        /// <param name="modifiedDate">The modified date.</param>
+        /// <param name="cannedACL">The canned ACL name.</param>
         /// <returns>The same <see cref="UploadSettings"/> instance so that multiple calls can be chained.</returns>
         public static UploadSettings SetCannedACL(this UploadSettings settings, string cannedACL)
         {

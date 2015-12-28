@@ -48,7 +48,7 @@ namespace Cake.AWS.S3
         /// Helper method to get the AWS Credentials from environment variables
         /// </summary>
         /// <param name="environment">The cake environment.</param>
-        /// <returns>A new <see cref="DownloadSettings"/> instance to be used in calls to the <see cref="ITransferManager"/>.</returns>
+        /// <returns>A new <see cref="DownloadSettings"/> instance to be used in calls to the <see cref="IS3Manager"/>.</returns>
         public static DownloadSettings CreateDownloadSettings(this ICakeEnvironment environment)
         {
             if (environment == null)
@@ -63,7 +63,7 @@ namespace Cake.AWS.S3
         /// Helper method to get the AWS Credentials from environment variables
         /// </summary>
         /// <param name="environment">The cake environment.</param>
-        /// <returns>A new <see cref="DownloadSettings"/> instance to be used in calls to the <see cref="ITransferManager"/>.</returns>
+        /// <returns>A new <see cref="DownloadSettings"/> instance to be used in calls to the <see cref="IS3Manager"/>.</returns>
         public static UploadSettings CreateUploadSettings(this ICakeEnvironment environment)
         {
             if (environment == null)

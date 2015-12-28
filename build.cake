@@ -154,7 +154,8 @@ Task("Copy-Files")
 {
     CopyFileToDirectory(buildDir + "/Cake.AWS.S3.dll", binDir);
     CopyFileToDirectory(buildDir + "/Cake.AWS.S3.pdb", binDir);
-    
+    CopyFileToDirectory(buildDir + "/Cake.AWS.S3.xml", binDir);
+
     CopyFileToDirectory("./lib/AWSSDK.Core.dll", binDir);
     CopyFileToDirectory("./lib/AWSSDK.S3.dll", binDir);
 
