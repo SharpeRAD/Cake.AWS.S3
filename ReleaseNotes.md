@@ -1,3 +1,6 @@
+### New in 0.1.2 (Released 2016/01/06)
+* Fix bug in GetPreSignedURL
+
 ### New in 0.1.1 (Released 2015/12/28)
 * Add xml documentation
 

@@ -392,7 +392,7 @@ namespace Cake.AWS.S3
 
                 GetPreSignedUrlRequest request = new GetPreSignedUrlRequest()
                 {
-                    BucketName = "eset-files",
+                    BucketName = settings.BucketName,
                     Key = key,
                     VersionId = version,
                     Expires = expires
