@@ -109,7 +109,8 @@ Task("Patch-Assembly-Info")
 {
     var file = "./src/SolutionInfo.cs";
 
-    CreateAssemblyInfo(file, new AssemblyInfoSettings {
+    CreateAssemblyInfo(file, new AssemblyInfoSettings 
+    {
 		Product = appName,
         Version = version,
         FileVersion = version,
@@ -140,7 +141,8 @@ Task("Run-Unit-Tests")
     .IsDependentOn("Build")
     .Does(() =>
 {
-    XUnit2("./src/**/bin/" + configuration + "/*.Tests.dll", new XUnit2Settings {
+    XUnit2("./src/**/bin/" + configuration + "/*.Tests.dll", new XUnit2Settings 
+    {
         OutputDirectory = testResultsDir,
         XmlReportV1 = true
     });
@@ -177,6 +179,7 @@ Task("Zip-Files")
     .Does(() =>
 {
     var filename = buildResultDir + "/Cake-AWS-S3-v" + semVersion + ".zip";
+
     Zip(binDir, filename);
 });
 
@@ -186,7 +189,8 @@ Task("Create-NuGet-Packages")
     .IsDependentOn("Zip-Files")
     .Does(() =>
 {
-    NuGetPack("./nuspec/Cake.AWS.S3.nuspec", new NuGetPackSettings {
+    NuGetPack("./nuspec/Cake.AWS.S3.nuspec", new NuGetPackSettings 
+    {
         Version = version,
         ReleaseNotes = releaseNotes.Notes.ToArray(),
         BasePath = binDir,
@@ -211,6 +215,7 @@ Task("Upload-AppVeyor-Artifacts")
     .Does(() =>
 {
     var artifact = new FilePath(buildResultDir + "/Cake-AWS-S3-v" + semVersion + ".zip");
+
     AppVeyor.UploadArtifact(artifact);
 }); 
 
@@ -224,15 +229,17 @@ Task("Publish-Nuget")
 {
     // Resolve the API key.
     var apiKey = EnvironmentVariable("NUGET_API_KEY");
+
     if(string.IsNullOrEmpty(apiKey)) 
 	{
         throw new InvalidOperationException("Could not resolve MyGet API key.");
     }
 
-    // Get the path to the package.
-    var package = nugetRoot + "/Cake.AWS.S3." + version + ".nupkg";
+
 
     // Push the package.
+    var package = nugetRoot + "/Cake.AWS.S3." + version + ".nupkg";
+
     NuGetPush(package, new NuGetPushSettings 
 	{
         ApiKey = apiKey
@@ -245,6 +252,16 @@ Task("Slack")
 	.IsDependentOn("Create-NuGet-Packages")
     .Does(() =>
 {
+    // Resolve the API key.
+    var token = EnvironmentVariable("SLACK_TOKEN");
+
+    if(string.IsNullOrEmpty(token)) 
+	{
+        throw new InvalidOperationException("Could not resolve Slack token.");
+    }
+
+
+
 	//Get Text
 	var text = "";
 
@@ -257,8 +274,10 @@ Task("Slack")
         text = "Published " + appName + " v" + version;
     }
 
+
+
 	// Post Message
-	var result = Slack.Chat.PostMessage(EnvironmentVariable("SLACK_TOKEN"), "#code", text);
+	var result = Slack.Chat.PostMessage(token, "#code", text);
 
 	if (result.Ok)
 	{
@@ -284,14 +303,19 @@ Task("Package")
 	.IsDependentOn("Zip-Files")
     .IsDependentOn("Create-NuGet-Packages");
 
-Task("Default")
-    .IsDependentOn("Package");
+Task("Publish")
+    .IsDependentOn("Publish-Nuget");
 
 Task("AppVeyor")
     .IsDependentOn("Update-AppVeyor-Build-Number")
     .IsDependentOn("Upload-AppVeyor-Artifacts")
     .IsDependentOn("Publish-Nuget")
     .IsDependentOn("Slack");
+    
+
+
+Task("Default")
+    .IsDependentOn("Package");
 
 
 
