@@ -1,3 +1,6 @@
+### New in 0.1.3 (Released 2016/01/08)
+* Download aliase without version
+
 ### New in 0.1.2 (Released 2016/01/06)
 * Fix bug in GetPreSignedURL
 

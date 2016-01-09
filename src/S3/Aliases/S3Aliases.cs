@@ -67,6 +67,20 @@ namespace Cake.AWS.S3
         /// <param name="context">The cake context.</param>
         /// <param name="filePath">The file path of the file to upload.</param>
         /// <param name="key">The key under which the Amazon S3 object is stored.</param>
+        /// <param name="settings">The <see cref="DownloadSettings"/> required to download from Amazon S3.</param>
+        [CakeMethodAlias]
+        [CakeAliasCategory("S3")]
+        public static void S3Download(this ICakeContext context, FilePath filePath, string key, DownloadSettings settings)
+        {
+            context.CreateManager().Download(filePath, key, "", settings);
+        }
+
+        /// <summary>
+        /// Downloads the content from Amazon S3 and writes it to the specified file.
+        /// </summary>
+        /// <param name="context">The cake context.</param>
+        /// <param name="filePath">The file path of the file to upload.</param>
+        /// <param name="key">The key under which the Amazon S3 object is stored.</param>
         /// <param name="version">The identifier for the specific version of the object to be downloaded, if required.</param>
         /// <param name="settings">The <see cref="DownloadSettings"/> required to download from Amazon S3.</param>
         [CakeMethodAlias]
