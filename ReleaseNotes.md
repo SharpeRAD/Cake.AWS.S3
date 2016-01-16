@@ -1,5 +1,8 @@
+### New in 0.1.4 (Released 2016/01/16)
+* Fixed SolutionInfo link
+
 ### New in 0.1.3 (Released 2016/01/08)
-* Download aliase without version
+* Download alias without version
 
 ### New in 0.1.2 (Released 2016/01/06)
 * Fix bug in GetPreSignedURL
@@ -33,7 +36,7 @@
 ### New in 0.0.4 (Released 2015/09/23)
 * Use FilePath and WorkingDirectory for file locations
 * Add bucket and keys to Verbose logs about the transfer details
-* Add GenenrateEncryptionKey aliase
+* Add GenenrateEncryptionKey alias
 
 ### New in 0.0.3 (Released 2015/09/22)
 * Logging Progress-Events

@@ -42,7 +42,7 @@ var nugetRoot = buildResultDir + "/nuget";
 var binDir = buildResultDir + "/bin";
 
 //Get Solutions
-var solutions       = GetFiles("./src/*.sln");
+var solutions = GetFiles("./src/*.sln");
 
 // Package
 var zipPackage = buildResultDir + "/Cake-AWS-S3-v" + semVersion + ".zip";
@@ -57,20 +57,20 @@ var zipPackage = buildResultDir + "/Cake-AWS-S3-v" + semVersion + ".zip";
 
 Setup(() =>
 {
-	//Executed BEFORE the first task.
-	Information("Building version {0} of {1}.", semVersion, appName);
+    //Executed BEFORE the first task.
+    Information("Building version {0} of {1}.", semVersion, appName);
 
-	NuGetInstall("xunit.runner.console", new NuGetInstallSettings 
-	{
-		ExcludeVersion  = true,
-		OutputDirectory = tools
+    NuGetInstall("xunit.runner.console", new NuGetInstallSettings
+    {
+        ExcludeVersion  = true,
+        OutputDirectory = tools
     });
 });
 
 Teardown(() =>
 {
-	// Executed AFTER the last task.
-	Information("Finished building version {0} of {1}.", semVersion, appName);
+    // Executed AFTER the last task.
+    Information("Finished building version {0} of {1}.", semVersion, appName);
 });
 
 
@@ -82,25 +82,27 @@ Teardown(() =>
 ///////////////////////////////////////////////////////////////////////////////
 
 Task("Clean")
-	.Does(() =>
+    .Does(() =>
 {
     // Clean solution directories.
-	Information("Cleaning old files");
-	CleanDirectories(new DirectoryPath[] 
-	{
-        buildDir, buildTestDir, buildResultDir, 
+    Information("Cleaning old files");
+
+    CleanDirectories(new DirectoryPath[]
+    {
+        buildDir, buildTestDir, buildResultDir,
         binDir, testResultsDir, nugetRoot
-	});
+    });
 });
 
 Task("Restore-Nuget-Packages")
-	.IsDependentOn("Clean")
+    .IsDependentOn("Clean")
     .Does(() =>
 {
     // Restore all NuGet packages.
     foreach(var solution in solutions)
     {
         Information("Restoring {0}", solution);
+
         NuGetRestore(solution);
     }
 });
@@ -119,13 +121,13 @@ Task("Patch-Assembly-Info")
 {
     var file = "./src/SolutionInfo.cs";
 
-    CreateAssemblyInfo(file, new AssemblyInfoSettings 
+    CreateAssemblyInfo(file, new AssemblyInfoSettings
     {
-		Product = appName,
+        Product = appName,
         Version = version,
         FileVersion = version,
         InformationalVersion = semVersion,
-        Copyright = "Copyright (c) Phillip Sharpe 2015"
+        Copyright = "Copyright (c) 2015 - " + DateTime.Now.Year.ToString() + " Phillip Sharpe"
     });
 });
 
@@ -136,12 +138,13 @@ Task("Build")
     // Build all solutions.
     foreach(var solution in solutions)
     {
-		Information("Building {0}", solution);
-		MSBuild(solution, settings => 
-			settings.SetPlatformTarget(PlatformTarget.MSIL)
-				.WithProperty("TreatWarningsAsErrors","true")
-				.WithTarget("Build")
-				.SetConfiguration(configuration));
+        Information("Building {0}", solution);
+
+        MSBuild(solution, settings =>
+            settings.SetPlatformTarget(PlatformTarget.MSIL)
+                    .WithProperty("TreatWarningsAsErrors","true")
+                    .WithTarget("Build")
+                    .SetConfiguration(configuration));
     }
 });
 
@@ -149,7 +152,7 @@ Task("Run-Unit-Tests")
     .IsDependentOn("Build")
     .Does(() =>
 {
-    XUnit2("./src/**/bin/" + configuration + "/*.Tests.dll", new XUnit2Settings 
+    XUnit2("./src/**/bin/" + configuration + "/*.Tests.dll", new XUnit2Settings
     {
         OutputDirectory = testResultsDir,
         XmlReportV1 = true
@@ -168,6 +171,7 @@ Task("Copy-Files")
     .IsDependentOn("Build")
     .Does(() =>
 {
+    // Addin
     CopyFileToDirectory(buildDir + "/Cake.AWS.S3.dll", binDir);
     CopyFileToDirectory(buildDir + "/Cake.AWS.S3.pdb", binDir);
     CopyFileToDirectory(buildDir + "/Cake.AWS.S3.xml", binDir);
@@ -179,10 +183,11 @@ Task("Copy-Files")
 
 
 
-	CreateDirectory("./test/tools/Addins/Cake.AWS.S3/lib/net45/");
+    // Test
+    CreateDirectory("./test/tools/Addins/Cake.AWS.S3/lib/net45/");
 
-	CopyFileToDirectory(buildDir + "/Cake.AWS.S3.dll", "./test/tools/Addins/Cake.AWS.S3/lib/net45/");
-	CopyFileToDirectory("./lib/AWSSDK.Core.dll", "./test/tools/Addins/Cake.AWS.S3/lib/net45/");
+    CopyFileToDirectory(buildDir + "/Cake.AWS.S3.dll", "./test/tools/Addins/Cake.AWS.S3/lib/net45/");
+    CopyFileToDirectory("./lib/AWSSDK.Core.dll", "./test/tools/Addins/Cake.AWS.S3/lib/net45/");
     CopyFileToDirectory("./lib/AWSSDK.S3.dll", "./test/tools/Addins/Cake.AWS.S3/lib/net45/");
 });
 
@@ -199,28 +204,28 @@ Task("Create-NuGet-Packages")
     .IsDependentOn("Zip-Files")
     .Does(() =>
 {
-    NuGetPack("./nuspec/Cake.AWS.S3.nuspec", new NuGetPackSettings 
+    NuGetPack("./nuspec/Cake.AWS.S3.nuspec", new NuGetPackSettings
     {
         Version = version,
         ReleaseNotes = releaseNotes.Notes.ToArray(),
         BasePath = binDir,
-        OutputDirectory = nugetRoot,        
+        OutputDirectory = nugetRoot,
         Symbols = false,
         NoPackageAnalysis = true
     });
 });
 
 Task("Publish-Nuget")
-	.IsDependentOn("Create-NuGet-Packages")
+    .IsDependentOn("Create-NuGet-Packages")
     .WithCriteria(() => isRunningOnAppVeyor)
-    .WithCriteria(() => !isPullRequest) 
+    .WithCriteria(() => !isPullRequest)
     .Does(() =>
 {
     // Resolve the API key.
     var apiKey = EnvironmentVariable("NUGET_API_KEY");
 
-    if(string.IsNullOrEmpty(apiKey)) 
-	{
+    if(string.IsNullOrEmpty(apiKey))
+    {
         throw new InvalidOperationException("Could not resolve MyGet API key.");
     }
 
@@ -229,10 +234,10 @@ Task("Publish-Nuget")
     // Push the package.
     var package = nugetRoot + "/Cake.AWS.S3." + version + ".nupkg";
 
-    NuGetPush(package, new NuGetPushSettings 
-	{
+    NuGetPush(package, new NuGetPushSettings
+    {
         ApiKey = apiKey
-    }); 
+    });
 });
 
 
@@ -248,7 +253,7 @@ Task("Update-AppVeyor-Build-Number")
     .Does(() =>
 {
     AppVeyor.UpdateBuildVersion(semVersion);
-}); 
+});
 
 Task("Upload-AppVeyor-Artifacts")
     .IsDependentOn("Zip-Files")
@@ -256,7 +261,7 @@ Task("Upload-AppVeyor-Artifacts")
     .Does(() =>
 {
     AppVeyor.UploadArtifact(zipPackage);
-}); 
+});
 
 
 
@@ -272,28 +277,28 @@ Task("Slack")
     // Resolve the API key.
     var token = EnvironmentVariable("SLACK_TOKEN");
 
-    if(string.IsNullOrEmpty(token)) 
-	{
+    if(string.IsNullOrEmpty(token))
+    {
         throw new InvalidOperationException("Could not resolve Slack token.");
     }
 
 
 
-	// Post Message
-	var text = "Published " + appName + " v" + version;
-	
-	var result = Slack.Chat.PostMessage(token, "#code", text);
+    // Post Message
+    var text = "Published " + appName + " v" + version;
 
-	if (result.Ok)
-	{
-		//Posted
-		Information("Message was succcessfully sent to Slack.");
-	}
-	else
-	{
-		//Error
-		Error("Failed to send message to Slack: {0}", result.Error);
-	}
+    var result = Slack.Chat.PostMessage(token, "#code", text);
+
+    if (result.Ok)
+    {
+        //Posted
+        Information("Message was succcessfully sent to Slack.");
+    }
+    else
+    {
+        //Error
+        Error("Failed to send message to Slack: {0}", result.Error);
+    }
 });
 
 
@@ -305,18 +310,18 @@ Task("Slack")
 //////////////////////////////////////////////////////////////////////
 
 Task("Package")
-	.IsDependentOn("Zip-Files")
+    .IsDependentOn("Zip-Files")
     .IsDependentOn("Create-NuGet-Packages");
 
 Task("Publish")
     .IsDependentOn("Publish-Nuget");
 
 Task("AppVeyor")
-	.IsDependentOn("Publish")
+    .IsDependentOn("Publish")
     .IsDependentOn("Update-AppVeyor-Build-Number")
     .IsDependentOn("Upload-AppVeyor-Artifacts")
     .IsDependentOn("Slack");
-    
+
 
 
 Task("Default")
