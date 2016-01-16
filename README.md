@@ -139,13 +139,13 @@ A complete Cake example can be found [here](https://github.com/SharpeRAD/Cake.AW
 
 If your S3 buckets are linked to CloudFront distributions its worth checking out [Cake.AWS.CloudFront](https://github.com/SharpeRAD/Cake.AWS.CloudFront).
 
-If your looking for a way to trigger cake tasks based on windows events or at scheduled intervals then check out [Cake.CakeBoss](https://github.com/SharpeRAD/CakeBoss).
+If your looking for a way to trigger cake tasks based on windows events or at scheduled intervals then check out [CakeBoss](https://github.com/SharpeRAD/CakeBoss).
 
 
 
 ## License
 
-Copyright � 2015 - 2016 Phillip Sharpe
+Copyright (c) 2015 - 2016 Phillip Sharpe
 
 Cake.AWS.S3 is provided as-is under the MIT license. For more information see [LICENSE](https://github.com/SharpeRAD/Cake.AWS.S3/blob/master/LICENSE).
 
