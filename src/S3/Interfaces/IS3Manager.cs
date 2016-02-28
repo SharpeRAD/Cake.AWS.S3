@@ -53,6 +53,25 @@ namespace Cake.AWS.S3
             void Download(FilePath filePath, string key, string version, DownloadSettings settings);
 
             /// <summary>
+            /// Opens a stream of the content from Amazon S3
+            /// </summary>
+            /// <param name="key">The key under which the Amazon S3 object is stored.</param>
+            /// <param name="version">The identifier for the specific version of the object to be downloaded, if required.</param>
+            /// <param name="settings">The <see cref="DownloadSettings"/> required to download from Amazon S3.</param>
+            Stream Open(string key, string version, DownloadSettings settings);
+
+            /// <summary>
+            /// Get the byte array of the content from Amazon S3
+            /// </summary>
+            /// <param name="key">The S3 object key.</param>
+            /// <param name="version">The S3 object version.</param>
+            /// <param name="settings">The download settings.</param>
+            /// <returns>A byte array.</returns>
+            byte[] GetBytes(string key, string version, DownloadSettings settings);
+
+
+
+            /// <summary>
             /// Removes the null version (if there is one) of an object and inserts a delete
             /// marker, which becomes the latest version of the object. If there isn't a null
             /// version, Amazon S3 does not remove any objects.

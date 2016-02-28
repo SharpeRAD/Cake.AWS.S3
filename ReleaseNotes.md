@@ -1,3 +1,9 @@
+### New in 0.1.6 (Released 2016/02/27)
+* GetBytes
+
+### New in 0.1.5 (Released 2016/02/18)
+* Open stream
+
 ### New in 0.1.4 (Released 2016/01/16)
 * Fixed SolutionInfo link
 

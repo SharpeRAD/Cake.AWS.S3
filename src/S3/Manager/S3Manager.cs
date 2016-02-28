@@ -130,6 +130,26 @@ namespace Cake.AWS.S3
 
                 return request;
             }
+        
+            private TransferUtilityOpenStreamRequest CreateOpenRequest(DownloadSettings settings)
+            {
+                TransferUtilityOpenStreamRequest request = new TransferUtilityOpenStreamRequest();
+
+                request.BucketName = settings.BucketName;
+
+                request.ServerSideEncryptionCustomerProvidedKey = settings.EncryptionKey;
+                request.ServerSideEncryptionCustomerProvidedKeyMD5 = settings.EncryptionKeyMD5;
+                request.ServerSideEncryptionCustomerMethod = settings.EncryptionMethod;
+
+                if (!String.IsNullOrEmpty(settings.EncryptionKey))
+                {
+                    request.ServerSideEncryptionCustomerMethod = ServerSideEncryptionCustomerMethod.AES256;
+                }
+
+                request.ModifiedSinceDate = settings.ModifiedDate;
+
+                return request;
+            }
 
             private GetObjectRequest CreateGetObjectRequest(string key, string version, S3Settings settings)
             {
@@ -263,6 +283,53 @@ namespace Cake.AWS.S3
 
                 _Log.Verbose("Downloading file {0} from bucket {1}...", key, settings.BucketName);
                 utility.Download(request);
+            }
+        
+            /// <summary>
+            /// Opens a stream of the content from Amazon S3
+            /// </summary>
+            /// <param name="key">The key under which the Amazon S3 object is stored.</param>
+            /// <param name="version">The identifier for the specific version of the object to be downloaded, if required.</param>
+            /// <param name="settings">The <see cref="DownloadSettings"/> required to download from Amazon S3.</param>
+            /// <returns>A stream.</returns>
+            public Stream Open(string key, string version, DownloadSettings settings)
+            {
+                TransferUtility utility = this.GetUtility(settings);
+                TransferUtilityOpenStreamRequest request = this.CreateOpenRequest(settings);
+
+                request.Key = key;
+                if (!String.IsNullOrEmpty(version))
+                {
+                    request.VersionId = version;
+                }
+
+                _Log.Verbose("Opening stream {0} from bucket {1}...", key, settings.BucketName);
+                return utility.OpenStream(request);
+            }
+
+            /// <summary>
+            /// Get the byte array of the content from Amazon S3
+            /// </summary>
+            /// <param name="key">The S3 object key.</param>
+            /// <param name="version">The S3 object version.</param>
+            /// <param name="settings">The download settings.</param>
+            /// <returns>A byte array.</returns>
+            public byte[] GetBytes(string key, string version, DownloadSettings settings)
+            {
+                byte[] data;
+
+                using (Stream input = this.Open(key, version, settings))
+                {
+                    using (MemoryStream ms = new MemoryStream())
+                    {
+                        input.CopyTo(ms);
+                        data = ms.ToArray();
+                    }
+
+                    input.Close();
+                }
+
+                return data;
             }
 
 

@@ -89,6 +89,49 @@ namespace Cake.AWS.S3
         {
             context.CreateManager().Download(filePath, key, version, settings);
         }
+        
+
+
+        /// <summary>
+        /// Opens a stream of the content from Amazon S3.
+        /// </summary>
+        /// <param name="context">The cake context.</param>
+        /// <param name="key">The key under which the Amazon S3 object is stored.</param>
+        /// <param name="settings">The <see cref="DownloadSettings"/> required to download from Amazon S3.</param>
+        [CakeMethodAlias]
+        [CakeAliasCategory("S3")]
+        public static Stream S3Open(this ICakeContext context, string key, DownloadSettings settings)
+        {
+            return context.CreateManager().Open(key, "", settings);
+        }
+
+        /// <summary>
+        /// Opens a stream of the content from Amazon S3.
+        /// </summary>
+        /// <param name="context">The cake context.</param>
+        /// <param name="key">The key under which the Amazon S3 object is stored.</param>
+        /// <param name="version">The identifier for the specific version of the object to be downloaded, if required.</param>
+        /// <param name="settings">The <see cref="DownloadSettings"/> required to download from Amazon S3.</param>
+        [CakeMethodAlias]
+        [CakeAliasCategory("S3")]
+        public static Stream S3Open(this ICakeContext context, string key, string version, DownloadSettings settings)
+        {
+            return context.CreateManager().Open(key, version, settings);
+        }
+        
+        /// <summary>
+        /// Get the byte array of the content from Amazon S3
+        /// </summary>
+        /// <param name="context">The cake context.</param>
+        /// <param name="key">The key under which the Amazon S3 object is stored.</param>
+        /// <param name="version">The identifier for the specific version of the object to be downloaded, if required.</param>
+        /// <param name="settings">The <see cref="DownloadSettings"/> required to download from Amazon S3.</param>
+        [CakeMethodAlias]
+        [CakeAliasCategory("S3")]
+        public static byte[] GetBytes(this ICakeContext context, string key, string version, DownloadSettings settings)
+        {
+            return context.CreateManager().GetBytes(key, version, settings);
+        }
 
 
 
