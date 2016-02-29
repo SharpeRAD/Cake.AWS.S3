@@ -94,8 +94,9 @@ namespace Cake.AWS.S3
             /// <summary>
             /// Returns all the objects in a S3 bucket.
             /// </summary>
+            /// <param name="prefix">Limits the response to keys that begin with the specified prefix.</param>
             /// <param name="settings">The <see cref="S3Settings"/> required to download from Amazon S3.</param>
-            IList<S3Object> GetObjects(S3Settings settings);
+            IList<S3Object> GetObjects(string prefix, S3Settings settings);
 
 
 

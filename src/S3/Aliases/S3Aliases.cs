@@ -176,7 +176,7 @@ namespace Cake.AWS.S3
         /// <param name="settings">The <see cref="S3Settings"/> required to download from Amazon S3.</param>
         [CakeMethodAlias]
         [CakeAliasCategory("S3")]
-        public static S3Object GetObject(this ICakeContext context, string key, S3Settings settings)
+        public static S3Object GetS3Object(this ICakeContext context, string key, S3Settings settings)
         {
             return context.CreateManager().GetObject(key, "", settings);
         }
@@ -190,13 +190,13 @@ namespace Cake.AWS.S3
         /// <param name="settings">The <see cref="S3Settings"/> required to download from Amazon S3.</param>
         [CakeMethodAlias]
         [CakeAliasCategory("S3")]
-        public static S3Object GetObject(this ICakeContext context, string key, string version, S3Settings settings)
+        public static S3Object GetS3Object(this ICakeContext context, string key, string version, S3Settings settings)
         {
             return context.CreateManager().GetObject(key, version, settings);
         }
 
 
-
+        
         /// <summary>
         /// Returns all the objects in a S3 bucket.
         /// </summary>
@@ -204,9 +204,22 @@ namespace Cake.AWS.S3
         /// <param name="settings">The <see cref="S3Settings"/> required to download from Amazon S3.</param>
         [CakeMethodAlias]
         [CakeAliasCategory("S3")]
-        public static IList<S3Object> GetObjects(this ICakeContext context, S3Settings settings)
+        public static IList<S3Object> GetS3Objects(this ICakeContext context, S3Settings settings)
         {
-            return context.CreateManager().GetObjects(settings);
+            return context.CreateManager().GetObjects("", settings);
+        }
+
+        /// <summary>
+        /// Returns all the objects in a S3 bucket.
+        /// </summary>
+        /// <param name="context">The cake context.</param>
+        /// <param name="prefix">Limits the response to keys that begin with the specified prefix.</param>
+        /// <param name="settings">The <see cref="S3Settings"/> required to download from Amazon S3.</param>
+        [CakeMethodAlias]
+        [CakeAliasCategory("S3")]
+        public static IList<S3Object> GetS3Objects(this ICakeContext context, string prefix, S3Settings settings)
+        {
+            return context.CreateManager().GetObjects(prefix, settings);
         }
 
 
