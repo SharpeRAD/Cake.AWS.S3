@@ -1,4 +1,4 @@
-### New in 0.1.6 (Released 2016/02/29)
+### New in 0.1.7 (Released 2016/02/29)
 * Add prefix to GetObjects to limit results
 * Rename GetObject to "GetS3Object"
 
