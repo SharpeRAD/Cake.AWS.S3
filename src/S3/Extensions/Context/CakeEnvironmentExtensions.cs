@@ -28,9 +28,11 @@ namespace Cake.AWS.S3
                 throw new ArgumentNullException("environment");
             }
 
-            settings.AccessKey = environment.GetEnvironmentVariable("AWS_ACCESSKEY");
-            settings.SecretKey = environment.GetEnvironmentVariable("AWS_SECRETKEY");
-            settings.EncryptionKey = environment.GetEnvironmentVariable("AWS_ENCRYPTIONKEY");
+            settings.AccessKey = environment.GetEnvironmentVariable("AWS_ACCESS_KEY_ID");
+            settings.SecretKey = environment.GetEnvironmentVariable("AWS_SECRET_ACCESS_KEY");
+            settings.EncryptionKey = environment.GetEnvironmentVariable("AWS_ENCRYPTION_KEY");
+
+
 
             string region = environment.GetEnvironmentVariable("AWS_REGION");
 
