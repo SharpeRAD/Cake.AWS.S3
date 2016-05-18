@@ -4,6 +4,7 @@
     using Cake.Core;
 
     using Amazon;
+    using Amazon.Runtime;
 #endregion
 
 
@@ -28,14 +29,22 @@ namespace Cake.AWS.S3
                 throw new ArgumentNullException("environment");
             }
 
-            settings.AccessKey = environment.GetEnvironmentVariable("AWS_ACCESS_KEY_ID");
-            settings.SecretKey = environment.GetEnvironmentVariable("AWS_SECRET_ACCESS_KEY");
+            //AWS Fallback
+            AWSCredentials creds = FallbackCredentialsFactory.GetCredentials();
+            if (creds != null)
+            {
+                ImmutableCredentials imute = creds.GetCredentials();
+                if (creds != null)
+                {
+                    settings.AccessKey = imute.AccessKey;
+                    settings.SecretKey = imute.SecretKey;
+                }
+            }
+
+            //Environment Variables
             settings.EncryptionKey = environment.GetEnvironmentVariable("AWS_ENCRYPTION_KEY");
 
-
-
             string region = environment.GetEnvironmentVariable("AWS_REGION");
-
             if (!String.IsNullOrEmpty(region))
             {
                 settings.Region = RegionEndpoint.GetBySystemName(region);
