@@ -100,5 +100,27 @@ namespace Cake.AWS.S3
             settings.StorageClass = S3StorageClass.FindValue(storageClass);
             return settings;
         }
+        
+        /// <summary>
+        /// The id of the AWS Key Management Service key that Amazon S3 should use to encrypt
+        /// and decrypt the object. If a key id is not specified, the default key will be
+        /// </summary>
+        /// <param name="settings">The upload settings.</param>
+        /// <param name="id">The id of the key tp use.</param>
+        /// <returns>The same <see cref="UploadSettings"/> instance so that multiple calls can be chained.</returns>
+        public static UploadSettings SetKeyManagementServiceKeyId(this UploadSettings settings, string id)
+        {
+            if (settings == null)
+            {
+                throw new ArgumentNullException("settings");
+            }
+            if (string.IsNullOrEmpty(id))
+            {
+                throw new ArgumentNullException("id");
+            }
+
+            settings.KeyManagementServiceKeyId = id;
+            return settings;
+        }
     }
 }

@@ -26,7 +26,7 @@ namespace Cake.AWS.S3
 
 
 
-        #region Properties (2)
+        #region Properties (3)
             /// <summary>
             /// The ACL to be used for S3 Buckets or S3 Objects.
             /// </summary>
@@ -34,9 +34,17 @@ namespace Cake.AWS.S3
 
             /// <summary>
             /// Specifies the Storage Class of of an S3 object. Possible values are: ReducedRedundancy:
-            ///  provides a 99.99% durability guarantee Standard: provides a 99.999999999% durability guarantee
+            /// provides a 99.99% durability guarantee Standard: provides a 99.999999999% durability guarantee
             /// </summary>
             public S3StorageClass StorageClass { get; set; }
+
+
+        
+            /// <summary>
+            /// The id of the AWS Key Management Service key that Amazon S3 should use to encrypt
+            /// and decrypt the object. If a key id is not specified, the default key will be
+            /// </summary>
+            public string KeyManagementServiceKeyId { get; set; }
         #endregion
     }
 }

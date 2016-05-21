@@ -271,7 +271,20 @@ namespace Cake.AWS.S3
         [CakeAliasCategory("S3")]
         public static void GenerateEncryptionKey(this ICakeContext context, FilePath filePath)
         {
-            context.CreateManager().GenerateEncryptionKey(filePath);
+            context.CreateManager().GenerateEncryptionKey(filePath, 256);
+        }
+        
+        /// <summary>
+        /// Generates a base64-encoded encryption key for Amazon S3 to use to encrypt / decrypt objects
+        /// </summary>
+        /// <param name="context">The cake context.</param>
+        /// <param name="filePath">The file path to store the key in.</param>
+        /// <param name="size">The size in bits of the secret key used by the symmetric algorithm</param>
+        [CakeMethodAlias]
+        [CakeAliasCategory("S3")]
+        public static void GenerateEncryptionKey(this ICakeContext context, FilePath filePath, int size)
+        {
+            context.CreateManager().GenerateEncryptionKey(filePath, size);
         }
 
 

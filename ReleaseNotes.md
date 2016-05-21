@@ -1,3 +1,6 @@
+### New in 0.2.0 (Released 2016/05/21)
+* Add KeyManagementServiceKeyId to UploadSettings
+
 ### New in 0.1.9 (Released 2016/05/17)
 * Use AWS FallbackCredentialsFactory
 * Add nuget dependencies

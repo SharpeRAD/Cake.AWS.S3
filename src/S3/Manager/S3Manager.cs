@@ -440,12 +440,13 @@ namespace Cake.AWS.S3
             /// Generates a base64-encoded encryption key for Amazon S3 to use to encrypt / decrypt objects
             /// </summary>
             /// <param name="filePath">The file path to store the key in.</param>
-            public void GenerateEncryptionKey(FilePath filePath)
+            /// <param name="size">The size in bits of the secret key used by the symmetric algorithm</param>
+            public void GenerateEncryptionKey(FilePath filePath, int size)
             {
                 string fullPath = filePath.MakeAbsolute(_Environment.WorkingDirectory).FullPath;
 
                 Aes aesEncryption = Aes.Create();
-                aesEncryption.KeySize = 256;
+                aesEncryption.KeySize = size;
                 aesEncryption.GenerateKey();
 
                 string base64Key = Convert.ToBase64String(aesEncryption.Key);
