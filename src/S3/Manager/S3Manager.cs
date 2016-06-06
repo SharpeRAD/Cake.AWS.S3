@@ -317,6 +317,7 @@ namespace Cake.AWS.S3
                         {
                             key = file.Path.FullPath.Replace(fullPath, prefix);
                         }
+                        key = key.Replace("//", "/");
 
                         //Get ETag
                         string eTag = "";
@@ -331,7 +332,7 @@ namespace Cake.AWS.S3
                         S3Object obj = objects.FirstOrDefault(o => o.Key == key);
 
                         if ((obj == null) 
-                            || ((settings.ModifiedCheck == ModifiedCheck.Hash) && (obj.ETag != eTag))
+                            || ((settings.ModifiedCheck == ModifiedCheck.Hash) && (obj.ETag != "\"" + eTag + "\""))
                             || ((settings.ModifiedCheck == ModifiedCheck.Date) && ((DateTimeOffset)new FileInfo(file.Path.FullPath).LastWriteTime) > (DateTimeOffset)obj.LastModified) )
                         {
                             upload.Add(new UploadPath()
@@ -382,37 +383,41 @@ namespace Cake.AWS.S3
             {
                 Task.WhenAll(paths.Select(path => Task.Run(() =>
                 {
-                    UploadSettings copied = new UploadSettings()
+                    try
                     {
-                        WorkingDirectory = settings.WorkingDirectory,
+                        UploadSettings copied = new UploadSettings()
+                        {
+                            WorkingDirectory = settings.WorkingDirectory,
 
-                        AccessKey = settings.AccessKey,
-                        SecretKey = settings.SecretKey,
+                            AccessKey = settings.AccessKey,
+                            SecretKey = settings.SecretKey,
 
-                        Region = settings.Region,
-                        BucketName = settings.BucketName,
+                            Region = settings.Region,
+                            BucketName = settings.BucketName,
 
-                        EncryptionMethod = settings.EncryptionMethod,
-                        EncryptionKey = settings.EncryptionKey,
-                        EncryptionKeyMD5 = settings.EncryptionKeyMD5,
+                            EncryptionMethod = settings.EncryptionMethod,
+                            EncryptionKey = settings.EncryptionKey,
+                            EncryptionKeyMD5 = settings.EncryptionKeyMD5,
 
-                        CannedACL = settings.CannedACL,
-                        StorageClass = settings.StorageClass,
+                            CannedACL = settings.CannedACL,
+                            StorageClass = settings.StorageClass,
 
-                        KeyManagementServiceKeyId = settings.KeyManagementServiceKeyId,
+                            KeyManagementServiceKeyId = settings.KeyManagementServiceKeyId,
 
-                        Headers = new HeadersCollection(),
-                        GenerateContentType = settings.GenerateContentType,
-                        GenerateETag = settings.GenerateETag
-                    };
+                            Headers = new HeadersCollection(),
+                            GenerateContentType = settings.GenerateContentType,
+                            GenerateETag = settings.GenerateETag
+                        };
 
-                    if (!String.IsNullOrEmpty(path.ETag))
-                    {
-                        copied.Headers["ETag"] = path.ETag;
+                        if (!String.IsNullOrEmpty(path.ETag))
+                        {
+                            copied.Headers["ETag"] = path.ETag;
+                        }
+
+                        this.Upload(path.Path, path.Key, copied);
                     }
-
-                    this.Upload(path.Path, path.Key, copied);
-                }))).Wait();
+                    catch { }
+                })));
             }
 
             /// <summary>
@@ -448,7 +453,7 @@ namespace Cake.AWS.S3
                 request.UploadProgressEvent += new EventHandler<UploadProgressArgs>(UploadProgressEvent);
 
                 _Log.Verbose("Uploading file {0} to bucket {1}...", key, settings.BucketName);
-                utility.UploadAsync(request);
+                utility.Upload(request);
             }
 
             /// <summary>
@@ -640,7 +645,7 @@ namespace Cake.AWS.S3
 
                 AmazonS3Client client = this.GetClient(settings);
 
-                _Log.Verbose("Get objects from bucket {1}...", settings.BucketName);
+                _Log.Verbose("Get objects from bucket {0}...", settings.BucketName);
 
                 while (call)
                 {
