@@ -2,6 +2,7 @@
     using System;
     using System.IO;
     using System.Linq;
+    using System.Text;
     using System.Collections.Generic;
     using System.Security.Cryptography;
     using System.Threading.Tasks;
@@ -31,7 +32,7 @@ namespace Cake.AWS.S3
     /// </summary>
     public class S3Manager : IS3Manager
     {
-        #region Fields (3)
+        #region Fields (4)
             private readonly IFileSystem _FileSystem;
             private readonly ICakeEnvironment _Environment;
             private readonly ICakeLog _Log;
@@ -66,6 +67,8 @@ namespace Cake.AWS.S3
                 _FileSystem = fileSystem;
                 _Environment = environment;
                 _Log = log;
+
+                this.LogProgress = true;
             }
         #endregion
 
@@ -73,7 +76,18 @@ namespace Cake.AWS.S3
 
 
 
-        #region Helper Functions (10)
+        #region Properties (1)
+            /// <summary>
+            /// If the manager should output progrtess events to the cake log
+            /// </summary>
+            public bool LogProgress { get; set; }
+        #endregion
+
+
+
+
+
+        #region Helper Functions (11)
             //Request
             private AmazonS3Client GetClient(S3Settings settings)
             {
@@ -214,12 +228,32 @@ namespace Cake.AWS.S3
 
             private void UploadProgressEvent(object sender, UploadProgressArgs e)
             {
-                _Log.Verbose("{0} ({1}/{2})", this.GetPercent(e).ToString("N2") + "%", (e.TransferredBytes / 1000).ToString("N0"), (e.TotalBytes / 1000).ToString("N0"));
+                if (this.LogProgress)
+                {
+                    _Log.Verbose("{0} ({1}/{2})", this.GetPercent(e).ToString("N2") + "%", (e.TransferredBytes / 1000).ToString("N0"), (e.TotalBytes / 1000).ToString("N0"));
+                }
             }
 
             private void WriteObjectProgressEvent(object sender, WriteObjectProgressArgs e)
             {
-                _Log.Verbose("{0} ({1}/{2})", this.GetPercent(e).ToString("N2") + "%", (e.TransferredBytes / 1000).ToString("N0"), (e.TotalBytes / 1000).ToString("N0"));
+                if (this.LogProgress)
+                {
+                    _Log.Verbose("{0} ({1}/{2})", this.GetPercent(e).ToString("N2") + "%", (e.TransferredBytes / 1000).ToString("N0"), (e.TotalBytes / 1000).ToString("N0"));
+                }
+            }
+
+
+
+            //Hash
+            private string GetHash(IFile file)
+            {
+                using (var md5 = MD5.Create())
+                {
+                    using (var stream = file.OpenRead())
+                    {
+                        return BitConverter.ToString(md5.ComputeHash(stream)).Replace("-","").ToLower();
+                    }
+                }
             }
         #endregion
 
@@ -227,7 +261,7 @@ namespace Cake.AWS.S3
 
 
 
-        #region Main Functions (11)
+        #region Main Functions (13)
             /// <summary>
             /// Syncs the specified directory to Amazon S3, checking the modified date of the local fiels with existing S3Objects.
             /// </summary>
@@ -243,13 +277,24 @@ namespace Cake.AWS.S3
                 IDirectory dir = _FileSystem.GetDirectory(dirPath.MakeAbsolute(settings.WorkingDirectory));
                 List<string> list = new List<string>();
 
+                if (settings.ModifiedCheck == ModifiedCheck.Hash)
+                {
+                    settings.GenerateETag = true;
+                }
+
+
+
                 if (dir.Exists)
                 {
                     //Get S3 Objects
                     IList<S3Object> objects = this.GetObjects(settings.KeyPrefix, settings);
-                    string prefix = settings.KeyPrefix;
 
-                    if (!String.IsNullOrEmpty(prefix) && !prefix.EndsWith("/"))
+                    string prefix = settings.KeyPrefix;
+                    if (String.IsNullOrEmpty(prefix))
+                    {
+                        prefix = "";
+                    }
+                    else if (!prefix.EndsWith("/"))
                     {
                         prefix = prefix + "/";
                     }
@@ -258,12 +303,12 @@ namespace Cake.AWS.S3
 
                     //Check Files
                     IEnumerable<IFile> files = dir.GetFiles(settings.SearchFilter, settings.SearchScope);
-                    IDictionary<string, FilePath> upload = new Dictionary<string, FilePath>();
+                    IList<UploadPath> upload = new List<UploadPath>();
 
                     foreach (IFile file in files)
                     {
+                        //Get Key
                         string key;
-
                         if (settings.LowerPaths)
                         {
                             key = file.Path.FullPath.ToLower().Replace(fullPath.ToLower(), prefix.ToLower());
@@ -273,11 +318,28 @@ namespace Cake.AWS.S3
                             key = file.Path.FullPath.Replace(fullPath, prefix);
                         }
 
+                        //Get ETag
+                        string eTag = "";
+                        if (settings.GenerateETag || (settings.ModifiedCheck == ModifiedCheck.Hash))
+                        {
+                            eTag = this.GetHash(file);
+                        }
+
+
+
+                        //Check Modified
                         S3Object obj = objects.FirstOrDefault(o => o.Key == key);
 
-                        if ((obj == null) || ((DateTimeOffset)new FileInfo(file.Path.FullPath).LastWriteTime) > (DateTimeOffset)obj.LastModified)
+                        if ((obj == null) 
+                            || ((settings.ModifiedCheck == ModifiedCheck.Hash) && (obj.ETag != eTag))
+                            || ((settings.ModifiedCheck == ModifiedCheck.Date) && ((DateTimeOffset)new FileInfo(file.Path.FullPath).LastWriteTime) > (DateTimeOffset)obj.LastModified) )
                         {
-                            upload.Add(key, file.Path);
+                            upload.Add(new UploadPath()
+                            {
+                                Path = file.Path,
+                                Key = key,
+                                ETag = eTag
+                            });
 
                             if (obj != null)
                             {
@@ -294,6 +356,7 @@ namespace Cake.AWS.S3
 
 
                     //Upload
+                    this.LogProgress = (upload.Count <= 1);
                     this.Upload(upload, settings);
 
 
@@ -313,13 +376,42 @@ namespace Cake.AWS.S3
             /// Uploads a collection of files to S3. For large uploads, the file will be divided and uploaded in parts 
             /// using Amazon S3's multipart API. The parts will be reassembled as one object in Amazon S3.
             /// </summary>
-            /// <param name="paths">The paths and keys of the files to upload.</param>
+            /// <param name="paths">The paths to upload.</param>
             /// <param name="settings">The <see cref="UploadSettings"/> required to upload to Amazon S3.</param>
-            public void Upload(IDictionary<string, FilePath> paths, UploadSettings settings)
+            public void Upload(IList<UploadPath> paths, SyncSettings settings)
             {
                 Task.WhenAll(paths.Select(path => Task.Run(() =>
                 {
-                    this.Upload(path.Value, path.Key, settings);
+                    UploadSettings copied = new UploadSettings()
+                    {
+                        WorkingDirectory = settings.WorkingDirectory,
+
+                        AccessKey = settings.AccessKey,
+                        SecretKey = settings.SecretKey,
+
+                        Region = settings.Region,
+                        BucketName = settings.BucketName,
+
+                        EncryptionMethod = settings.EncryptionMethod,
+                        EncryptionKey = settings.EncryptionKey,
+                        EncryptionKeyMD5 = settings.EncryptionKeyMD5,
+
+                        CannedACL = settings.CannedACL,
+                        StorageClass = settings.StorageClass,
+
+                        KeyManagementServiceKeyId = settings.KeyManagementServiceKeyId,
+
+                        Headers = new HeadersCollection(),
+                        GenerateContentType = settings.GenerateContentType,
+                        GenerateETag = settings.GenerateETag
+                    };
+
+                    if (!String.IsNullOrEmpty(path.ETag))
+                    {
+                        copied.Headers["ETag"] = path.ETag;
+                    }
+
+                    this.Upload(path.Path, path.Key, copied);
                 }))).Wait();
             }
 
@@ -341,9 +433,16 @@ namespace Cake.AWS.S3
                 request.FilePath = fullPath;
                 request.Key = key;
 
-                if (String.IsNullOrEmpty(request.Headers.ContentType))
+                //Set ContentType
+                if (settings.GenerateContentType && String.IsNullOrEmpty(request.Headers.ContentType))
                 {
                     request.Headers.ContentType = new Mime().Lookup(filePath.GetFilename().FullPath);
+                }
+
+                //Set ETag
+                if (settings.GenerateETag && String.IsNullOrEmpty(request.Headers["ETag"]))
+                {
+                    request.Headers["ETag"] = this.GetHash(_FileSystem.GetFile(fullPath));
                 }
 
                 request.UploadProgressEvent += new EventHandler<UploadProgressArgs>(UploadProgressEvent);

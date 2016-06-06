@@ -122,5 +122,41 @@ namespace Cake.AWS.S3
             settings.KeyManagementServiceKeyId = id;
             return settings;
         }
+        
+
+        
+        /// <summary>
+        /// Generate the ContentType based on the file extension
+        /// </summary>
+        /// <param name="settings">The sync settings.</param>
+        /// <param name="generateContentType">generate ContentType.</param>
+        /// <returns>The same <see cref="UploadSettings"/> instance so that multiple calls can be chained.</returns>
+        public static UploadSettings SetGenerateContentType(this UploadSettings settings, bool generateContentType = true)
+        {
+            if (settings == null)
+            {
+                throw new ArgumentNullException("settings");
+            }
+
+            settings.GenerateContentType = generateContentType;
+            return settings;
+        }
+
+        /// <summary>
+        /// Generate an ETag based on the hash of the file
+        /// </summary>
+        /// <param name="settings">The sync settings.</param>
+        /// <param name="generateETag">generate ETag.</param>
+        /// <returns>The same <see cref="UploadSettings"/> instance so that multiple calls can be chained.</returns>
+        public static UploadSettings SetGenerateETag(this UploadSettings settings, bool generateETag = true)
+        {
+            if (settings == null)
+            {
+                throw new ArgumentNullException("settings");
+            }
+
+            settings.GenerateETag = generateETag;
+            return settings;
+        }
     }
 }

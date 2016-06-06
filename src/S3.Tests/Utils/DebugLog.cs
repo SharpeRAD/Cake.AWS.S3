@@ -49,6 +49,7 @@ namespace Cake.AWS.S3.Tests
                     DebugLog.Lines = new List<string>();
                 }
 
+                format = String.Format(format, args);
                 DebugLog.Lines.Add(format);
 
                 if (Debugger.IsAttached)

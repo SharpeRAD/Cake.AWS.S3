@@ -22,6 +22,7 @@ namespace Cake.AWS.S3
 
                 LowerPaths = true;
                 KeyPrefix = "";
+                ModifiedCheck = ModifiedCheck.Hash;
             }
         #endregion
 
@@ -29,7 +30,7 @@ namespace Cake.AWS.S3
 
 
 
-        #region Properties (4)
+        #region Properties (5)
             /// <summary>
             /// The filter to use when searching for files
             /// </summary>
@@ -51,6 +52,13 @@ namespace Cake.AWS.S3
             /// The prefix to use when generating S3 keys
             /// </summary>
             public string KeyPrefix { get; set; }
+        
+
+
+            /// <summary>
+            /// How to check if a file has been modified
+            /// </summary>
+            public ModifiedCheck ModifiedCheck { get; set; }
         #endregion
     }
 }

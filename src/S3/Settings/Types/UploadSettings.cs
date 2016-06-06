@@ -1,4 +1,6 @@
 ﻿#region Using Statements
+    using System;
+
     using Amazon.S3;
     using Amazon.S3.Model;
 #endregion
@@ -24,6 +26,8 @@ namespace Cake.AWS.S3
                 KeyManagementServiceKeyId = "";
 
                 Headers = new HeadersCollection();
+                GenerateContentType = true;
+                GenerateETag = true;
             }
         #endregion
 
@@ -31,7 +35,7 @@ namespace Cake.AWS.S3
 
 
 
-        #region Properties (4)
+        #region Properties (5)
             /// <summary>
             /// The ACL to be used for S3 Buckets or S3 Objects.
             /// </summary>
@@ -57,6 +61,18 @@ namespace Cake.AWS.S3
             /// Used to set the http-headers for an S3 object.
             /// </summary>
             public HeadersCollection Headers { get; set; }
+        
+
+                
+            /// <summary>
+            /// Generate the ContentType based on the file extension
+            /// </summary>
+            public bool GenerateContentType { get; set; }
+
+            /// <summary>
+            /// Generate an ETag based on the hash of the file
+            /// </summary>
+            public bool GenerateETag { get; set; }
         #endregion
     }
 }

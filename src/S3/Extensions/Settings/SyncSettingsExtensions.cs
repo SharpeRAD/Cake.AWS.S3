@@ -82,5 +82,24 @@ namespace Cake.AWS.S3
             settings.KeyPrefix = keyPrefix;
             return settings;
         }
+        
+
+
+        /// <summary>
+        /// The prefix to use when generating S3 keys
+        /// </summary>
+        /// <param name="settings">The sync settings.</param>
+        /// <param name="modifiedCheck">the modified check.</param>
+        /// <returns>The same <see cref="SyncSettings"/> instance so that multiple calls can be chained.</returns>
+        public static SyncSettings SetModifiedCheck(this SyncSettings settings, ModifiedCheck modifiedCheck = ModifiedCheck.Date)
+        {
+            if (settings == null)
+            {
+                throw new ArgumentNullException("settings");
+            }
+
+            settings.ModifiedCheck = modifiedCheck;
+            return settings;
+        }
     }
 }

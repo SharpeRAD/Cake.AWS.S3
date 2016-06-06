@@ -1,4 +1,10 @@
-### New in 0.2.1 (Released 2016/06/06)
+### New in 0.2.2 (Released 2016/06/06)
+* Generate Etag
+* Sync based on Etag or modified date
+* Add unit-test
+* LogProgress setting
+
+### New in 0.2.1 (Released 2016/06/02)
 * Add HeadersCollection to upload settings
 * Use MimeSharp to set the content-type of uploaded objects
 * Rename ModifiedDate to LastModified and change to DateTimeOffset

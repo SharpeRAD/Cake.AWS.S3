@@ -1,15 +1,11 @@
 ﻿#region Using Statements
     using System;
-    using System.IO;
-    using System.Collections.Generic;
 
     using Xunit;
 
     using Cake.Core;
     using Cake.Core.IO;
     using Cake.Core.Diagnostics;
-
-    using Cake.AWS.S3;
 #endregion
 
 
@@ -19,27 +15,18 @@ namespace Cake.AWS.S3.Tests
     public class S3Tests
     {
         [Fact]
-        public void File_List_Dates()
+        public void Test_Syn()
         {
-            ICakeEnvironment environment = CakeHelper.CreateEnvironment();
-            ICakeLog log = new DebugLog();
-            IFileSystem system = new FileSystem();
+            IS3Manager manager = CakeHelper.CreateS3Manager();
 
-            IDirectory dir = system.GetDirectory(new DirectoryPath("../../").MakeAbsolute(environment));
-            IEnumerable<IFile> files = dir.GetFiles("*", SearchScope.Recursive);
-
-
-
-            log.Debug("================= File Modified Dates =================");
-
-            foreach (IFile file in files)
+            manager.Sync(new DirectoryPath("../../"), new SyncSettings()
             {
-                DateTimeOffset date = (DateTimeOffset)new FileInfo(file.Path.FullPath).LastWriteTime;
+                AccessKey = Environment.GetEnvironmentVariable("AWS_ACCESS_KEY_ID", EnvironmentVariableTarget.User),
+                SecretKey = Environment.GetEnvironmentVariable("AWS_SECRET_ACCESS_KEY", EnvironmentVariableTarget.User),
 
-                log.Debug(date.ToString() + "   ===   " + file.Path.FullPath);
-            }
-
-            log.Debug("================= File Modified Dates =================");
+                BucketName = "cake-aws-s3",
+                KeyPrefix = "tests"
+            });
         }
     }
 }

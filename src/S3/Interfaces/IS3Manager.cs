@@ -22,6 +22,17 @@ namespace Cake.AWS.S3
     /// </summary>
     public interface IS3Manager
     {
+        #region Properties (1)
+            /// <summary>
+            /// If the manager should output progrtess events to the cake log
+            /// </summary>
+            bool LogProgress { get; set; }
+        #endregion
+
+
+
+
+
         #region Functions (11)
             /// <summary>
             /// Syncs the specified directory to Amazon S3, checking the modified date of the local fiels with existing S3Objects.
