@@ -1,3 +1,4 @@
+### New in 0.2.1 (Released 2016/06/06)
 * Add HeadersCollection to upload settings
 * Use MimeSharp to set the content-type of uploaded objects
 * Rename ModifiedDate to LastModified and change to DateTimeOffset
