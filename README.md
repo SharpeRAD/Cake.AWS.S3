@@ -25,8 +25,12 @@ Cake Build addin for transfering files to and from Amazon S3
 
 * Upload
 * Download
+* Open
+* Delete
 * ACL's
 * Encryption
+* PreSign URL
+* Sync directory
 
 
 
@@ -105,13 +109,31 @@ Task("Upload-File-Fluent")
             .SetEncryptionKey("mykey"));
 });
 
-Task("Download-File-Environment")
+Task("Download-File-Context")
     .Description("Download a file from S3")
     .Does(() =>
 {
-    S3Download("C:/Files/test.zip", "test.zip", Context.CreateDownloadSettings()
+    S3Download("C:/Files/test.zip", "test.zip", Context.SyncSettings()
     {
         BucketName = "cake-s3"
+    });
+});
+
+
+
+Task("Sync-Directory")
+    .Description("Syncs a directory to S3")
+    .Does(() =>
+{
+    S3Sync("./images/", Context.CreateSyncSettings()
+    {
+        BucketName = "cake-s3",
+
+        SearchFilter = "*.png",
+        SearchScope = SearchScope.Recursive,
+
+        LowerPaths = true,
+        KeyPrefix = "img/"
     });
 });
 

@@ -44,5 +44,20 @@ namespace Cake.AWS.S3
 
             return context.Environment.CreateUploadSettings();
         }
+        
+        /// <summary>
+        /// Helper method to get the AWS Credentials from environment variables
+        /// </summary>
+        /// <param name="context">The cake context.</param>
+        /// <returns>A new <see cref="SyncSettings"/> instance to be used in calls to the <see cref="IS3Manager"/>.</returns>
+        public static SyncSettings CreateSyncSettings(this ICakeContext context)
+        {
+            if (context == null)
+            {
+                throw new ArgumentNullException("context");
+            }
+
+            return context.Environment.CreateSyncSettings();
+        }
     }
 }

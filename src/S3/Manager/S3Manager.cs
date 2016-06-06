@@ -1,8 +1,10 @@
 ﻿#region Using Statements
     using System;
     using System.IO;
+    using System.Linq;
     using System.Collections.Generic;
     using System.Security.Cryptography;
+    using System.Threading.Tasks;
 
     using Cake.Core;
     using Cake.Core.IO;
@@ -11,6 +13,8 @@
     using Amazon.S3;
     using Amazon.S3.Model;
     using Amazon.S3.Transfer;
+
+    using MimeSharp;
 #endregion
 
 
@@ -27,7 +31,8 @@ namespace Cake.AWS.S3
     /// </summary>
     public class S3Manager : IS3Manager
     {
-        #region Fields (2)
+        #region Fields (3)
+            private readonly IFileSystem _FileSystem;
             private readonly ICakeEnvironment _Environment;
             private readonly ICakeLog _Log;
         #endregion
@@ -40,10 +45,15 @@ namespace Cake.AWS.S3
             /// <summary>
             /// Initializes a new instance of the <see cref="S3Manager" /> class.
             /// </summary>
+            /// <param name="fileSystem">The file System.</param>
             /// <param name="environment">The environment.</param>
             /// <param name="log">The log.</param>
-            public S3Manager(ICakeEnvironment environment, ICakeLog log)
+            public S3Manager(IFileSystem fileSystem, ICakeEnvironment environment, ICakeLog log)
             {
+                if (fileSystem == null)
+                {
+                    throw new ArgumentNullException("fileSystem");
+                }
                 if (environment == null)
                 {
                     throw new ArgumentNullException("environment");
@@ -53,6 +63,7 @@ namespace Cake.AWS.S3
                     throw new ArgumentNullException("log");
                 }
 
+                _FileSystem = fileSystem;
                 _Environment = environment;
                 _Log = log;
             }
@@ -62,7 +73,7 @@ namespace Cake.AWS.S3
 
 
 
-        #region Helper Functions (9)
+        #region Helper Functions (10)
             //Request
             private AmazonS3Client GetClient(S3Settings settings)
             {
@@ -107,6 +118,14 @@ namespace Cake.AWS.S3
                 }
 
                 request.CannedACL = settings.CannedACL;
+
+                if (settings.Headers != null)
+                {
+                    foreach (string key in settings.Headers.Keys)
+                    {
+                        request.Headers[key] = settings.Headers[key];
+                    }
+                }
 
                 return request;
             }
@@ -208,7 +227,102 @@ namespace Cake.AWS.S3
 
 
 
-        #region Main Functions (7)
+        #region Main Functions (11)
+            /// <summary>
+            /// Syncs the specified directory to Amazon S3, checking the modified date of the local fiels with existing S3Objects.
+            /// </summary>
+            /// <param name="dirPath">The directory path to sync to S3</param>
+            /// <param name="settings">The <see cref="SyncSettings"/> required to sync to Amazon S3.</param>
+            /// <returns>A list of keys that require invalidating.</returns>
+            public IList<string> Sync(DirectoryPath dirPath, SyncSettings settings)
+            {
+                //Get Directory
+                this.SetWorkingDirectory(settings);
+                string fullPath = dirPath.MakeAbsolute(settings.WorkingDirectory).FullPath;
+
+                IDirectory dir = _FileSystem.GetDirectory(dirPath.MakeAbsolute(settings.WorkingDirectory));
+                List<string> list = new List<string>();
+
+                if (dir.Exists)
+                {
+                    //Get S3 Objects
+                    IList<S3Object> objects = this.GetObjects(settings.KeyPrefix, settings);
+                    string prefix = settings.KeyPrefix;
+
+                    if (!String.IsNullOrEmpty(prefix) && !prefix.EndsWith("/"))
+                    {
+                        prefix = prefix + "/";
+                    }
+
+
+
+                    //Check Files
+                    IEnumerable<IFile> files = dir.GetFiles(settings.SearchFilter, settings.SearchScope);
+                    IDictionary<string, FilePath> upload = new Dictionary<string, FilePath>();
+
+                    foreach (IFile file in files)
+                    {
+                        string key;
+
+                        if (settings.LowerPaths)
+                        {
+                            key = file.Path.FullPath.ToLower().Replace(fullPath.ToLower(), prefix.ToLower());
+                        }
+                        else
+                        {
+                            key = file.Path.FullPath.Replace(fullPath, prefix);
+                        }
+
+                        S3Object obj = objects.FirstOrDefault(o => o.Key == key);
+
+                        if ((obj == null) || ((DateTimeOffset)new FileInfo(file.Path.FullPath).LastWriteTime) > (DateTimeOffset)obj.LastModified)
+                        {
+                            upload.Add(key, file.Path);
+
+                            if (obj != null)
+                            {
+                                list.Add(key);
+                            }
+                        }
+
+                        if (obj != null)
+                        {
+                            objects.Remove(obj);
+                        }
+                    }
+
+
+
+                    //Upload
+                    this.Upload(upload, settings);
+
+
+
+                    //Delete
+                    list.AddRange(objects.Select(o => o.Key).ToList());
+
+                    this.Delete(objects.Select(o => o.Key).ToList(), settings);
+                }
+
+                return list;
+            }
+
+
+
+            /// <summary>
+            /// Uploads a collection of files to S3. For large uploads, the file will be divided and uploaded in parts 
+            /// using Amazon S3's multipart API. The parts will be reassembled as one object in Amazon S3.
+            /// </summary>
+            /// <param name="paths">The paths and keys of the files to upload.</param>
+            /// <param name="settings">The <see cref="UploadSettings"/> required to upload to Amazon S3.</param>
+            public void Upload(IDictionary<string, FilePath> paths, UploadSettings settings)
+            {
+                Task.WhenAll(paths.Select(path => Task.Run(() =>
+                {
+                    this.Upload(path.Value, path.Key, settings);
+                }))).Wait();
+            }
+
             /// <summary>
             /// Uploads the specified file. For large uploads, the file will be divided and uploaded in parts 
             /// using Amazon S3's multipart API. The parts will be reassembled as one object in Amazon S3.
@@ -227,10 +341,15 @@ namespace Cake.AWS.S3
                 request.FilePath = fullPath;
                 request.Key = key;
 
+                if (String.IsNullOrEmpty(request.Headers.ContentType))
+                {
+                    request.Headers.ContentType = new Mime().Lookup(filePath.GetFilename().FullPath);
+                }
+
                 request.UploadProgressEvent += new EventHandler<UploadProgressArgs>(UploadProgressEvent);
 
                 _Log.Verbose("Uploading file {0} to bucket {1}...", key, settings.BucketName);
-                utility.Upload(request);
+                utility.UploadAsync(request);
             }
 
             /// <summary>
@@ -333,6 +452,20 @@ namespace Cake.AWS.S3
             }
 
 
+
+            /// <summary>
+            /// Deletes a collection of files to S3. For large uploads, the file will be divided and uploaded in parts 
+            /// using Amazon S3's multipart API. The parts will be reassembled as one object in Amazon S3.
+            /// </summary>
+            /// <param name="keys">The set of keys under which the Amazon S3 object is stored.</param>
+            /// <param name="settings">The <see cref="S3Settings"/> required to upload to Amazon S3.</param>
+            public void Delete(IList<string> keys, S3Settings settings)
+            {
+                Task.WhenAll(keys.Select(key => Task.Run(() =>
+                {
+                    this.Delete(key, "", settings);
+                }))).Wait();
+            }
 
             /// <summary>
             /// Removes the null version (if there is one) of an object and inserts a delete

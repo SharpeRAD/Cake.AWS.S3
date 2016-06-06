@@ -22,7 +22,17 @@ namespace Cake.AWS.S3
     /// </summary>
     public interface IS3Manager
     {
-        #region Functions (7)
+        #region Functions (11)
+            /// <summary>
+            /// Syncs the specified directory to Amazon S3, checking the modified date of the local fiels with existing S3Objects.
+            /// </summary>
+            /// <param name="dirPath">The directory path to sync to S3</param>
+            /// <param name="settings">The <see cref="SyncSettings"/> required to sync to Amazon S3.</param>
+            /// <returns>A list of keys that require invalidating.</returns>
+            IList<string> Sync(DirectoryPath dirPath, SyncSettings settings);
+
+
+
             /// <summary>
             /// Uploads the specified file. For large uploads, the file will be divided and uploaded in parts 
             /// using Amazon S3's multipart API. The parts will be reassembled as one object in Amazon S3.

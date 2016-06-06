@@ -50,7 +50,15 @@ namespace Cake.AWS.S3.Tests
                 }
 
                 DebugLog.Lines.Add(format);
-                Debug.WriteLine(format);
+
+                if (Debugger.IsAttached)
+                {
+                    Debug.WriteLine(format);
+                }
+                else
+                {
+                    Console.WriteLine(format);
+                }
             }
             catch { }
         }

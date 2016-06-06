@@ -1,5 +1,6 @@
 ﻿#region Using Statements
     using Amazon.S3;
+    using Amazon.S3.Model;
 #endregion
 
 
@@ -19,6 +20,10 @@ namespace Cake.AWS.S3
             {
                 CannedACL = S3CannedACL.Private;
                 StorageClass = S3StorageClass.Standard;
+
+                KeyManagementServiceKeyId = "";
+
+                Headers = new HeadersCollection();
             }
         #endregion
 
@@ -26,7 +31,7 @@ namespace Cake.AWS.S3
 
 
 
-        #region Properties (3)
+        #region Properties (4)
             /// <summary>
             /// The ACL to be used for S3 Buckets or S3 Objects.
             /// </summary>
@@ -45,6 +50,13 @@ namespace Cake.AWS.S3
             /// and decrypt the object. If a key id is not specified, the default key will be
             /// </summary>
             public string KeyManagementServiceKeyId { get; set; }
+
+
+                
+            /// <summary>
+            /// Used to set the http-headers for an S3 object.
+            /// </summary>
+            public HeadersCollection Headers { get; set; }
         #endregion
     }
 }

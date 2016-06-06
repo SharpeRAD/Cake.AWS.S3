@@ -1,3 +1,8 @@
+* Add HeadersCollection to upload settings
+* Use MimeSharp to set the content-type of uploaded objects
+* Rename ModifiedDate to LastModified and change to DateTimeOffset
+* Sync alias
+
 ### New in 0.2.0 (Released 2016/05/21)
 * Add KeyManagementServiceKeyId to UploadSettings
 

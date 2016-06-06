@@ -24,9 +24,24 @@ namespace Cake.AWS.S3
     {
         private static IS3Manager CreateManager(this ICakeContext context)
         {
-            return new S3Manager(context.Environment, context.Log);
+            return new S3Manager(context.FileSystem, context.Environment, context.Log);
         }
 
+
+
+        /// <summary>
+        /// Syncs the specified directory to Amazon S3, checking the modified date of the local fiels with existing S3Objects.
+        /// </summary>
+        /// <param name="context">The cake context.</param>
+        /// <param name="dirPath">The directory path to sync to S3</param>
+        /// <param name="settings">The <see cref="SyncSettings"/> required to sync to Amazon S3.</param>
+        /// <returns>A list of keys that require invalidating.</returns>
+        [CakeMethodAlias]
+        [CakeAliasCategory("S3")]
+        public static IList<string> S3Sync(this ICakeContext context, DirectoryPath dirPath, SyncSettings settings)
+        {
+           return context.CreateManager().Sync(dirPath, settings);
+        }
 
 
         /// <summary>
@@ -128,7 +143,7 @@ namespace Cake.AWS.S3
         /// <param name="settings">The <see cref="DownloadSettings"/> required to download from Amazon S3.</param>
         [CakeMethodAlias]
         [CakeAliasCategory("S3")]
-        public static byte[] GetBytes(this ICakeContext context, string key, string version, DownloadSettings settings)
+        public static byte[] GetS3Bytes(this ICakeContext context, string key, string version, DownloadSettings settings)
         {
             return context.CreateManager().GetBytes(key, version, settings);
         }
@@ -232,7 +247,7 @@ namespace Cake.AWS.S3
         /// <param name="settings">The <see cref="S3Settings"/> required to download from Amazon S3.</param>
         [CakeMethodAlias]
         [CakeAliasCategory("S3")]
-        public static DateTime S3LastModified(this ICakeContext context, string key, S3Settings settings)
+        public static DateTimeOffset S3LastModified(this ICakeContext context, string key, S3Settings settings)
         {
             return context.S3LastModified(key, "", settings);
         }
@@ -246,7 +261,7 @@ namespace Cake.AWS.S3
         /// <param name="settings">The <see cref="S3Settings"/> required to download from Amazon S3.</param>
         [CakeMethodAlias]
         [CakeAliasCategory("S3")]
-        public static DateTime S3LastModified(this ICakeContext context, string key, string version, S3Settings settings)
+        public static DateTimeOffset S3LastModified(this ICakeContext context, string key, string version, S3Settings settings)
         {
             S3Object result = context.CreateManager().GetObject(key, version, settings);
 

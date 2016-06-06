@@ -17,7 +17,7 @@ namespace Cake.AWS.S3.Tests
 {
     internal static class CakeHelper
     {
-        #region Functions (3)
+        #region Functions (2)
             public static ICakeEnvironment CreateEnvironment()
             {
                 var environment = Substitute.For<ICakeEnvironment>();
@@ -26,11 +26,9 @@ namespace Cake.AWS.S3.Tests
                 return environment;
             }
 
-
-
-            public static IS3Manager CreateTransferManager()
+            public static IS3Manager CreateS3Manager()
             {
-                return new S3Manager(CakeHelper.CreateEnvironment(), new DebugLog());
+                return new S3Manager(new FileSystem(), CakeHelper.CreateEnvironment(), new DebugLog());
             }
         #endregion
     }
