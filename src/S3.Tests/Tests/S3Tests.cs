@@ -1,12 +1,9 @@
 ﻿#region Using Statements
-    using System;
-    using System.Diagnostics;
+    using System.Collections.Generic;
 
     using Xunit;
 
-    using Cake.Core;
     using Cake.Core.IO;
-    using Cake.Core.Diagnostics;
 #endregion
 
 
@@ -18,12 +15,15 @@ namespace Cake.AWS.S3.Tests
         [Fact]
         public void Test_Syn()
         {
+            //Sync Directory
             SyncSettings settings = CakeHelper.CreateEnvironment().CreateSyncSettings();
             settings.BucketName = "cake-aws-s3";
-            settings.KeyPrefix = "tests";
+            settings.KeyPrefix = "s3.tests";
 
             IS3Manager manager = CakeHelper.CreateS3Manager();
-            manager.Sync(new DirectoryPath("../../"), settings);
+            IList<string> keys = manager.Sync(new DirectoryPath("../../"), settings);
+            
+            Assert.NotEmpty(keys);
         }
     }
 }

@@ -1,4 +1,5 @@
 #addin "Cake.AWS.S3"
+#addin "Cake.AWS.CloudFront"
 
 //////////////////////////////////////////////////////////////////////
 // ARGUMENTS
@@ -13,25 +14,24 @@ var configuration = Argument("configuration", "Release");
 // TASK DEFINITIONS
 ///////////////////////////////////////////////////////////////////////////////
 
-Task("Upload-File")
-    .Description("Upload a file from S3")
+Task("Sync-Directory")
+    .Description("Syncs a directory to S3 using AWS Fallback credentials, requires Cake.AWS.CloudFront")
     .Does(() =>
 {
-    S3Upload("C:/Files/test.zip", "test.zip", Context.CreateUploadSettings()
+    //Scan a local directory for files, comparing the contents against objects already in S3. Deleting missing objects and only uploading changed objects, returning a list of keys that require invalidating.
+    var invalidate = S3Sync("./images/", Context.CreateSyncSettings()
     {
-        BucketName = "cake-s3"
-    });
-});
+        BucketName = "cake-s3",
 
-Task("Download-File")
-    .IsDependentOn("Upload-File")
-    .Description("Download a file from S3")
-    .Does(() =>
-{
-    S3Download("C:/Files/test.zip", "test.zip", Context.CreateDownloadSettings()
-    {
-        BucketName = "cake-s3"
+        SearchFilter = "*.png",
+        SearchScope = SearchScope.Recursive,
+
+        LowerPaths = true,
+        KeyPrefix = "img/"
     });
+
+    //Invalidate the list of keys that were either updated or deleted from the sync.
+    CreateInvalidation("distribution", invalidate, Context.CreateCloudFrontSettings());
 });
 
 
@@ -41,7 +41,7 @@ Task("Download-File")
 //////////////////////////////////////////////////////////////////////
 
 Task("Default")
-    .IsDependentOn("Download-File");
+    .IsDependentOn("Sync-Directory");
 
 
 

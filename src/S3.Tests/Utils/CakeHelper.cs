@@ -1,12 +1,8 @@
 ﻿#region Using Statements
-    using System;
     using System.IO;
-    using System.Collections.Generic;
 
     using Cake.Core;
     using Cake.Core.IO;
-    using Cake.Core.Diagnostics;
-    using Cake.AWS.S3;
 
     using NSubstitute;
 #endregion
@@ -25,6 +21,8 @@ namespace Cake.AWS.S3.Tests
 
                 return environment;
             }
+
+
 
             public static IS3Manager CreateS3Manager()
             {
