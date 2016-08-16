@@ -1,3 +1,6 @@
+### New in 0.2.3 (Released 2016/08/16)
+* Fix Fallback credential implimentation
+
 ### New in 0.2.2 (Released 2016/06/06)
 * Generate Etag
 * Sync based on Etag or modified date
