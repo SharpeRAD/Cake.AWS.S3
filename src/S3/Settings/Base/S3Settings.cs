@@ -1,6 +1,7 @@
 ﻿#region Using Statements
     using Amazon;
     using Amazon.S3;
+    using Amazon.Runtime;
 
     using Cake.Core.IO;
 #endregion
@@ -47,6 +48,8 @@ namespace Cake.AWS.S3
             /// The AWS Secret Access Key.
             /// </summary>
             public string SecretKey { get; set; }
+        
+            internal AWSCredentials Credentials { get; set; }
 
 
 
