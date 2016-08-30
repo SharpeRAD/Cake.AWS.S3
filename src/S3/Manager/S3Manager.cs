@@ -282,6 +282,10 @@ namespace Cake.AWS.S3
                 //Get Directory
                 this.SetWorkingDirectory(settings);
                 string fullPath = dirPath.MakeAbsolute(settings.WorkingDirectory).FullPath;
+                if (!fullPath.EndsWith("/"))
+                {
+                    fullPath += "/";
+                }
 
                 IDirectory dir = _FileSystem.GetDirectory(dirPath.MakeAbsolute(settings.WorkingDirectory));
                 List<string> list = new List<string>();
@@ -305,7 +309,7 @@ namespace Cake.AWS.S3
                     }
                     else if (!prefix.EndsWith("/"))
                     {
-                        prefix = prefix + "/";
+                        prefix += "/";
                     }
 
 
@@ -320,13 +324,21 @@ namespace Cake.AWS.S3
                         string key;
                         if (settings.LowerPaths)
                         {
-                            key = file.Path.FullPath.ToLower().Replace(fullPath.ToLower(), prefix.ToLower());
+                            key = file.Path.FullPath.ToLower().Replace(fullPath.ToLower(), "");
                         }
                         else
                         {
-                            key = file.Path.FullPath.Replace(fullPath, prefix);
+                            key = file.Path.FullPath.Replace(fullPath, "");
                         }
+        
                         key = key.Replace("//", "/");
+
+                        if (key.StartsWith("./"))
+                        {
+                            key = key.Substring(2, key.Length - 2);
+                        }
+
+
 
                         //Get ETag
                         string eTag = "";
