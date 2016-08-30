@@ -1,3 +1,6 @@
+### New in 0.2.4 (Released 2016/08/30)
+* Fix sync keys
+
 ### New in 0.2.3 (Released 2016/08/16)
 * Fix Fallback credential implimentation
 
