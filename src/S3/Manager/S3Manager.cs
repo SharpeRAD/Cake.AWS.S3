@@ -402,7 +402,7 @@ namespace Cake.AWS.S3
             /// <param name="settings">The <see cref="UploadSettings"/> required to upload to Amazon S3.</param>
             public void Upload(IList<UploadPath> paths, SyncSettings settings)
             {
-                Task.WhenAll(paths.Select(path => Task.Run(() =>
+                foreach(UploadPath path in paths)
                 {
                     try
                     {
@@ -412,6 +412,7 @@ namespace Cake.AWS.S3
 
                             AccessKey = settings.AccessKey,
                             SecretKey = settings.SecretKey,
+                            Credentials = settings.Credentials,
 
                             Region = settings.Region,
                             BucketName = settings.BucketName,
@@ -437,8 +438,11 @@ namespace Cake.AWS.S3
 
                         this.Upload(path.Path, path.Key, copied);
                     }
-                    catch { }
-                })));
+                    catch (Exception ex)
+                    {
+                        _Log.Error(ex.Message);
+                    }
+                }
             }
 
             /// <summary>
@@ -586,10 +590,10 @@ namespace Cake.AWS.S3
             /// <param name="settings">The <see cref="S3Settings"/> required to upload to Amazon S3.</param>
             public void Delete(IList<string> keys, S3Settings settings)
             {
-                Task.WhenAll(keys.Select(key => Task.Run(() =>
+                foreach(string key in keys)
                 {
                     this.Delete(key, "", settings);
-                }))).Wait();
+                }
             }
 
             /// <summary>
