@@ -36,12 +36,42 @@ namespace Cake.AWS.S3
         /// <param name="dirPath">The directory path to sync to S3</param>
         /// <param name="settings">The <see cref="SyncSettings"/> required to sync to Amazon S3.</param>
         /// <returns>A list of keys that require invalidating.</returns>
+        [Obsolete("Use S3SyncDownload instead.")]
         [CakeMethodAlias]
         [CakeAliasCategory("S3")]
         public static IList<string> S3Sync(this ICakeContext context, DirectoryPath dirPath, SyncSettings settings)
         {
-           return context.CreateManager().Sync(dirPath, settings);
+           return context.CreateManager().SyncDownload(dirPath, settings);
         }
+        
+        /// <summary>
+        /// Syncs the specified directory to Amazon S3, checking the modified date of the local files with existing S3Objects and uploading them if its changes.
+        /// </summary>
+        /// <param name="context">The cake context.</param>
+        /// <param name="dirPath">The directory path to sync to S3</param>
+        /// <param name="settings">The <see cref="SyncSettings"/> required to sync to Amazon S3.</param>
+        /// <returns>A list of keys that require invalidating.</returns>
+        [CakeMethodAlias]
+        [CakeAliasCategory("S3")]
+        public static IList<string> S3SyncUpload(this ICakeContext context, DirectoryPath dirPath, SyncSettings settings)
+        {
+           return context.CreateManager().SyncUpload(dirPath, settings);
+        }
+        
+        /// <summary>
+        ///  Syncs the specified directory from Amazon S3, checking the modified date of the local files with existing S3Objects and downloading them if its changed.
+        /// </summary>
+        /// <param name="context">The cake context.</param>
+        /// <param name="dirPath">The directory path to sync to S3</param>
+        /// <param name="settings">The <see cref="SyncSettings"/> required to sync to Amazon S3.</param>
+        /// <returns>A list of keys that require invalidating.</returns>
+        [CakeMethodAlias]
+        [CakeAliasCategory("S3")]
+        public static IList<string> S3SyncDownload(this ICakeContext context, DirectoryPath dirPath, SyncSettings settings)
+        {
+           return context.CreateManager().SyncDownload(dirPath, settings);
+        }
+
 
 
         /// <summary>

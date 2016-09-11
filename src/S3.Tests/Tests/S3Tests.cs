@@ -21,7 +21,7 @@ namespace Cake.AWS.S3.Tests
             settings.KeyPrefix = "s3.tests";
 
             IS3Manager manager = CakeHelper.CreateS3Manager();
-            IList<string> keys = manager.Sync(new DirectoryPath("../../"), settings);
+            IList<string> keys = manager.SyncDownload(new DirectoryPath("../../"), settings);
             
             Assert.NotEmpty(keys);
         }

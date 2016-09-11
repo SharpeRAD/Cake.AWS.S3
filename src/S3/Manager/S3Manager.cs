@@ -272,12 +272,12 @@ namespace Cake.AWS.S3
 
         #region Main Functions (13)
             /// <summary>
-            /// Syncs the specified directory to Amazon S3, checking the modified date of the local fiels with existing S3Objects.
+            /// Syncs the specified directory to Amazon S3, checking the modified date of the local files with existing S3Objects and uploading them if its changes.
             /// </summary>
             /// <param name="dirPath">The directory path to sync to S3</param>
             /// <param name="settings">The <see cref="SyncSettings"/> required to sync to Amazon S3.</param>
             /// <returns>A list of keys that require invalidating.</returns>
-            public IList<string> Sync(DirectoryPath dirPath, SyncSettings settings)
+            public IList<string> SyncUpload(DirectoryPath dirPath, SyncSettings settings)
             {
                 //Get Directory
                 this.SetWorkingDirectory(settings);
@@ -316,7 +316,7 @@ namespace Cake.AWS.S3
 
                     //Check Files
                     IEnumerable<IFile> files = dir.GetFiles(settings.SearchFilter, settings.SearchScope);
-                    IList<UploadPath> upload = new List<UploadPath>();
+                    IList<SyncPath> upload = new List<SyncPath>();
 
                     foreach (IFile file in files)
                     {
@@ -356,7 +356,7 @@ namespace Cake.AWS.S3
                             || ((settings.ModifiedCheck == ModifiedCheck.Hash) && (obj.ETag != "\"" + eTag + "\""))
                             || ((settings.ModifiedCheck == ModifiedCheck.Date) && ((DateTimeOffset)new FileInfo(file.Path.FullPath).LastWriteTime) > (DateTimeOffset)obj.LastModified) )
                         {
-                            upload.Add(new UploadPath()
+                            upload.Add(new SyncPath()
                             {
                                 Path = file.Path,
                                 Key = key,
@@ -392,6 +392,131 @@ namespace Cake.AWS.S3
                 return list;
             }
 
+            /// <summary>
+            /// Syncs the specified directory from Amazon S3, checking the modified date of the local files with existing S3Objects and downloading them if its changed.
+            /// </summary>
+            /// <param name="dirPath">The directory path to sync to S3</param>
+            /// <param name="settings">The <see cref="SyncSettings"/> required to sync to Amazon S3.</param>
+            /// <returns>A list of keys that require invalidating.</returns>
+            public IList<string> SyncDownload(DirectoryPath dirPath, SyncSettings settings)
+            {
+                //Get Directory
+                this.SetWorkingDirectory(settings);
+                string fullPath = dirPath.MakeAbsolute(settings.WorkingDirectory).FullPath;
+                if (!fullPath.EndsWith("/"))
+                {
+                    fullPath += "/";
+                }
+
+                IDirectory dir = _FileSystem.GetDirectory(dirPath.MakeAbsolute(settings.WorkingDirectory));
+                List<string> list = new List<string>();
+
+                if (settings.ModifiedCheck == ModifiedCheck.Hash)
+                {
+                    settings.GenerateETag = true;
+                }
+
+
+
+                if (dir.Exists)
+                {
+                    //Get S3 Objects
+                    IList<S3Object> objects = this.GetObjects(settings.KeyPrefix, settings);
+
+                    string prefix = settings.KeyPrefix;
+                    if (String.IsNullOrEmpty(prefix))
+                    {
+                        prefix = "";
+                    }
+                    else if (!prefix.EndsWith("/"))
+                    {
+                        prefix += "/";
+                    }
+
+
+
+                    //Check Files
+                    IEnumerable<IFile> files = dir.GetFiles(settings.SearchFilter, settings.SearchScope);
+                    IList<SyncPath> download = new List<SyncPath>();
+                    IList<IFile> delete = new List<IFile>();
+
+                    foreach (IFile file in files)
+                    {
+                        //Get Key
+                        string key;
+                        if (settings.LowerPaths)
+                        {
+                            key = file.Path.FullPath.ToLower().Replace(fullPath.ToLower(), "");
+                        }
+                        else
+                        {
+                            key = file.Path.FullPath.Replace(fullPath, "");
+                        }
+        
+                        key = key.Replace("//", "/");
+
+                        if (key.StartsWith("./"))
+                        {
+                            key = key.Substring(2, key.Length - 2);
+                        }
+
+
+
+                        //Get ETag
+                        string eTag = "";
+                        if (settings.GenerateETag || (settings.ModifiedCheck == ModifiedCheck.Hash))
+                        {
+                            eTag = this.GetHash(file);
+                        }
+
+
+
+                        //Check Modified
+                        S3Object obj = objects.FirstOrDefault(o => o.Key == key);
+
+                        if (obj != null)
+                        {
+                            if (((settings.ModifiedCheck == ModifiedCheck.Hash) && (obj.ETag != "\"" + eTag + "\""))
+                                || ((settings.ModifiedCheck == ModifiedCheck.Date) && ((DateTimeOffset)new FileInfo(file.Path.FullPath).LastWriteTime) < (DateTimeOffset)obj.LastModified))
+                            {
+                                download.Add(new SyncPath()
+                                {
+                                    Path = file.Path,
+                                    Key = key,
+                                    ETag = eTag
+                                });
+
+                                if (obj != null)
+                                {
+                                    list.Add(key);
+                                }
+                            }
+                        }
+                        else
+                        {
+                            delete.Add(file);
+                            list.Add(key);
+                        }
+                    }
+
+
+
+                    //Download
+                    this.LogProgress = (download.Count <= 1);
+                    this.Download(download, settings);
+
+
+
+                    //Delete
+                    foreach (IFile file in delete)
+                    {
+                        file.Delete();
+                    }
+                }
+
+                return list;
+            }
+
 
 
             /// <summary>
@@ -399,10 +524,10 @@ namespace Cake.AWS.S3
             /// using Amazon S3's multipart API. The parts will be reassembled as one object in Amazon S3.
             /// </summary>
             /// <param name="paths">The paths to upload.</param>
-            /// <param name="settings">The <see cref="UploadSettings"/> required to upload to Amazon S3.</param>
-            public void Upload(IList<UploadPath> paths, SyncSettings settings)
+            /// <param name="settings">The <see cref="SyncSettings"/> required to upload to Amazon S3.</param>
+            public void Upload(IList<SyncPath> paths, SyncSettings settings)
             {
-                foreach(UploadPath path in paths)
+                foreach(SyncPath path in paths)
                 {
                     try
                     {
@@ -503,6 +628,42 @@ namespace Cake.AWS.S3
             }
 
 
+        
+            /// <summary>
+            /// Downloads a collection of files from S3 and writes ithem to the specified files.
+            /// </summary>
+            /// <param name="paths">The paths to upload.</param>
+            ///  <param name="settings">The <see cref="SyncSettings"/> required to download from Amazon S3.</param>
+            public void Download(IList<SyncPath> paths, SyncSettings settings)
+            {
+                foreach(SyncPath path in paths)
+                {
+                    try
+                    {
+                        DownloadSettings copied = new DownloadSettings()
+                        {
+                            WorkingDirectory = settings.WorkingDirectory,
+
+                            AccessKey = settings.AccessKey,
+                            SecretKey = settings.SecretKey,
+                            Credentials = settings.Credentials,
+
+                            Region = settings.Region,
+                            BucketName = settings.BucketName,
+
+                            EncryptionMethod = settings.EncryptionMethod,
+                            EncryptionKey = settings.EncryptionKey,
+                            EncryptionKeyMD5 = settings.EncryptionKeyMD5
+                        };
+
+                        this.Download(path.Path, path.Key, "", copied);
+                    }
+                    catch (Exception ex)
+                    {
+                        _Log.Error(ex.Message);
+                    }
+                }
+            }
 
             /// <summary>
             /// Downloads the content from Amazon S3 and writes it to the specified file.

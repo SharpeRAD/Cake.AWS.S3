@@ -1,3 +1,6 @@
+### New in 0.2.6 (Released 2016/09/11)
+* Added SyncDownlad method and renamed sync to SyncUpload
+
 ### New in 0.2.5 (Released 2016/08/31)
 * Fix sync credentials
 

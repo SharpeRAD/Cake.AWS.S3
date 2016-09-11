@@ -7,15 +7,15 @@
 namespace Cake.AWS.S3
 {
     /// <summary>
-    /// A path to upload to S3
+    /// A path to upload / download to / from S3
     /// </summary>
-    public class UploadPath
+    public class SyncPath
     {
         #region Constructor (1)
             /// <summary>
-            /// Initializes a new instance of the <see cref="UploadPath" /> class.
+            /// Initializes a new instance of the <see cref="SyncPath" /> class.
             /// </summary>
-            public UploadPath()
+            public SyncPath()
             {
 
             }
@@ -27,7 +27,7 @@ namespace Cake.AWS.S3
 
         #region Properties (3)
             /// <summary>
-            /// The path to the file to upload
+            /// The path to the file to sync
             /// </summary>
             public FilePath Path { get; set; }
 

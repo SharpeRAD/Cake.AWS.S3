@@ -62,7 +62,7 @@
     <Compile Include="Extensions\Settings\UploadSettingsExtensions.cs" />
     <Compile Include="Extensions\Settings\DownloadSettingsExtensions.cs" />
     <Compile Include="Extensions\Settings\S3SettingsExtensions.cs" />
-    <Compile Include="Settings\Files\UploadPath.cs" />
+    <Compile Include="Settings\Files\SyncPath.cs" />
     <Compile Include="Settings\Files\ModifiedCheck.cs" />
     <Compile Include="Settings\Types\DownloadSettings.cs" />
     <Compile Include="Settings\Types\SyncSettings.cs" />
