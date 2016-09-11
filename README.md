@@ -30,7 +30,7 @@ Cake Build addin for transfering files to and from Amazon S3
 * ACL's
 * Encryption
 * PreSign URL
-* Sync directory
+* Sync Upload / Download directory
 * Uses AWS fallback credentials (app.config / web.config file, SDK store or credentials file, environment variables, instance profile)
 
 
@@ -123,12 +123,12 @@ Task("Download-File-Fallback")
 
 
 
-Task("Sync-Directory")
+Task("Sync-Directory-To-S3")
     .Description("Syncs a directory to S3 using AWS Fallback credentials (requires Cake.AWS.CloudFront for invalidation)")
     .Does(() =>
 {
     //Scan a local directory for files, comparing the contents against objects already in S3. Deleting missing objects and only uploading changed objects, returning a list of keys that require invalidating.
-    var invalidate = S3Sync("./images/", Context.CreateSyncSettings()
+    var invalidate = S3SyncUpload("./images/", Context.CreateSyncSettings()
     {
         BucketName = "cake-s3",
 
@@ -144,6 +144,24 @@ Task("Sync-Directory")
 
     //Invalidate the list of keys that were either updated or deleted from the sync.
     CreateInvalidation("distribution", invalidate, Context.CreateCloudFrontSettings());
+});
+
+Task("Sync-Directory-From-S3")
+    .Does(() =>
+{
+    var invalidate = S3SyncDownload("./images/", Context.CreateSyncSettings()
+    {
+        BucketName = "cake-s3",
+
+        SearchFilter = "*.png",
+        SearchScope = SearchScope.Recursive,
+
+        LowerPaths = true,
+        KeyPrefix = "img/",
+
+        //Compares MD5 hash or modified date
+        ModifiedCheck = ModifiedCheck.Hash
+    });
 });
 
 
