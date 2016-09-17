@@ -147,8 +147,10 @@ Task("Sync-Directory-To-S3")
 });
 
 Task("Sync-Directory-From-S3")
+    .Description("Syncs a directory from S3 using AWS Fallback credentials, please be aware this deletes missing files!")
     .Does(() =>
 {
+    //Scan a local directory for files, comparing the contents against objects already in S3. Deleting missing files and only downloading changed objects.
     var invalidate = S3SyncDownload("./images/", Context.CreateSyncSettings()
     {
         BucketName = "cake-s3",

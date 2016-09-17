@@ -36,12 +36,12 @@ namespace Cake.AWS.S3
         /// <param name="dirPath">The directory path to sync to S3</param>
         /// <param name="settings">The <see cref="SyncSettings"/> required to sync to Amazon S3.</param>
         /// <returns>A list of keys that require invalidating.</returns>
-        [Obsolete("Use S3SyncDownload instead.")]
+        [Obsolete("Use S3SyncUpload instead.")]
         [CakeMethodAlias]
         [CakeAliasCategory("S3")]
         public static IList<string> S3Sync(this ICakeContext context, DirectoryPath dirPath, SyncSettings settings)
         {
-           return context.CreateManager().SyncDownload(dirPath, settings);
+           return context.CreateManager().SyncUpload(dirPath, settings);
         }
         
         /// <summary>

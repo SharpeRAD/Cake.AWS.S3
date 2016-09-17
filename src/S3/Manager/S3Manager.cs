@@ -264,6 +264,41 @@ namespace Cake.AWS.S3
                     }
                 }
             }
+
+            private string GetKey(IFile file, string fullPath , bool lowerPaths)
+            {
+                string key;
+
+                if (lowerPaths)
+                {
+                    key = file.Path.FullPath.ToLower().Replace(fullPath.ToLower(), "");
+                }
+                else
+                {
+                    key = file.Path.FullPath.Replace(fullPath, "");
+                }
+        
+                key = key.Replace("//", "/");
+
+                if (key.StartsWith("./"))
+                {
+                    key = key.Substring(2, key.Length - 2);
+                }
+
+                return key;
+            }
+
+            private string GetPath(string fullPath, string key)
+            {
+                fullPath = fullPath.Replace("//", "/");
+
+                if (!fullPath.EndsWith("/"))
+                {
+                    fullPath += "/";
+                }
+
+                return fullPath + key;
+            }
         #endregion
 
 
@@ -302,16 +337,6 @@ namespace Cake.AWS.S3
                     //Get S3 Objects
                     IList<S3Object> objects = this.GetObjects(settings.KeyPrefix, settings);
 
-                    string prefix = settings.KeyPrefix;
-                    if (String.IsNullOrEmpty(prefix))
-                    {
-                        prefix = "";
-                    }
-                    else if (!prefix.EndsWith("/"))
-                    {
-                        prefix += "/";
-                    }
-
 
 
                     //Check Files
@@ -321,22 +346,7 @@ namespace Cake.AWS.S3
                     foreach (IFile file in files)
                     {
                         //Get Key
-                        string key;
-                        if (settings.LowerPaths)
-                        {
-                            key = file.Path.FullPath.ToLower().Replace(fullPath.ToLower(), "");
-                        }
-                        else
-                        {
-                            key = file.Path.FullPath.Replace(fullPath, "");
-                        }
-        
-                        key = key.Replace("//", "/");
-
-                        if (key.StartsWith("./"))
-                        {
-                            key = key.Substring(2, key.Length - 2);
-                        }
+                        string key = this.GetKey(file, fullPath, settings.LowerPaths);
 
 
 
@@ -422,80 +432,63 @@ namespace Cake.AWS.S3
                 {
                     //Get S3 Objects
                     IList<S3Object> objects = this.GetObjects(settings.KeyPrefix, settings);
-
-                    string prefix = settings.KeyPrefix;
-                    if (String.IsNullOrEmpty(prefix))
-                    {
-                        prefix = "";
-                    }
-                    else if (!prefix.EndsWith("/"))
-                    {
-                        prefix += "/";
-                    }
-
-
-
-                    //Check Files
                     IEnumerable<IFile> files = dir.GetFiles(settings.SearchFilter, settings.SearchScope);
+
                     IList<SyncPath> download = new List<SyncPath>();
-                    IList<IFile> delete = new List<IFile>();
 
-                    foreach (IFile file in files)
+                    List<IFile> delete = new List<IFile>();
+                    delete.AddRange(files);
+
+
+
+                    foreach (S3Object obj in objects)
                     {
-                        //Get Key
-                        string key;
-                        if (settings.LowerPaths)
+                        //Find File
+                        IFile file = files.FirstOrDefault(f => 
                         {
-                            key = file.Path.FullPath.ToLower().Replace(fullPath.ToLower(), "");
-                        }
-                        else
+                            return (this.GetKey(f, fullPath, settings.LowerPaths) == obj.Key);
+                        });
+
+                        if (file != null)
                         {
-                            key = file.Path.FullPath.Replace(fullPath, "");
-                        }
-        
-                        key = key.Replace("//", "/");
-
-                        if (key.StartsWith("./"))
-                        {
-                            key = key.Substring(2, key.Length - 2);
-                        }
+                            //Get Key
+                            string key = this.GetKey(file, fullPath, settings.LowerPaths);
 
 
 
-                        //Get ETag
-                        string eTag = "";
-                        if (settings.GenerateETag || (settings.ModifiedCheck == ModifiedCheck.Hash))
-                        {
-                            eTag = this.GetHash(file);
-                        }
+                            //Get ETag
+                            string eTag = "";
+                            if (settings.GenerateETag || (settings.ModifiedCheck == ModifiedCheck.Hash))
+                            {
+                                eTag = this.GetHash(file);
+                            }
 
 
 
-                        //Check Modified
-                        S3Object obj = objects.FirstOrDefault(o => o.Key == key);
-
-                        if (obj != null)
-                        {
+                            //Check Modified
                             if (((settings.ModifiedCheck == ModifiedCheck.Hash) && (obj.ETag != "\"" + eTag + "\""))
                                 || ((settings.ModifiedCheck == ModifiedCheck.Date) && ((DateTimeOffset)new FileInfo(file.Path.FullPath).LastWriteTime) < (DateTimeOffset)obj.LastModified))
                             {
                                 download.Add(new SyncPath()
                                 {
                                     Path = file.Path,
-                                    Key = key,
-                                    ETag = eTag
+                                    Key = key
                                 });
 
-                                if (obj != null)
-                                {
-                                    list.Add(key);
-                                }
+                                list.Add(key);
                             }
+
+                            delete.Remove(file);
                         }
                         else
                         {
-                            delete.Add(file);
-                            list.Add(key);
+                            download.Add(new SyncPath()
+                            {
+                                Path = this.GetPath(fullPath, obj.Key),
+                                Key = obj.Key
+                            });
+
+                            list.Add(obj.Key);
                         }
                     }
 
