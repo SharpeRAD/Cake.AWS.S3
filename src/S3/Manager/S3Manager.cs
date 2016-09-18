@@ -373,10 +373,7 @@ namespace Cake.AWS.S3
                                 ETag = eTag
                             });
 
-                            if (obj != null)
-                            {
-                                list.Add(key);
-                            }
+                            list.Add(key);
                         }
 
                         if (obj != null)

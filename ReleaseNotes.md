@@ -1,3 +1,6 @@
+### New in 0.2.8 (Released 2016/09/18)
+* Return uploaded keys from sync
+
 ### New in 0.2.7 (Released 2016/09/17)
 * Fixed SyncDownload implementation
 
