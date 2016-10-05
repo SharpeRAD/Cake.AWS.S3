@@ -501,10 +501,162 @@ namespace Cake.AWS.S3
                     foreach (IFile file in delete)
                     {
                         file.Delete();
+                    
+                        _Log.Verbose("Deleting file {0}", file.Path.FullPath);
                     }
                 }
 
                 return list;
+            }
+
+
+
+            /// <summary>
+            /// Syncs the specified file to Amazon S3, checking the modified date of the local files with existing S3Objects and uploading them if its changes.
+            /// </summary>
+            /// <param name="filePath">The file path to sync to S3</param>
+            /// <param name="settings">The <see cref="SyncSettings"/> required to sync to Amazon S3.</param>
+            /// <returns>The key that require invalidating.</returns>
+            public string SyncUpload(FilePath filePath, SyncSettings settings)
+            {
+                //Get Directory
+                this.SetWorkingDirectory(settings);
+                string fullPath = filePath.MakeAbsolute(settings.WorkingDirectory).FullPath;
+
+                IFile file = _FileSystem.GetFile(filePath.MakeAbsolute(settings.WorkingDirectory));
+
+                if (settings.ModifiedCheck == ModifiedCheck.Hash)
+                {
+                    settings.GenerateETag = true;
+                }
+
+                string key = this.GetKey(file, fullPath, settings.LowerPaths);
+                S3Object obj = this.GetObject(key, "", settings);
+
+
+
+                if (file.Exists)
+                {
+                    //Get ETag
+                    string eTag = "";
+                    if (settings.GenerateETag || (settings.ModifiedCheck == ModifiedCheck.Hash))
+                    {
+                        eTag = this.GetHash(file);
+                    }
+
+
+
+                    //Check Modified
+                    IList<SyncPath> upload = new List<SyncPath>();
+
+                    if ((obj == null)
+                        || ((settings.ModifiedCheck == ModifiedCheck.Hash) && (obj.ETag != "\"" + eTag + "\""))
+                        || ((settings.ModifiedCheck == ModifiedCheck.Date) && ((DateTimeOffset)new FileInfo(file.Path.FullPath).LastWriteTime) > (DateTimeOffset)obj.LastModified))
+                    {
+                        upload.Add(new SyncPath()
+                        {
+                            Path = file.Path,
+                            Key = key,
+                            ETag = eTag
+                        });
+                    }
+
+
+
+                    //Upload
+                    this.LogProgress = true;
+                    this.Upload(upload, settings);
+
+                    return key;
+                }
+                else if (obj != null)
+                {
+                    this.Delete(key, "", settings);
+
+                    return key;
+                }
+                else
+                {
+                    return "";
+                }
+            }
+        
+            /// <summary>
+            /// Syncs the specified file from Amazon S3, checking the modified date of the local files with existing S3Objects and downloading them if its changed.
+            /// </summary>
+            /// <param name="filePath">The file path to sync to S3</param>
+            /// <param name="settings">The <see cref="SyncSettings"/> required to sync to Amazon S3.</param>
+            /// <returns>The key that require invalidating.</returns>
+            public string SyncDownload(FilePath filePath, SyncSettings settings)
+            {
+                //Get Directory
+                this.SetWorkingDirectory(settings);
+                string fullPath = filePath.MakeAbsolute(settings.WorkingDirectory).FullPath;
+                if (!fullPath.EndsWith("/"))
+                {
+                    fullPath += "/";
+                }
+
+                IFile file = _FileSystem.GetFile(filePath.MakeAbsolute(settings.WorkingDirectory));
+
+                if (settings.ModifiedCheck == ModifiedCheck.Hash)
+                {
+                    settings.GenerateETag = true;
+                }
+                
+                string key = this.GetKey(file, fullPath, settings.LowerPaths);
+                S3Object obj = this.GetObject(key, "", settings);
+
+                IList<SyncPath> download = new List<SyncPath>();
+
+
+
+                if ((file.Exists) && (obj != null))
+                {
+                    //Get ETag
+                    string eTag = "";
+                    if (settings.GenerateETag || (settings.ModifiedCheck == ModifiedCheck.Hash))
+                    {
+                        eTag = this.GetHash(file);
+                    }
+
+
+
+                    //Check Modified
+                    if (((settings.ModifiedCheck == ModifiedCheck.Hash) && (obj.ETag != "\"" + eTag + "\""))
+                        || ((settings.ModifiedCheck == ModifiedCheck.Date) && ((DateTimeOffset)new FileInfo(file.Path.FullPath).LastWriteTime) < (DateTimeOffset)obj.LastModified))
+                    {
+                        download.Add(new SyncPath()
+                        {
+                            Path = file.Path,
+                            Key = key
+                        });
+                    }
+                }
+                else if (obj != null)
+                {
+                    download.Add(new SyncPath()
+                    {
+                        Path = this.GetPath(fullPath, obj.Key),
+                        Key = obj.Key
+                    });
+                }
+                else
+                {
+                    //Delete
+                    file.Delete();
+                    
+                    _Log.Verbose("Deleting file {0}", file.Path.FullPath);
+                    return key;
+                }
+
+
+
+                //Download
+                this.LogProgress = true;
+                this.Download(download, settings);
+
+                return (download.Count > 0) ? key : "";
             }
 
 

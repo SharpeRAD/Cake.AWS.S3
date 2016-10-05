@@ -37,11 +37,29 @@ namespace Cake.AWS.S3
             /// <summary>
             /// Syncs the specified directory to Amazon S3, checking the modified date of the local files with existing S3Objects and uploading them if its changes.
             /// </summary>
-            /// <param name="dirPath">The directory path to sync to S3</param>
+            /// <param name="filePath">The directory path to sync to S3</param>
+            /// <param name="settings">The <see cref="SyncSettings"/> required to sync to Amazon S3.</param>
+            /// <returns>The key that require invalidating.</returns>
+            string SyncUpload(FilePath filePath, SyncSettings settings);
+
+            /// <summary>
+            /// Syncs the specified file to Amazon S3, checking the modified date of the local files with existing S3Objects and uploading them if its changes.
+            /// </summary>
+            /// <param name="dirPath">The file path to sync to S3</param>
             /// <param name="settings">The <see cref="SyncSettings"/> required to sync to Amazon S3.</param>
             /// <returns>A list of keys that require invalidating.</returns>
             IList<string> SyncUpload(DirectoryPath dirPath, SyncSettings settings);
 
+
+
+            /// <summary>
+            /// Syncs the specified file from Amazon S3, checking the modified date of the local files with existing S3Objects and downloading them if its changed.
+            /// </summary>
+            /// <param name="filePath">The file path to sync to S3</param>
+            /// <param name="settings">The <see cref="SyncSettings"/> required to sync to Amazon S3.</param>
+            /// <returns>The key that require invalidating.</returns>
+            string SyncDownload(FilePath filePath, SyncSettings settings);
+        
             /// <summary>
             /// Syncs the specified directory from Amazon S3, checking the modified date of the local files with existing S3Objects and downloading them if its changed.
             /// </summary>

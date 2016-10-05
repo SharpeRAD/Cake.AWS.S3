@@ -1,3 +1,6 @@
+### New in 0.2.9 (Released 2016/10/05)
+* Sync file aliases
+
 ### New in 0.2.8 (Released 2016/09/18)
 * Return uploaded keys from sync
 

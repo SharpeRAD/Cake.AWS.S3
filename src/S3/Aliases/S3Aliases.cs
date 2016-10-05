@@ -44,6 +44,22 @@ namespace Cake.AWS.S3
            return context.CreateManager().SyncUpload(dirPath, settings);
         }
         
+
+        
+        /// <summary>
+        /// Syncs the specified file to Amazon S3, checking the modified date of the local file with a existing S3Object and uploads it if its changes.
+        /// </summary>
+        /// <param name="context">The cake context.</param>
+        /// <param name="filePath">The file path to sync to S3</param>
+        /// <param name="settings">The <see cref="SyncSettings"/> required to sync to Amazon S3.</param>
+        /// <returns>AThe key that require invalidating.</returns>
+        [CakeMethodAlias]
+        [CakeAliasCategory("S3")]
+        public static string S3SyncUpload(this ICakeContext context, FilePath filePath, SyncSettings settings)
+        {
+           return context.CreateManager().SyncUpload(filePath, settings);
+        }
+
         /// <summary>
         /// Syncs the specified directory to Amazon S3, checking the modified date of the local files with existing S3Objects and uploading them if its changes.
         /// </summary>
@@ -57,7 +73,23 @@ namespace Cake.AWS.S3
         {
            return context.CreateManager().SyncUpload(dirPath, settings);
         }
+               
         
+         
+        /// <summary>
+        ///  Syncs the specified file from Amazon S3, checking the modified date of the local file with a existing S3Object and downloads it if its changed.
+        /// </summary>
+        /// <param name="context">The cake context.</param>
+        /// <param name="filePath">The file path to sync to S3</param>
+        /// <param name="settings">The <see cref="SyncSettings"/> required to sync to Amazon S3.</param>
+        /// <returns>The key that require invalidating.</returns>
+        [CakeMethodAlias]
+        [CakeAliasCategory("S3")]
+        public static string S3SyncDownload(this ICakeContext context, FilePath filePath, SyncSettings settings)
+        {
+           return context.CreateManager().SyncDownload(filePath, settings);
+        }
+
         /// <summary>
         ///  Syncs the specified directory from Amazon S3, checking the modified date of the local files with existing S3Objects and downloading them if its changed.
         /// </summary>
