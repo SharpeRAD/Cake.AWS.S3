@@ -1,4 +1,5 @@
 ### New in 0.3.0 (Released 2016/11/07)
+* Don't log progress when calling sync methods
 
 ### New in 0.2.9 (Released 2016/10/05)
 * Sync file aliases
