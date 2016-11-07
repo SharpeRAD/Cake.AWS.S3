@@ -1,3 +1,5 @@
+### New in 0.3.0 (Released 2016/11/07)
+
 ### New in 0.2.9 (Released 2016/10/05)
 * Sync file aliases
 

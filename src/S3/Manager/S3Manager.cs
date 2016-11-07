@@ -385,7 +385,7 @@ namespace Cake.AWS.S3
 
 
                     //Upload
-                    this.LogProgress = (upload.Count <= 1);
+                    this.LogProgress = false;
                     this.Upload(upload, settings);
 
 
@@ -492,7 +492,7 @@ namespace Cake.AWS.S3
 
 
                     //Download
-                    this.LogProgress = (download.Count <= 1);
+                    this.LogProgress = false;
                     this.Download(download, settings);
 
 
@@ -564,7 +564,7 @@ namespace Cake.AWS.S3
 
 
                     //Upload
-                    this.LogProgress = true;
+                    this.LogProgress = false;
                     this.Upload(upload, settings);
 
                     return key;
@@ -653,7 +653,7 @@ namespace Cake.AWS.S3
 
 
                 //Download
-                this.LogProgress = true;
+                this.LogProgress = false;
                 this.Download(download, settings);
 
                 return (download.Count > 0) ? key : "";
