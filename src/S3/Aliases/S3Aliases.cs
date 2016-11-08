@@ -242,6 +242,48 @@ namespace Cake.AWS.S3
         {
             context.CreateManager().Delete(key, version, settings);
         }
+            
+        
+                        
+        /// <summary>
+        /// Removes all objects from the bucket
+        /// </summary>
+        /// <param name="context">The cake context.</param>
+        /// <param name="prefix">Only delete objects that begin with the specified prefix.</param>
+        /// <param name="settings">The <see cref="S3Settings"/> required to delete from Amazon S3.</param>
+        [CakeMethodAlias]
+        [CakeAliasCategory("S3")]
+        public static void S3DeleteAll(this ICakeContext context, S3Settings settings)
+        {
+            context.CreateManager().DeleteAll("", DateTimeOffset.MinValue, settings);
+        }
+
+        /// <summary>
+        /// Removes all objects from the bucket
+        /// </summary>
+        /// <param name="context">The cake context.</param>
+        /// <param name="prefix">Only delete objects that begin with the specified prefix.</param>
+        /// <param name="settings">The <see cref="S3Settings"/> required to delete from Amazon S3.</param>
+        [CakeMethodAlias]
+        [CakeAliasCategory("S3")]
+        public static void S3DeleteAll(this ICakeContext context, string prefix, S3Settings settings)
+        {
+            context.CreateManager().DeleteAll(prefix, DateTimeOffset.MinValue, settings);
+        }
+
+        /// <summary>
+        /// Removes all objects from the bucket
+        /// </summary>
+        /// <param name="context">The cake context.</param>
+        /// <param name="prefix">Only delete objects that begin with the specified prefix.</param>
+        /// <param name="lastModified">Only delete objects that where modified prior to this date</param>
+        /// <param name="settings">The <see cref="S3Settings"/> required to delete from Amazon S3.</param>
+        [CakeMethodAlias]
+        [CakeAliasCategory("S3")]
+        public static void S3DeleteAll(this ICakeContext context, string prefix, DateTimeOffset lastModified, S3Settings settings)
+        {
+            context.CreateManager().DeleteAll(prefix, lastModified, settings);
+        }
 
 
 

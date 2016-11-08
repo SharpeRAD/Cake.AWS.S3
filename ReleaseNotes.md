@@ -1,3 +1,6 @@
+### New in 0.3.1 (Released 2016/11/08)
+* DeleteAll objects
+
 ### New in 0.3.0 (Released 2016/11/07)
 * Don't log progress when calling sync methods
 

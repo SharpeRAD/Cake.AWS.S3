@@ -125,8 +125,16 @@ namespace Cake.AWS.S3
             /// </summary>
             /// <param name="key">The key under which the Amazon S3 object is stored.</param>
             /// <param name="version">The identifier for the specific version of the object to be deleted, if required.</param>
-            /// <param name="settings">The <see cref="DownloadSettings"/> required to download from Amazon S3.</param>
+            /// <param name="settings">The <see cref="S3Settings"/> required to delete from Amazon S3.</param>
             void Delete(string key, string version, S3Settings settings);
+
+            /// <summary>
+            /// Removes all objects from the bucket
+            /// </summary>
+            /// <param name="prefix">Only delete objects that begin with the specified prefix.</param>
+            /// <param name="lastModified">Only delete objects that where modified prior to this date</param>
+            /// <param name="settings">The <see cref="S3Settings"/> required to delete from Amazon S3.</param>
+            IList<string> DeleteAll(string prefix, DateTimeOffset lastModified, S3Settings settings);
 
 
 

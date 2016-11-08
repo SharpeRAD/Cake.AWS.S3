@@ -923,6 +923,55 @@ namespace Cake.AWS.S3
                 _Log.Verbose("Deleting object {0} from bucket {1}...", key, settings.BucketName);
                 client.DeleteObject(request);
             }
+        
+            /// <summary>
+            /// Removes all objects from the bucket
+            /// </summary>
+            /// <param name="prefix">Only delete objects that begin with the specified prefix.</param>
+            /// <param name="lastModified">Only delete objects that where modified prior to this date.</param>
+            /// <param name="settings">The <see cref="S3Settings"/> required to delete from Amazon S3.</param>
+            public IList<string> DeleteAll(string prefix, DateTimeOffset lastModified, S3Settings settings)
+            {
+                //Get S3 Objects
+                IList<S3Object> objects = this.GetObjects(prefix, settings);
+                List<string> list = new List<string>();
+                foreach (S3Object obj in objects)
+                {
+                    if ((lastModified == DateTimeOffset.MinValue) && (obj.LastModified < lastModified))
+                    {
+                        list.Add(obj.Key);
+                    }
+                }
+
+
+
+                //Delete
+                AmazonS3Client client = this.GetClient(settings);
+
+                while (list.Count > 0)
+                {
+                    int max = list.Count;
+                    if (max > 1000)
+                    {
+                        max = 1000;
+                    }
+
+                    DeleteObjectsRequest request = new DeleteObjectsRequest();
+                    request.BucketName = settings.BucketName;
+                
+                    for (int index = 0; index < max; index++)
+                    {
+                        request.AddKey(list[index]);
+                    }
+
+                    client.DeleteObjects(request);
+                    _Log.Verbose("Deleting {0} objects from bucket {1}...", max, settings.BucketName);
+
+                    list.RemoveRange(0, max);
+                }
+                
+                return list;
+            }
 
 
 
