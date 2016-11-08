@@ -249,7 +249,6 @@ namespace Cake.AWS.S3
         /// Removes all objects from the bucket
         /// </summary>
         /// <param name="context">The cake context.</param>
-        /// <param name="prefix">Only delete objects that begin with the specified prefix.</param>
         /// <param name="settings">The <see cref="S3Settings"/> required to delete from Amazon S3.</param>
         [CakeMethodAlias]
         [CakeAliasCategory("S3")]

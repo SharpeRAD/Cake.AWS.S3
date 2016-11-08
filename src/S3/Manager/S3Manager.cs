@@ -265,10 +265,11 @@ namespace Cake.AWS.S3
                 }
             }
 
-            private string GetKey(IFile file, string fullPath , bool lowerPaths)
+            private string GetKey(IFile file, string fullPath, bool lowerPaths, string prefix)
             {
                 string key;
 
+                //Replace Path
                 if (lowerPaths)
                 {
                     key = file.Path.FullPath.ToLower().Replace(fullPath.ToLower(), "");
@@ -278,11 +279,24 @@ namespace Cake.AWS.S3
                     key = file.Path.FullPath.Replace(fullPath, "");
                 }
         
+                //Correct folders
                 key = key.Replace("//", "/");
-
                 if (key.StartsWith("./"))
                 {
                     key = key.Substring(2, key.Length - 2);
+                }
+
+                //Add prefix
+                if (!String.IsNullOrEmpty(prefix))
+                {
+                    if (lowerPaths)
+                    {
+                        key = prefix.ToLower() + key;
+                    }
+                    else
+                    {
+                        key = prefix + key;
+                    }
                 }
 
                 return key;
@@ -346,7 +360,7 @@ namespace Cake.AWS.S3
                     foreach (IFile file in files)
                     {
                         //Get Key
-                        string key = this.GetKey(file, fullPath, settings.LowerPaths);
+                        string key = this.GetKey(file, fullPath, settings.LowerPaths, settings.KeyPrefix);
 
 
 
@@ -443,13 +457,13 @@ namespace Cake.AWS.S3
                         //Find File
                         IFile file = files.FirstOrDefault(f => 
                         {
-                            return (this.GetKey(f, fullPath, settings.LowerPaths) == obj.Key);
+                            return (this.GetKey(f, fullPath, settings.LowerPaths, settings.KeyPrefix) == obj.Key);
                         });
 
                         if (file != null)
                         {
                             //Get Key
-                            string key = this.GetKey(file, fullPath, settings.LowerPaths);
+                            string key = this.GetKey(file, fullPath, settings.LowerPaths, settings.KeyPrefix);
 
 
 
