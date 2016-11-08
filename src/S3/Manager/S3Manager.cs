@@ -544,7 +544,7 @@ namespace Cake.AWS.S3
                     settings.GenerateETag = true;
                 }
 
-                string key = this.GetKey(file, fullPath, settings.LowerPaths);
+                string key = this.GetKey(file, fullPath, settings.LowerPaths, settings.KeyPrefix);
                 S3Object obj = this.GetObject(key, "", settings);
 
 
@@ -618,7 +618,7 @@ namespace Cake.AWS.S3
                     settings.GenerateETag = true;
                 }
                 
-                string key = this.GetKey(file, fullPath, settings.LowerPaths);
+                string key = this.GetKey(file, fullPath, settings.LowerPaths, settings.KeyPrefix);
                 S3Object obj = this.GetObject(key, "", settings);
 
                 IList<SyncPath> download = new List<SyncPath>();
