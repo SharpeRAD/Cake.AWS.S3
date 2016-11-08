@@ -265,30 +265,40 @@ namespace Cake.AWS.S3
                 }
             }
 
-            private string GetKey(IFile file, string fullPath , bool lowerPaths)
+        private string GetKey(IFile file, string fullPath, string keyPrefix, bool lowerPaths)
+        {
+            string key;
+
+            var normalizedKeyPrefix = !string.IsNullOrEmpty(keyPrefix) && !keyPrefix.EndsWith("/")
+                ? keyPrefix + "/"
+                : keyPrefix;
+
+            if (lowerPaths)
             {
-                string key;
-
-                if (lowerPaths)
-                {
-                    key = file.Path.FullPath.ToLower().Replace(fullPath.ToLower(), "");
-                }
-                else
-                {
-                    key = file.Path.FullPath.Replace(fullPath, "");
-                }
-        
-                key = key.Replace("//", "/");
-
-                if (key.StartsWith("./"))
-                {
-                    key = key.Substring(2, key.Length - 2);
-                }
-
-                return key;
+                var lowerFilePath = file.Path.FullPath.ToLower().Replace(fullPath.ToLower(), "");
+                key = !string.IsNullOrEmpty(keyPrefix)
+                        ? (normalizedKeyPrefix.ToLower() + lowerFilePath)
+                        : lowerFilePath;
+            }
+            else
+            {
+                var filePath = file.Path.FullPath.Replace(fullPath, "");
+                key = !string.IsNullOrEmpty(keyPrefix)
+                        ? normalizedKeyPrefix + filePath
+                        : filePath;
             }
 
-            private string GetPath(string fullPath, string key)
+            key = key.Replace("//", "/");
+
+            if (key.StartsWith("./"))
+            {
+                key = key.Substring(2, key.Length - 2);
+            }
+
+            return key;
+        }
+
+        private string GetPath(string fullPath, string key)
             {
                 fullPath = fullPath.Replace("//", "/");
 
@@ -346,7 +356,7 @@ namespace Cake.AWS.S3
                     foreach (IFile file in files)
                     {
                         //Get Key
-                        string key = this.GetKey(file, fullPath, settings.LowerPaths);
+                        string key = this.GetKey(file, fullPath, settings.KeyPrefix, settings.LowerPaths);
 
 
 
@@ -443,13 +453,13 @@ namespace Cake.AWS.S3
                         //Find File
                         IFile file = files.FirstOrDefault(f => 
                         {
-                            return (this.GetKey(f, fullPath, settings.LowerPaths) == obj.Key);
+                            return (this.GetKey(f, fullPath, settings.KeyPrefix, settings.LowerPaths) == obj.Key);
                         });
 
                         if (file != null)
                         {
                             //Get Key
-                            string key = this.GetKey(file, fullPath, settings.LowerPaths);
+                            string key = this.GetKey(file, fullPath, settings.KeyPrefix, settings.LowerPaths);
 
 
 
@@ -530,7 +540,7 @@ namespace Cake.AWS.S3
                     settings.GenerateETag = true;
                 }
 
-                string key = this.GetKey(file, fullPath, settings.LowerPaths);
+                string key = this.GetKey(file, fullPath, settings.KeyPrefix, settings.LowerPaths);
                 S3Object obj = this.GetObject(key, "", settings);
 
 
@@ -604,7 +614,7 @@ namespace Cake.AWS.S3
                     settings.GenerateETag = true;
                 }
                 
-                string key = this.GetKey(file, fullPath, settings.LowerPaths);
+                string key = this.GetKey(file, fullPath, settings.KeyPrefix, settings.LowerPaths);
                 S3Object obj = this.GetObject(key, "", settings);
 
                 IList<SyncPath> download = new List<SyncPath>();
