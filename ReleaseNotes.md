@@ -1,3 +1,6 @@
+### New in 0.3.3 (Released 2016/12/03)
+* Fix GetS3String stack overflow
+
 ### New in 0.3.2 (Released 2016/12/03)
 * GetS3String alias
 * S3GetTag alias

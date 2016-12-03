@@ -209,7 +209,7 @@ namespace Cake.AWS.S3
         [CakeAliasCategory("S3")]
         public static byte[] GetS3Bytes(this ICakeContext context, string key, DownloadSettings settings)
         {
-            return context.CreateManager().GetBytes(key, "", settings);
+            return context.GetS3Bytes(key, "", settings);
         }
 
         /// <summary>
@@ -238,7 +238,7 @@ namespace Cake.AWS.S3
         [CakeAliasCategory("S3")]
         public static string GetS3String(this ICakeContext context, string key, DownloadSettings settings)
         {
-            return context.GetS3String(key, settings);
+            return context.GetS3String(key, "", settings);
         }
 
         /// <summary>
@@ -278,7 +278,7 @@ namespace Cake.AWS.S3
         [CakeAliasCategory("S3")]
         public static void S3Delete(this ICakeContext context, string key, S3Settings settings)
         {
-            context.CreateManager().Delete(key, "", settings);
+            context.S3Delete(key, "", settings);
         }
 
         /// <summary>
