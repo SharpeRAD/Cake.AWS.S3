@@ -1,6 +1,7 @@
 ﻿#region Using Statements
     using System;
     using System.IO;
+    using System.Text;
     using System.Collections.Generic;
 
     using Cake.Core;
@@ -196,8 +197,23 @@ namespace Cake.AWS.S3
             return context.CreateManager().Open(key, version, settings);
         }
         
+
+        
         /// <summary>
-        /// Get the byte array of the content from Amazon S3
+        /// Get the byte array of a S3 object
+        /// </summary>
+        /// <param name="context">The cake context.</param>
+        /// <param name="key">The key under which the Amazon S3 object is stored.</param>
+        /// <param name="settings">The <see cref="DownloadSettings"/> required to download from Amazon S3.</param>
+        [CakeMethodAlias]
+        [CakeAliasCategory("S3")]
+        public static byte[] GetS3Bytes(this ICakeContext context, string key, DownloadSettings settings)
+        {
+            return context.CreateManager().GetBytes(key, "", settings);
+        }
+
+        /// <summary>
+        /// Get the byte array of a S3 object
         /// </summary>
         /// <param name="context">The cake context.</param>
         /// <param name="key">The key under which the Amazon S3 object is stored.</param>
@@ -208,6 +224,44 @@ namespace Cake.AWS.S3
         public static byte[] GetS3Bytes(this ICakeContext context, string key, string version, DownloadSettings settings)
         {
             return context.CreateManager().GetBytes(key, version, settings);
+        }
+                
+
+        
+        /// <summary>
+        /// Get the string of a S3 object
+        /// </summary>
+        /// <param name="context">The cake context.</param>
+        /// <param name="key">The key under which the Amazon S3 object is stored.</param>
+        /// <param name="settings">The <see cref="DownloadSettings"/> required to download from Amazon S3.</param>
+        [CakeMethodAlias]
+        [CakeAliasCategory("S3")]
+        public static string GetS3String(this ICakeContext context, string key, DownloadSettings settings)
+        {
+            return context.GetS3String(key, settings);
+        }
+
+        /// <summary>
+        /// Get the string of a S3 object
+        /// </summary>
+        /// <param name="context">The cake context.</param>
+        /// <param name="key">The key under which the Amazon S3 object is stored.</param>
+        /// <param name="version">The identifier for the specific version of the object to be downloaded, if required.</param>
+        /// <param name="settings">The <see cref="DownloadSettings"/> required to download from Amazon S3.</param>
+        [CakeMethodAlias]
+        [CakeAliasCategory("S3")]
+        public static string GetS3String(this ICakeContext context, string key, string version, DownloadSettings settings)
+        {
+            byte[] bytes = context.CreateManager().GetBytes(key, version, settings);
+            
+            if (bytes != null)
+            {
+                return Encoding.UTF8.GetString(bytes);
+            }
+            else
+            {
+                return "";
+            }
         }
 
 
@@ -376,6 +430,58 @@ namespace Cake.AWS.S3
             {
                 return DateTime.MinValue;
             }
+        }
+
+
+                
+        /// <summary>
+        /// Gets the ETag of an S3 object
+        /// </summary>
+        /// <param name="context">The cake context.</param>
+        /// <param name="key">The key under which the Amazon S3 object is stored.</param>
+        /// <param name="settings">The <see cref="S3Settings"/> required to access Amazon S3.</param>
+        [CakeMethodAlias]
+        [CakeAliasCategory("S3")]
+        public static string S3GetTag(this ICakeContext context, string key, S3Settings settings)
+        {
+            return context.S3GetTag(key, "", settings);
+        }
+
+        /// <summary>
+        /// Gets the ETag of an S3 object
+        /// </summary>
+        /// <param name="context">The cake context.</param>
+        /// <param name="key">The key under which the Amazon S3 object is stored.</param>
+        /// <param name="version">The identifier for the specific version of the object to be deleted, if required.</param>
+        /// <param name="settings">The <see cref="S3Settings"/> required to access Amazon S3.</param>
+        [CakeMethodAlias]
+        [CakeAliasCategory("S3")]
+        public static string S3GetTag(this ICakeContext context, string key, string version, S3Settings settings)
+        {
+            S3Object result = context.CreateManager().GetObject(key, version, settings);
+
+            if (result != null)
+            {
+                return result.ETag;
+            }
+            else
+            {
+                return "";
+            }
+        }
+                
+        /// <summary>
+        /// Gets the hash of a file
+        /// </summary>
+        /// <param name="context">The cake context.</param>
+        /// <param name="path">The path to the file to calulate the hash from.</param>
+        [CakeMethodAlias]
+        [CakeAliasCategory("S3")]
+        public static string GetFileHash(this ICakeContext context, FilePath path)
+        {
+            IFile file = context.FileSystem.GetFile(path);
+
+            return context.CreateManager().GetHash(file);
         }
 
 

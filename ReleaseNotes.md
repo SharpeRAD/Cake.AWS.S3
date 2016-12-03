@@ -1,3 +1,8 @@
+### New in 0.3.2 (Released 2016/12/03)
+* GetS3String alias
+* S3GetTag alias
+* GetFileHash alias
+
 ### New in 0.3.1 (Released 2016/11/08)
 * DeleteAll objects
 * Fixed KeyPrefix in Sync methods

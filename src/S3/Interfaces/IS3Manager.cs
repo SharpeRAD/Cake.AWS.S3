@@ -172,6 +172,15 @@ namespace Cake.AWS.S3
             /// <param name="expires">The expiry date and time for the pre-signed url. </param>
             /// <param name="settings">The <see cref="S3Settings"/> required to download from Amazon S3.</param>
             string GetPreSignedURL(string key, string version, DateTime expires, S3Settings settings);
+
+
+
+            /// <summary>
+            /// Gets the hash of a file
+            /// </summary>
+            /// <param name="file">The file to calculate the hash of</param>
+            /// <returns>The hash of a file.</returns>
+            string GetHash(IFile file);
         #endregion
     }
 }

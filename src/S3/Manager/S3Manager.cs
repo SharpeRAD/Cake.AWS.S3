@@ -253,8 +253,12 @@ namespace Cake.AWS.S3
 
 
 
-            //Hash
-            private string GetHash(IFile file)
+            /// <summary>
+            /// Gets the hash of a file
+            /// </summary>
+            /// <param name="file">The file to calculate the hash of</param>
+            /// <returns>The hash of a file.</returns>
+            public string GetHash(IFile file)
             {
                 using (var md5 = MD5.Create())
                 {
