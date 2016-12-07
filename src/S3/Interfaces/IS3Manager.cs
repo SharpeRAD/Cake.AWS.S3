@@ -139,6 +139,14 @@ namespace Cake.AWS.S3
 
 
             /// <summary>
+            /// Retrieves object Metadata from Amazon S3.
+            /// </summary>
+            /// <param name="key">The key under which the Amazon S3 object is stored.</param>
+            /// <param name="version">The identifier for the specific version of the object to be deleted, if required.</param>
+            /// <param name="settings">The <see cref="S3Settings"/> required to download from Amazon S3.</param>
+            MetadataCollection GetObjectMetaData(string key, string version, S3Settings settings);
+
+            /// <summary>
             /// Retrieves object from Amazon S3.
             /// </summary>
             /// <param name="key">The key under which the Amazon S3 object is stored.</param>

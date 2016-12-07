@@ -1,3 +1,6 @@
+### New in 0.3.4 (Released 2016/12/07)
+* Add GetHashTag alias to store custom hash tag to get around AWS multi-part etag bug
+
 ### New in 0.3.3 (Released 2016/12/03)
 * Fix GetS3String stack overflow
 

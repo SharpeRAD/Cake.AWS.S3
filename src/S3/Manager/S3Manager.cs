@@ -216,6 +216,30 @@ namespace Cake.AWS.S3
 
                 return request;
             }
+        
+            private GetObjectMetadataRequest CreateGetObjectMetadataRequest(string key, string version, S3Settings settings)
+            {
+                GetObjectMetadataRequest request = new GetObjectMetadataRequest();
+
+                request.BucketName = settings.BucketName;
+                request.Key = key;
+
+                if (!String.IsNullOrEmpty(version))
+                {
+                    request.VersionId = version;
+                }
+
+                request.ServerSideEncryptionCustomerProvidedKey = settings.EncryptionKey;
+                request.ServerSideEncryptionCustomerProvidedKeyMD5 = settings.EncryptionKeyMD5;
+                request.ServerSideEncryptionCustomerMethod = settings.EncryptionMethod;
+
+                if (!String.IsNullOrEmpty(settings.EncryptionKey))
+                {
+                    request.ServerSideEncryptionCustomerMethod = ServerSideEncryptionCustomerMethod.AES256;
+                }
+
+                return request;
+            }
 
 
 
@@ -748,16 +772,31 @@ namespace Cake.AWS.S3
                 request.FilePath = fullPath;
                 request.Key = key;
 
+
+
                 //Set ContentType
                 if (settings.GenerateContentType && String.IsNullOrEmpty(request.Headers.ContentType))
                 {
                     request.Headers.ContentType = new Mime().Lookup(filePath.GetFilename().FullPath);
                 }
 
-                //Set ETag
+
+
+                //Set Hash Tag
+                string hash = "";
+
+                if ((settings.GenerateETag && String.IsNullOrEmpty(request.Headers["ETag"])) || settings.GenerateHashTag)
+                {
+                    hash = this.GetHash(_FileSystem.GetFile(fullPath));
+                }
+
                 if (settings.GenerateETag && String.IsNullOrEmpty(request.Headers["ETag"]))
                 {
-                    request.Headers["ETag"] = this.GetHash(_FileSystem.GetFile(fullPath));
+                    request.Headers["ETag"] = hash;
+                }
+                if (settings.GenerateHashTag)
+                {
+                    request.Headers["HashTag"] = hash;
                 }
 
                 request.UploadProgressEvent += new EventHandler<UploadProgressArgs>(UploadProgressEvent);
@@ -1018,6 +1057,32 @@ namespace Cake.AWS.S3
                         LastModified = response.LastModified,
                         StorageClass = response.StorageClass
                     };
+                }
+                catch
+                {
+                    _Log.Verbose("The object {0} does not exist in bucket {1}...", key, settings.BucketName);
+                    return null;
+                }
+            }
+        
+            /// <summary>
+            /// Retrieves object Metadata from Amazon S3.
+            /// </summary>
+            /// <param name="key">The key under which the Amazon S3 object is stored.</param>
+            /// <param name="version">The identifier for the specific version of the object to be deleted, if required.</param>
+            /// <param name="settings">The <see cref="S3Settings"/> required to download from Amazon S3.</param>
+            public MetadataCollection GetObjectMetaData(string key, string version, S3Settings settings)
+            {
+                AmazonS3Client client = this.GetClient(settings);
+                GetObjectMetadataRequest request = this.CreateGetObjectMetadataRequest(key, version, settings);
+
+                _Log.Verbose("Get object {0} from bucket {1}...", key, settings.BucketName);
+
+                try
+                {
+                    GetObjectMetadataResponse response = client.GetObjectMetadata(request);
+
+                    return response.Metadata;
                 }
                 catch
                 {

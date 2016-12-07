@@ -442,9 +442,9 @@ namespace Cake.AWS.S3
         /// <param name="settings">The <see cref="S3Settings"/> required to access Amazon S3.</param>
         [CakeMethodAlias]
         [CakeAliasCategory("S3")]
-        public static string S3GetTag(this ICakeContext context, string key, S3Settings settings)
+        public static string S3GetETag(this ICakeContext context, string key, S3Settings settings)
         {
-            return context.S3GetTag(key, "", settings);
+            return context.S3GetETag(key, "", settings);
         }
 
         /// <summary>
@@ -456,7 +456,7 @@ namespace Cake.AWS.S3
         /// <param name="settings">The <see cref="S3Settings"/> required to access Amazon S3.</param>
         [CakeMethodAlias]
         [CakeAliasCategory("S3")]
-        public static string S3GetTag(this ICakeContext context, string key, string version, S3Settings settings)
+        public static string S3GetETag(this ICakeContext context, string key, string version, S3Settings settings)
         {
             S3Object result = context.CreateManager().GetObject(key, version, settings);
 
@@ -469,7 +469,46 @@ namespace Cake.AWS.S3
                 return "";
             }
         }
+              
+
                 
+        /// <summary>
+        /// Gets the ETag of an S3 object
+        /// </summary>
+        /// <param name="context">The cake context.</param>
+        /// <param name="key">The key under which the Amazon S3 object is stored.</param>
+        /// <param name="settings">The <see cref="S3Settings"/> required to access Amazon S3.</param>
+        [CakeMethodAlias]
+        [CakeAliasCategory("S3")]
+        public static string S3GetHashTag(this ICakeContext context, string key, S3Settings settings)
+        {
+            return context.S3GetHashTag(key, "", settings);
+        }
+
+        /// <summary>
+        /// Gets the ETag of an S3 object
+        /// </summary>
+        /// <param name="context">The cake context.</param>
+        /// <param name="key">The key under which the Amazon S3 object is stored.</param>
+        /// <param name="version">The identifier for the specific version of the object to be deleted, if required.</param>
+        /// <param name="settings">The <see cref="S3Settings"/> required to access Amazon S3.</param>
+        [CakeMethodAlias]
+        [CakeAliasCategory("S3")]
+        public static string S3GetHashTag(this ICakeContext context, string key, string version, S3Settings settings)
+        {
+            MetadataCollection result = context.CreateManager().GetObjectMetaData(key, version, settings);
+
+            if ((result != null) && result.Keys.Contains("HashTag"))
+            {
+                return result["HashTag"];
+            }
+            else
+            {
+                return "";
+            }
+        }
+        
+          
         /// <summary>
         /// Gets the hash of a file
         /// </summary>

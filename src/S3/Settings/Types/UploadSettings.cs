@@ -20,14 +20,15 @@ namespace Cake.AWS.S3
             /// </summary>
             public UploadSettings()
             {
-                CannedACL = S3CannedACL.Private;
-                StorageClass = S3StorageClass.Standard;
+                this.CannedACL = S3CannedACL.Private;
+                this.StorageClass = S3StorageClass.Standard;
+                this.KeyManagementServiceKeyId = "";
 
-                KeyManagementServiceKeyId = "";
+                this.Headers = new HeadersCollection();
 
-                Headers = new HeadersCollection();
-                GenerateContentType = true;
-                GenerateETag = true;
+                this.GenerateContentType = true;
+                this.GenerateETag = true;
+                this.GenerateHashTag = true;
             }
         #endregion
 
@@ -35,7 +36,7 @@ namespace Cake.AWS.S3
 
 
 
-        #region Properties (5)
+        #region Properties (7)
             /// <summary>
             /// The ACL to be used for S3 Buckets or S3 Objects.
             /// </summary>
@@ -73,6 +74,11 @@ namespace Cake.AWS.S3
             /// Generate an ETag based on the hash of the file
             /// </summary>
             public bool GenerateETag { get; set; }
+        
+            /// <summary>
+            /// Generate a custom meta-data field based on the hash of the file
+            /// </summary>
+            public bool GenerateHashTag { get; set; }
         #endregion
     }
 }
