@@ -1,3 +1,6 @@
+### New in 0.3.5 (Released 2016/12/07)
+* Fix hash tag
+
 ### New in 0.3.4 (Released 2016/12/07)
 * Add GetHashTag alias to store custom hash tag to get around AWS multi-part etag bug
 

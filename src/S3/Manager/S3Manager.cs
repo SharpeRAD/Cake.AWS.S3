@@ -737,7 +737,8 @@ namespace Cake.AWS.S3
 
                             Headers = new HeadersCollection(),
                             GenerateContentType = settings.GenerateContentType,
-                            GenerateETag = settings.GenerateETag
+                            GenerateETag = settings.GenerateETag,
+                            GenerateHashTag = settings.GenerateHashTag
                         };
 
                         if (!String.IsNullOrEmpty(path.ETag))
@@ -785,18 +786,19 @@ namespace Cake.AWS.S3
                 //Set Hash Tag
                 string hash = "";
 
-                if ((settings.GenerateETag && String.IsNullOrEmpty(request.Headers["ETag"])) || settings.GenerateHashTag)
+                if (!String.IsNullOrEmpty(request.Headers["ETag"]))
+                {
+                    hash = request.Headers["ETag"];
+                }
+                else if (settings.GenerateETag || settings.GenerateHashTag)
                 {
                     hash = this.GetHash(_FileSystem.GetFile(fullPath));
-                }
-
-                if (settings.GenerateETag && String.IsNullOrEmpty(request.Headers["ETag"]))
-                {
                     request.Headers["ETag"] = hash;
                 }
+
                 if (settings.GenerateHashTag)
                 {
-                    request.Headers["HashTag"] = hash;
+                    request.Metadata.Add("HashTag", hash);
                 }
 
                 request.UploadProgressEvent += new EventHandler<UploadProgressArgs>(UploadProgressEvent);
