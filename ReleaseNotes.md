@@ -1,3 +1,6 @@
+### New in 0.3.6 (Released 2016/12/09)
+* Custom meta tags need to be prefixed with "x-amz-meta-hashtag"
+
 ### New in 0.3.5 (Released 2016/12/07)
 * Fix hash tag
 

@@ -498,9 +498,9 @@ namespace Cake.AWS.S3
         {
             MetadataCollection result = context.CreateManager().GetObjectMetaData(key, version, settings);
 
-            if ((result != null) && result.Keys.Contains("HashTag"))
+            if ((result != null) && result.Keys.Contains("x-amz-meta-hashtag"))
             {
-                return result["HashTag"];
+                return result["x-amz-meta-hashtag"];
             }
             else
             {
