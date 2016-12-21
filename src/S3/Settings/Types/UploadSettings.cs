@@ -27,6 +27,7 @@ namespace Cake.AWS.S3
                 this.Headers = new HeadersCollection();
 
                 this.GenerateContentType = true;
+                this.GenerateContentLength = true;
                 this.GenerateETag = true;
                 this.GenerateHashTag = true;
             }
@@ -69,6 +70,11 @@ namespace Cake.AWS.S3
             /// Generate the ContentType based on the file extension
             /// </summary>
             public bool GenerateContentType { get; set; }
+                        
+            /// <summary>
+            /// Generate the ContentLength based on the file size in bytes
+            /// </summary>
+            public bool GenerateContentLength { get; set; }
 
             /// <summary>
             /// Generate an ETag based on the hash of the file

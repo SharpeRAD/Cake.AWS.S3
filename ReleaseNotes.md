@@ -1,3 +1,6 @@
+### New in 0.3.7 (Released 2016/12/21)
+* Generate Content-Length header for uploads
+
 ### New in 0.3.6 (Released 2016/12/09)
 * Custom meta tags need to be prefixed with "x-amz-meta-hashtag"
 

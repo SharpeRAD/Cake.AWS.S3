@@ -736,7 +736,9 @@ namespace Cake.AWS.S3
                             KeyManagementServiceKeyId = settings.KeyManagementServiceKeyId,
 
                             Headers = new HeadersCollection(),
+
                             GenerateContentType = settings.GenerateContentType,
+                            GenerateContentLength = settings.GenerateContentLength,
                             GenerateETag = settings.GenerateETag,
                             GenerateHashTag = settings.GenerateHashTag
                         };
@@ -783,6 +785,16 @@ namespace Cake.AWS.S3
 
 
 
+                //Get File
+                IFile file = null;
+
+                if (settings.GenerateETag || settings.GenerateHashTag || settings.GenerateContentLength)
+                {
+                    file = _FileSystem.GetFile(fullPath);
+                }
+
+
+
                 //Set Hash Tag
                 string hash = "";
 
@@ -790,9 +802,9 @@ namespace Cake.AWS.S3
                 {
                     hash = request.Headers["ETag"];
                 }
-                else if (settings.GenerateETag || settings.GenerateHashTag)
+                else if (settings.GenerateETag || settings.GenerateHashTag && (file != null))
                 {
-                    hash = this.GetHash(_FileSystem.GetFile(fullPath));
+                    hash = this.GetHash(file);
                     request.Headers["ETag"] = hash;
                 }
 
@@ -801,6 +813,14 @@ namespace Cake.AWS.S3
                     request.Metadata.Add("HashTag", hash);
                 }
 
+                if (settings.GenerateContentLength && (file != null))
+                {
+                    request.Headers["Content-Length"] = file.Length.ToString();
+                }
+
+
+
+                // Upload
                 request.UploadProgressEvent += new EventHandler<UploadProgressArgs>(UploadProgressEvent);
 
                 _Log.Verbose("Uploading file {0} to bucket {1}...", key, settings.BucketName);
