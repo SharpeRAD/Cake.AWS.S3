@@ -1,3 +1,6 @@
+### New in 0.3.8 (Released 2017/01/04)
+* Update packages
+
 ### New in 0.3.7 (Released 2016/12/21)
 * Generate Content-Length header for uploads
 

@@ -28,6 +28,7 @@ namespace Cake.AWS.S3.Tests
         public Verbosity Verbosity
         {
             get { return Verbosity.Diagnostic; }
+            set { }
         }
 
 
