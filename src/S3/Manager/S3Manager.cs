@@ -1,6 +1,7 @@
 ﻿#region Using Statements
     using System;
     using System.IO;
+    using System.IO.Compression;
     using System.Linq;
     using System.Text;
     using System.Collections.Generic;
@@ -192,6 +193,34 @@ namespace Cake.AWS.S3
 
                 return request;
             }
+        
+            private PutObjectRequest CreatePutObjectRequest(UploadSettings settings)
+            {
+                PutObjectRequest request = new PutObjectRequest();
+
+                request.BucketName = settings.BucketName;
+
+                request.ServerSideEncryptionCustomerProvidedKey = settings.EncryptionKey;
+                request.ServerSideEncryptionCustomerProvidedKeyMD5 = settings.EncryptionKeyMD5;
+                request.ServerSideEncryptionCustomerMethod = settings.EncryptionMethod;
+
+                if (!String.IsNullOrEmpty(settings.EncryptionKey))
+                {
+                    request.ServerSideEncryptionCustomerMethod = ServerSideEncryptionCustomerMethod.AES256;
+                }
+
+                request.CannedACL = settings.CannedACL;
+
+                if (settings.Headers != null)
+                {
+                    foreach (string key in settings.Headers.Keys)
+                    {
+                        request.Headers[key] = settings.Headers[key];
+                    }
+                }
+
+                return request;
+            }
 
             private GetObjectRequest CreateGetObjectRequest(string key, string version, S3Settings settings)
             {
@@ -319,9 +348,10 @@ namespace Cake.AWS.S3
                 {
                     if (lowerPaths)
                     {
-                        key = prefix.ToLower() + key;
+                        prefix = prefix.ToLower();
                     }
-                    else
+
+                    if (!key.StartsWith(prefix))
                     {
                         key = prefix + key;
                     }
@@ -756,7 +786,7 @@ namespace Cake.AWS.S3
                     }
                 }
             }
-
+        
             /// <summary>
             /// Uploads the specified file. For large uploads, the file will be divided and uploaded in parts 
             /// using Amazon S3's multipart API. The parts will be reassembled as one object in Amazon S3.
@@ -765,6 +795,27 @@ namespace Cake.AWS.S3
             /// <param name="key">The key under which the Amazon S3 object is stored.</param>
             /// <param name="settings">The <see cref="UploadSettings"/> required to upload to Amazon S3.</param>
             public void Upload(FilePath filePath, string key, UploadSettings settings)
+            {
+                string ext = filePath.GetExtension();
+
+                if (settings.CompressContent && ((ext == ".css") || (ext == ".js")))
+                {
+                    UploadCompressed(filePath, key, settings);
+                }
+                else
+                {
+                    UploadUnCompressed(filePath, key, settings);
+                }
+            }
+        
+            /// <summary>
+            /// Uploads the specified file. For large uploads, the file will be divided and uploaded in parts 
+            /// using Amazon S3's multipart API. The parts will be reassembled as one object in Amazon S3.
+            /// </summary>
+            /// <param name="filePath">The file path of the file to upload.</param>
+            /// <param name="key">The key under which the Amazon S3 object is stored.</param>
+            /// <param name="settings">The <see cref="UploadSettings"/> required to upload to Amazon S3.</param>
+            public void UploadUnCompressed(FilePath filePath, string key, UploadSettings settings)
             {
                 TransferUtility utility = this.GetUtility(settings);
                 TransferUtilityUploadRequest request = this.CreateUploadRequest(settings);
@@ -802,21 +853,23 @@ namespace Cake.AWS.S3
                 {
                     hash = request.Headers["ETag"];
                 }
-                else if (settings.GenerateETag || settings.GenerateHashTag && (file != null))
+                else if ((settings.GenerateETag || settings.GenerateHashTag) && (file != null))
                 {
                     hash = this.GetHash(file);
                     request.Headers["ETag"] = hash;
                 }
 
-                if (settings.GenerateHashTag)
+                if (settings.GenerateHashTag && !String.IsNullOrEmpty(hash))
                 {
                     request.Metadata.Add("HashTag", hash);
                 }
 
                 if (settings.GenerateContentLength && (file != null))
                 {
-                    request.Headers["Content-Length"] = file.Length.ToString();
+                    request.Headers.ContentLength = file.Length;
                 }
+
+                //request.Headers.ContentEncoding = "identity";
 
 
 
@@ -826,6 +879,89 @@ namespace Cake.AWS.S3
                 _Log.Verbose("Uploading file {0} to bucket {1}...", key, settings.BucketName);
                 utility.Upload(request);
             }
+        
+            /// <summary>
+            /// Uploads the specified file. For large uploads, the file will be divided and uploaded in parts 
+            /// using Amazon S3's multipart API. The parts will be reassembled as one object in Amazon S3.
+            /// </summary>
+            /// <param name="filePath">The file path of the file to upload.</param>
+            /// <param name="key">The key under which the Amazon S3 object is stored.</param>
+            /// <param name="settings">The <see cref="UploadSettings"/> required to upload to Amazon S3.</param>
+            public void UploadCompressed(FilePath filePath, string key, UploadSettings settings)
+            {
+                AmazonS3Client client = this.GetClient(settings);
+                PutObjectRequest request = this.CreatePutObjectRequest(settings);
+
+                this.SetWorkingDirectory(settings);
+                string fullPath = filePath.MakeAbsolute(settings.WorkingDirectory).FullPath;
+
+                request.Key = key;
+
+
+
+                //Set ContentType
+                if (settings.GenerateContentType && String.IsNullOrEmpty(request.Headers.ContentType))
+                {
+                    request.Headers.ContentType = new Mime().Lookup(filePath.GetFilename().FullPath);
+                }
+
+
+
+                //Get File
+                IFile file = _FileSystem.GetFile(fullPath);
+
+
+
+                //Set Hash Tag
+                string hash = "";
+
+                if (!String.IsNullOrEmpty(request.Headers["ETag"]))
+                {
+                    hash = request.Headers["ETag"];
+                }
+                else if ((settings.GenerateETag || settings.GenerateHashTag) && (file != null))
+                {
+                    hash = this.GetHash(file);
+                    request.Headers["ETag"] = hash;
+                }
+
+                if (settings.GenerateHashTag && !String.IsNullOrEmpty(hash))
+                {
+                    request.Metadata.Add("HashTag", hash);
+                }
+
+
+
+                // Content
+                request.InputStream = this.CompressStream(file);
+
+                request.Headers.ContentLength = request.InputStream.Length;
+                request.Headers.ContentEncoding = "gzip";
+
+
+
+                // Upload
+                _Log.Verbose("Uploading file {0} to bucket {1}...", key, settings.BucketName);
+                client.PutObject(request);
+            }
+
+            private Stream CompressStream(IFile file)
+            {
+                var compressed = new MemoryStream();
+
+                using (Stream decompressed = file.OpenRead())
+                {
+                    using (var zip = new GZipStream(compressed, CompressionLevel.Fastest, true))
+                    {
+                        decompressed.CopyTo(zip);
+                    }
+                }
+
+                compressed.Seek(0, SeekOrigin.Begin);
+                return compressed;
+            }
+
+
 
             /// <summary>
             /// Uploads the contents of the specified stream. For large uploads, the file will be divided and uploaded in parts 

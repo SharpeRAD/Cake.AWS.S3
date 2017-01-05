@@ -30,6 +30,8 @@ namespace Cake.AWS.S3
                 this.GenerateContentLength = false;
                 this.GenerateETag = true;
                 this.GenerateHashTag = true;
+
+                this.CompressContent = false;
             }
         #endregion
 
@@ -85,6 +87,13 @@ namespace Cake.AWS.S3
             /// Generate a custom meta-data field based on the hash of the file
             /// </summary>
             public bool GenerateHashTag { get; set; }
+
+
+                        
+            /// <summary>
+            /// Gzip the content of css / js
+            /// </summary>
+            public bool CompressContent { get; set; }
         #endregion
     }
 }

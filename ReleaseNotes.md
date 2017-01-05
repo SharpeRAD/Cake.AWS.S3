@@ -1,3 +1,6 @@
+### New in 0.3.9 (Released 2017/01/05)
+* Fix prefix and add optional compression setting
+
 ### New in 0.3.8 (Released 2017/01/04)
 * Update packages
 

@@ -306,9 +306,9 @@ namespace Cake.AWS.S3
         /// <param name="settings">The <see cref="S3Settings"/> required to delete from Amazon S3.</param>
         [CakeMethodAlias]
         [CakeAliasCategory("S3")]
-        public static void S3DeleteAll(this ICakeContext context, S3Settings settings)
+        public static IList<string> S3DeleteAll(this ICakeContext context, S3Settings settings)
         {
-            context.CreateManager().DeleteAll("", DateTimeOffset.MinValue, settings);
+            return context.CreateManager().DeleteAll("", DateTimeOffset.MinValue, settings);
         }
 
         /// <summary>
@@ -319,9 +319,9 @@ namespace Cake.AWS.S3
         /// <param name="settings">The <see cref="S3Settings"/> required to delete from Amazon S3.</param>
         [CakeMethodAlias]
         [CakeAliasCategory("S3")]
-        public static void S3DeleteAll(this ICakeContext context, string prefix, S3Settings settings)
+        public static IList<string> S3DeleteAll(this ICakeContext context, string prefix, S3Settings settings)
         {
-            context.CreateManager().DeleteAll(prefix, DateTimeOffset.MinValue, settings);
+            return context.CreateManager().DeleteAll(prefix, DateTimeOffset.MinValue, settings);
         }
 
         /// <summary>
@@ -333,9 +333,9 @@ namespace Cake.AWS.S3
         /// <param name="settings">The <see cref="S3Settings"/> required to delete from Amazon S3.</param>
         [CakeMethodAlias]
         [CakeAliasCategory("S3")]
-        public static void S3DeleteAll(this ICakeContext context, string prefix, DateTimeOffset lastModified, S3Settings settings)
+        public static IList<string> S3DeleteAll(this ICakeContext context, string prefix, DateTimeOffset lastModified, S3Settings settings)
         {
-            context.CreateManager().DeleteAll(prefix, lastModified, settings);
+            return context.CreateManager().DeleteAll(prefix, lastModified, settings);
         }
 
 

@@ -27,6 +27,22 @@ namespace Cake.AWS.S3.Tests
             Assert.NotEmpty(keys);
         }
 
+        [Fact]
+        public void Test_Upload_ContentLength()
+        {
+            //Upload
+            UploadSettings settings = CakeHelper.CreateEnvironment().CreateUploadSettings();
+            settings.BucketName = "cake-aws-s3";
+
+            settings.GenerateContentLength = true;
+            settings.CompressContent = true;
+            settings.CannedACL = Amazon.S3.S3CannedACL.PublicRead;
+
+            IS3Manager manager = CakeHelper.CreateS3Manager();
+            manager.Upload(new FilePath("../../../Test.css"), "Tester.css", settings);
+        }
+
+
 
         [Fact]
         public void Test_Meta()
