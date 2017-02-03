@@ -174,6 +174,7 @@ Task("Copy-Files")
     CopyFileToDirectory(buildDir + "/AWSSDK.Core.dll", binDir);
     CopyFileToDirectory(buildDir + "/AWSSDK.S3.dll", binDir);
     CopyFileToDirectory(buildDir + "/MimeSharp.dll", binDir);
+
     CopyFiles(new FilePath[] { "LICENSE", "README.md", "ReleaseNotes.md" }, binDir);
 
 

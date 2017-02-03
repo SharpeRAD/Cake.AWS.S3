@@ -1,3 +1,7 @@
+### New in 0.4.0 (Released 2017/02/03)
+* Fix SyncUpload blank key
+
+
 ### New in 0.3.9 (Released 2017/01/05)
 * Fix prefix and add optional compression setting
 
