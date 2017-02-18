@@ -871,7 +871,10 @@ namespace Cake.AWS.S3
                     request.Headers.ContentLength = file.Length;
                 }
 
-                //request.Headers.ContentEncoding = "identity";
+                if (!String.IsNullOrEmpty(settings.CacheControl))
+                {
+                    request.Headers.CacheControl = settings.CacheControl;
+                }
 
 
 
@@ -932,13 +935,18 @@ namespace Cake.AWS.S3
                     request.Metadata.Add("HashTag", hash);
                 }
 
-
+                
 
                 // Content
                 request.InputStream = this.CompressStream(file);
 
                 request.Headers.ContentLength = request.InputStream.Length;
                 request.Headers.ContentEncoding = "gzip";
+
+                if (!String.IsNullOrEmpty(settings.CacheControl))
+                {
+                    request.Headers.CacheControl = settings.CacheControl;
+                }
 
 
 

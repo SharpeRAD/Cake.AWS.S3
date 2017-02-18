@@ -105,6 +105,13 @@ namespace Cake.AWS.S3
             /// List of file extensions to compress
             /// </summary>
             public IList<string> CompressExtensions { get; set; }
+
+
+                                        
+            /// <summary>
+            /// How objects should be cached
+            /// </summary>
+            public string CacheControl { get; set; }
         #endregion
     }
 }

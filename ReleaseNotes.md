@@ -1,3 +1,6 @@
+### New in 0.4.2 (Released 2017/02/18)
+* [Feature] Add CacheControl header to UploadSettings
+
 ### New in 0.4.1 (Released 2017/02/18)
 * [Improvement] Move compression extension list to UploadSettings
 
