@@ -800,9 +800,7 @@ namespace Cake.AWS.S3
             /// <param name="settings">The <see cref="UploadSettings"/> required to upload to Amazon S3.</param>
             public void Upload(FilePath filePath, string key, UploadSettings settings)
             {
-                string ext = filePath.GetExtension();
-
-                if (settings.CompressContent && ((ext == ".css") || (ext == ".js")))
+                if (settings.CompressContent && settings.CompressExtensions.Contains(filePath.GetExtension()))
                 {
                     UploadCompressed(filePath, key, settings);
                 }

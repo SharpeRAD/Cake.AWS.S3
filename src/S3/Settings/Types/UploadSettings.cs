@@ -1,5 +1,5 @@
 ﻿#region Using Statements
-    using System;
+    using System.Collections.Generic;
 
     using Amazon.S3;
     using Amazon.S3.Model;
@@ -32,6 +32,12 @@ namespace Cake.AWS.S3
                 this.GenerateHashTag = true;
 
                 this.CompressContent = false;
+                this.CompressExtensions = new List<string>()
+                {
+                    ".css",
+                    ".js",
+                    ".json"
+                };
             }
         #endregion
 
@@ -94,6 +100,11 @@ namespace Cake.AWS.S3
             /// Gzip the content of css / js
             /// </summary>
             public bool CompressContent { get; set; }
+                                
+            /// <summary>
+            /// List of file extensions to compress
+            /// </summary>
+            public IList<string> CompressExtensions { get; set; }
         #endregion
     }
 }

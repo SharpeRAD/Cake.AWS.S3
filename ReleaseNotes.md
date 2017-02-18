@@ -1,139 +1,142 @@
+### New in 0.4.1 (Released 2017/02/18)
+* [Improvement] Move compression extension list to UploadSettings
+
 ### New in 0.4.0 (Released 2017/02/03)
-* Fix SyncUpload blank key
+* [Bug] Fix SyncUpload blank key
 
 ### New in 0.3.9 (Released 2017/01/05)
-* Fix prefix and add optional compression setting
+* [Bug] Fix prefix and add optional compression setting
 
 ### New in 0.3.8 (Released 2017/01/04)
-* Update packages
+* [Improvement] Update packages
 
 ### New in 0.3.7 (Released 2016/12/21)
-* Generate Content-Length header for uploads
+* [Improvement] Generate Content-Length header for uploads
 
 ### New in 0.3.6 (Released 2016/12/09)
-* Custom meta tags need to be prefixed with "x-amz-meta-hashtag"
+* [Improvement] Custom meta tags need to be prefixed with "x-amz-meta-hashtag"
 
 ### New in 0.3.5 (Released 2016/12/07)
-* Fix hash tag
+* [Bug] Fix hash tag
 
 ### New in 0.3.4 (Released 2016/12/07)
-* Add GetHashTag alias to store custom hash tag to get around AWS multi-part etag bug
+* [Feature] Add GetHashTag alias to store custom hash tag to get around AWS multi-part etag bug
 
 ### New in 0.3.3 (Released 2016/12/03)
-* Fix GetS3String stack overflow
+* [Bug] GetS3String stack overflow
 
 ### New in 0.3.2 (Released 2016/12/03)
-* GetS3String alias
-* S3GetTag alias
-* GetFileHash alias
+* [Feature] GetS3String alias
+* [Feature] S3GetTag alias
+* [Feature] GetFileHash alias
 
 ### New in 0.3.1 (Released 2016/11/08)
-* DeleteAll objects
-* Fixed KeyPrefix in Sync methods
+* [Feature] DeleteAll objects
+* [Bug] Fixed KeyPrefix in Sync methods
 
 ### New in 0.3.0 (Released 2016/11/07)
-* Don't log progress when calling sync methods
+* [Improvement] Don't log progress when calling sync methods
 
 ### New in 0.2.9 (Released 2016/10/05)
-* Sync file aliases
+* [Feature] Sync file aliases
 
 ### New in 0.2.8 (Released 2016/09/18)
-* Return uploaded keys from sync
+* [Improvement] Return uploaded keys from sync
 
 ### New in 0.2.7 (Released 2016/09/17)
-* Fixed SyncDownload implementation
+* [Bug] Fixed SyncDownload implementation
 
 ### New in 0.2.6 (Released 2016/09/11)
 * Added SyncDownlad method and renamed sync to SyncUpload
 
 ### New in 0.2.5 (Released 2016/08/31)
-* Fix sync credentials
+* [Bug] Fix sync credentials
 
 ### New in 0.2.4 (Released 2016/08/30)
-* Fix sync keys
+* [Bug] Fix sync keys
 
 ### New in 0.2.3 (Released 2016/08/16)
-* Fix Fallback credential implimentation
+* [Bug] Fix Fallback credential implimentation
 
 ### New in 0.2.2 (Released 2016/06/06)
-* Generate Etag
-* Sync based on Etag or modified date
-* Add unit-test
-* LogProgress setting
+* [Improvement] Generate Etag
+* [Improvement] Sync based on Etag or modified date
+* [Improvement] Add unit-test
+* [Improvement] LogProgress setting
 
 ### New in 0.2.1 (Released 2016/06/02)
-* Add HeadersCollection to upload settings
-* Use MimeSharp to set the content-type of uploaded objects
-* Rename ModifiedDate to LastModified and change to DateTimeOffset
-* Sync alias
+* [Improvement] Add HeadersCollection to upload settings
+* [Feature] Use MimeSharp to set the content-type of uploaded objects
+* [Improvement] Rename ModifiedDate to LastModified and change to DateTimeOffset
+* [Feature] Sync alias
 
 ### New in 0.2.0 (Released 2016/05/21)
-* Add KeyManagementServiceKeyId to UploadSettings
+* [Improvement] Add KeyManagementServiceKeyId to UploadSettings
 
 ### New in 0.1.9 (Released 2016/05/17)
-* Use AWS FallbackCredentialsFactory
-* Add nuget dependencies
-* Update all packages
-* Setup and Teardown with context
+* [Improvement] Use AWS FallbackCredentialsFactory
+* [Improvement] Add nuget dependencies
+* [Improvement] Update all packages
+* [Improvement] Setup and Teardown with context
 
 ### New in 0.1.8 (Released 2016/04/29)
-* Match the environment variables used in the AWS SDK
+* [Improvement] Match the environment variables used in the AWS SDK
 
 ### New in 0.1.7 (Released 2016/02/29)
-* Add prefix to GetObjects to limit results
-* Rename GetObject to "GetS3Object"
+* [Improvement] Add prefix to GetObjects to limit results
+* [Improvement] Rename GetObject to "GetS3Object"
 
 ### New in 0.1.6 (Released 2016/02/27)
-* GetBytes
+* [Feature] GetBytes
 
 ### New in 0.1.5 (Released 2016/02/18)
-* Open stream
+* [Feature] Open stream
 
 ### New in 0.1.4 (Released 2016/01/16)
-* Fixed SolutionInfo link
+* [Improvement] Fixed SolutionInfo link
 
 ### New in 0.1.3 (Released 2016/01/08)
-* Download alias without version
+* [Improvement] Download alias without version
 
 ### New in 0.1.2 (Released 2016/01/06)
-* Fix bug in GetPreSignedURL
+* [Bug] Fix bug in GetPreSignedURL
 
 ### New in 0.1.1 (Released 2015/12/28)
-* Add xml documentation
+* [Improvement] Add xml documentation
 
 ### New in 0.1.0 (Released 2015/12/10)
-* Add Cake namespace docs
-* Update Cake.Core reference
+* [Improvement] Add Cake namespace docs
+* [Improvement] Update Cake.Core reference
 
 ### New in 0.0.9 (Released 2015/11/30)
-* GetObject and GetObjects
+* [Feature] GetObject and GetObjects
 
 ### New in 0.0.8 (Released 2015/10/27)
-* Get Pre-Signed Url
-* Rename TransferManager to S3Manager
+* [Feature] Get Pre-Signed Url
+* [Improvement] Rename TransferManager to S3Manager
 
 ### New in 0.0.7 (Released 2015/10/24)
-* Extra argument checks
-* Update Nuget packages
+* [Improvement] Extra argument checks
+* [Improvement] Update Nuget packages
 
 ### New in 0.0.6 (Released 2015/09/29)
-* Delete aliase
-* LastModified aliase
+* [Feature] Delete aliase
+* [Feature] LastModified aliase
 
 ### New in 0.0.5 (Released 2015/09/28)
-* Remove Cake.Core reference
-* Add AliaseCategories
+* [Improvement] Remove Cake.Core reference
+* [Improvement] Add AliaseCategories
 
 ### New in 0.0.4 (Released 2015/09/23)
-* Use FilePath and WorkingDirectory for file locations
-* Add bucket and keys to Verbose logs about the transfer details
-* Add GenenrateEncryptionKey alias
+* [Improvement] Use FilePath and WorkingDirectory for file locations
+* [Improvement] Add bucket and keys to Verbose logs about the transfer details
+* [Improvement] Add GenenrateEncryptionKey alias
 
 ### New in 0.0.3 (Released 2015/09/22)
-* Logging Progress-Events
+* [Improvement] Logging Progress-Events
 
 ### New in 0.0.2 (Released 2015/09/18)
-* Extensions methods for settings
+* [Improvement] Extensions methods for settings
 
 ### New in 0.0.1 (Released 2015/09/16)
-* First release.
+* [Feature] First release.
