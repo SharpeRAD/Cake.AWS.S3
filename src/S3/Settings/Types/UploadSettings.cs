@@ -27,7 +27,7 @@ namespace Cake.AWS.S3
                 this.Headers = new HeadersCollection();
 
                 this.GenerateContentType = true;
-                this.GenerateContentLength = false;
+                this.GenerateContentLength = true;
                 this.GenerateETag = true;
                 this.GenerateHashTag = true;
 

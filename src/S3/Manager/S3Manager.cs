@@ -961,7 +961,7 @@ namespace Cake.AWS.S3
 
                 using (Stream decompressed = file.OpenRead())
                 {
-                    using (var zip = new GZipStream(compressed, CompressionLevel.Fastest, true))
+                    using (var zip = new GZipStream(compressed, CompressionLevel.Optimal, true))
                     {
                         decompressed.CopyTo(zip);
                     }
@@ -1160,9 +1160,10 @@ namespace Cake.AWS.S3
                 //Get S3 Objects
                 IList<S3Object> objects = this.GetObjects(prefix, settings);
                 List<string> list = new List<string>();
+
                 foreach (S3Object obj in objects)
                 {
-                    if ((lastModified == DateTimeOffset.MinValue) && (obj.LastModified < lastModified))
+                    if ((lastModified == DateTimeOffset.MinValue) || (obj.LastModified < lastModified))
                     {
                         list.Add(obj.Key);
                     }
@@ -1187,10 +1188,10 @@ namespace Cake.AWS.S3
                     for (int index = 0; index < max; index++)
                     {
                         request.AddKey(list[index]);
+                        _Log.Verbose("Deleting object {0} from bucket {1}...", list[index], settings.BucketName);
                     }
 
                     client.DeleteObjects(request);
-                    _Log.Verbose("Deleting {0} objects from bucket {1}...", max, settings.BucketName);
 
                     list.RemoveRange(0, max);
                 }

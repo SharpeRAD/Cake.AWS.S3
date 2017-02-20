@@ -37,6 +37,7 @@ namespace Cake.AWS.S3.Tests
             settings.GenerateContentLength = true;
             settings.CompressContent = true;
             settings.CannedACL = Amazon.S3.S3CannedACL.PublicRead;
+            settings.CacheControl = "private, max-age=86400";
 
             IS3Manager manager = CakeHelper.CreateS3Manager();
             manager.Upload(new FilePath("../../../Test.css"), "Tester.css", settings);

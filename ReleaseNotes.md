@@ -1,3 +1,6 @@
+### New in 0.4.3 (Released 2017/02/20)
+* [Bug] DeleteAll skipping files when lastModified wasn't set
+
 ### New in 0.4.2 (Released 2017/02/18)
 * [Feature] Add CacheControl header to UploadSettings
 
