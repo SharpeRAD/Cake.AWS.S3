@@ -766,7 +766,6 @@ namespace Cake.AWS.S3
 
                             CannedACL = settings.CannedACL,
                             StorageClass = settings.StorageClass,
-
                             KeyManagementServiceKeyId = settings.KeyManagementServiceKeyId,
 
                             Headers = new HeadersCollection(),
@@ -774,12 +773,22 @@ namespace Cake.AWS.S3
                             GenerateContentType = settings.GenerateContentType,
                             GenerateContentLength = settings.GenerateContentLength,
                             GenerateETag = settings.GenerateETag,
-                            GenerateHashTag = settings.GenerateHashTag
+                            GenerateHashTag = settings.GenerateHashTag,
+
+                            CompressContent = settings.CompressContent,
+                            CompressExtensions = settings.CompressExtensions
                         };
+
+
 
                         if (!String.IsNullOrEmpty(path.ETag))
                         {
                             copied.Headers["ETag"] = path.ETag;
+                        }
+
+                        foreach (string header in settings.Headers.Keys)
+                        {
+                            copied.Headers[header] = settings.Headers[header];
                         }
 
                         this.Upload(path.Path, path.Key, copied);

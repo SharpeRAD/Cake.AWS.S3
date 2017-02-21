@@ -1,3 +1,6 @@
+### New in 0.4.4 (Released 2017/02/21)
+* [Bug] SyncUpload wasnt copying the full settings
+
 ### New in 0.4.3 (Released 2017/02/20)
 * [Bug] DeleteAll skipping files when lastModified wasn't set
 
