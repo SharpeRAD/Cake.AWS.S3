@@ -811,6 +811,8 @@ namespace Cake.AWS.S3
             {
                 if (settings.CompressContent && settings.CompressExtensions.Contains(filePath.GetExtension()))
                 {
+                    settings.GenerateContentLength = true;
+
                     UploadCompressed(filePath, key, settings);
                 }
                 else
