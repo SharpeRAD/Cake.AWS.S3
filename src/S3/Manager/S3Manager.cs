@@ -969,10 +969,14 @@ namespace Cake.AWS.S3
 
         private static string GetContentType(FilePath filePath, UploadSettings settings)
         {
-            if (!filePath.HasExtension)
-                return settings.DefaultContentType;
-
             var mime = new Mime();
+            if (!filePath.HasExtension)
+            {
+                if (!string.IsNullOrEmpty(settings.DefaultContentType))
+                    return settings.DefaultContentType;
+
+                return mime.DefaultType();
+            }
 
             var contentType = mime.Lookup(filePath.GetFilename().FullPath);
             if (!string.IsNullOrEmpty(settings.DefaultContentType) && contentType == mime.DefaultType())
