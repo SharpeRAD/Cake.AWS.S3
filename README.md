@@ -135,6 +135,9 @@ Task("Sync-Directory-To-S3")
         SearchFilter = "*.png",
         SearchScope = SearchScope.Recursive,
 
+        //Default content type is used when file has no extension or the content type can't be generated using extension
+        DefaultContentType = "text/html",
+
         LowerPaths = true,
         KeyPrefix = "img/",
 
