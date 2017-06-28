@@ -771,6 +771,7 @@ namespace Cake.AWS.S3
                             Headers = new HeadersCollection(),
 
                             GenerateContentType = settings.GenerateContentType,
+                            DefaultContentType = settings.DefaultContentType,
                             GenerateContentLength = settings.GenerateContentLength,
                             GenerateETag = settings.GenerateETag,
                             GenerateHashTag = settings.GenerateHashTag,
@@ -843,9 +844,9 @@ namespace Cake.AWS.S3
 
                 //Set ContentType
                 if (settings.GenerateContentType && String.IsNullOrEmpty(request.Headers.ContentType))
-                {
-                    request.Headers.ContentType = new Mime().Lookup(filePath.GetFilename().FullPath);
-                }
+            {
+                request.Headers.ContentType = GetContentType(filePath, settings);
+            }
 
 
 
@@ -918,7 +919,7 @@ namespace Cake.AWS.S3
                 //Set ContentType
                 if (settings.GenerateContentType && String.IsNullOrEmpty(request.Headers.ContentType))
                 {
-                    request.Headers.ContentType = new Mime().Lookup(filePath.GetFilename().FullPath);
+                    request.Headers.ContentType = GetContentType(filePath, settings);
                 }
 
 
@@ -966,7 +967,20 @@ namespace Cake.AWS.S3
                 client.PutObject(request);
             }
 
-            private Stream CompressStream(IFile file)
+        private static string GetContentType(FilePath filePath, UploadSettings settings)
+        {
+            if (!filePath.HasExtension)
+                return settings.DefaultContentType;
+
+            var mime = new Mime();
+
+            var contentType = mime.Lookup(filePath.GetFilename().FullPath);
+            if (!string.IsNullOrEmpty(settings.DefaultContentType) && contentType == mime.DefaultType())
+                contentType = settings.DefaultContentType;
+            return contentType;
+        }
+
+        private Stream CompressStream(IFile file)
             {
                 var compressed = new MemoryStream();
 

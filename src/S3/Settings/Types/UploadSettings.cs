@@ -79,7 +79,12 @@ namespace Cake.AWS.S3
             /// Generate the ContentType based on the file extension
             /// </summary>
             public bool GenerateContentType { get; set; }
-                        
+
+            /// <summary>
+            /// Content type to use when no mime type is found
+            /// </summary>
+            public string DefaultContentType { get; set; }
+
             /// <summary>
             /// Generate the ContentLength based on the file size in bytes
             /// </summary>
