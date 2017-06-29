@@ -1,3 +1,6 @@
+### New in 0.4.6 (Released 2017/06/29)
+* [Improvement] Added DefaultContentType to UploadSettings
+
 ### New in 0.4.5 (Released 2017/02/21)
 * [Bug] Dont GenerateContentLength for multi-part uploads
 
