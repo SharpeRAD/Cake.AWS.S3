@@ -15,8 +15,8 @@
     using Amazon.S3;
     using Amazon.S3.Model;
     using Amazon.S3.Transfer;
+    using HeyRed.Mime;
 
-    using MimeSharp;
 #endregion
 
 
@@ -969,17 +969,17 @@ namespace Cake.AWS.S3
 
         private static string GetContentType(FilePath filePath, UploadSettings settings)
         {
-            var mime = new Mime();
+            const string defaultMimeType = "application/octet-stream";
             if (!filePath.HasExtension)
             {
                 if (!string.IsNullOrEmpty(settings.DefaultContentType))
                     return settings.DefaultContentType;
 
-                return mime.DefaultType();
+                return defaultMimeType;
             }
 
-            var contentType = mime.Lookup(filePath.GetFilename().FullPath);
-            if (!string.IsNullOrEmpty(settings.DefaultContentType) && contentType == mime.DefaultType())
+            var contentType = MimeTypesMap.GetMimeType(filePath.GetFilename().FullPath);
+            if (!string.IsNullOrEmpty(settings.DefaultContentType) && contentType == defaultMimeType)
                 contentType = settings.DefaultContentType;
             return contentType;
         }

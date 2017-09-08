@@ -20,7 +20,7 @@
            <dependency id="Cake.Core" version="0.17.0" />
            <dependency id="AWSSDK.Core" version="3.3.7.1" />
            <dependency id="AWSSDK.S3" version="3.3.5.2" />
-           <dependency id="MimeSharp" version="1.0.0" />
+           <dependency id="MimeTypesMap" version="1.0.2" />
        </dependencies>
    </metadata>
 
@@ -29,7 +29,7 @@
       <file src="Cake.AWS.S3.xml" target="lib/net45" />
       <file src="AWSSDK.Core.dll" target="lib/net45" />
       <file src="AWSSDK.S3.dll" target="lib/net45" />
-      <file src="MimeSharp.dll" target="lib/net45" />
+      <file src="MimeTypesMap.dll" target="lib/net45" />
       <file src="LICENSE" />
    </files>
 </package>
