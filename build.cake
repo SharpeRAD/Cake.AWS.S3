@@ -173,7 +173,7 @@ Task("Copy-Files")
 
     CopyFileToDirectory(buildDir + "/AWSSDK.Core.dll", binDir);
     CopyFileToDirectory(buildDir + "/AWSSDK.S3.dll", binDir);
-    CopyFileToDirectory(buildDir + "/MimeSharp.dll", binDir);
+    CopyFileToDirectory(buildDir + "/MimeTypesMap.dll", binDir);
 
     CopyFiles(new FilePath[] { "LICENSE", "README.md", "ReleaseNotes.md" }, binDir);
 
@@ -185,7 +185,7 @@ Task("Copy-Files")
     CopyFileToDirectory(buildDir + "/Cake.AWS.S3.dll", "./test/tools/Addins/Cake.AWS.S3/lib/net45/");
     CopyFileToDirectory(buildDir + "/AWSSDK.Core.dll", "./test/tools/Addins/Cake.AWS.S3/lib/net45/");
     CopyFileToDirectory(buildDir + "/AWSSDK.S3.dll", "./test/tools/Addins/Cake.AWS.S3/lib/net45/");
-    CopyFileToDirectory(buildDir + "/MimeSharp.dll", "./test/tools/Addins/Cake.AWS.S3/lib/net45/");
+    CopyFileToDirectory(buildDir + "/MimeTypesMap.dll", "./test/tools/Addins/Cake.AWS.S3/lib/net45/");
 });
 
 Task("Zip-Files")
