@@ -1,3 +1,6 @@
+### New in 0.4.7 (Released 2017/09/11)
+* [Improvement] Use MimeTypesMap over MimeSharp
+
 ### New in 0.4.6 (Released 2017/06/29)
 * [Improvement] Added DefaultContentType to UploadSettings
 
