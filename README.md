@@ -115,10 +115,10 @@ Task("Download-File-Fallback")
     .Description("Download a file from S3 using AWS Fallback credentials")
     .Does(() =>
 {
-    S3Download("C:/Files/test.zip", "test.zip", Context.CreateDownloadSettings()
-    {
-        BucketName = "cake-s3"
-    });
+    var settings = Context.CreateDownloadSettings(); 
+    settings.BucketName = "cake-s3";
+
+    S3Download("C:/Files/test.zip", "test.zip", settings);
 });
 
 
