@@ -35,16 +35,15 @@ Task("Sync-Directory")
     .Does(() =>
 {
     //Scan a local directory for files, comparing the contents against objects already in S3. Deleting missing objects and only uploading changed objects, returning a list of keys that require invalidating.
-    var invalidate = S3Sync("./images/", Context.CreateSyncSettings()
-    {
-        BucketName = "cake-s3",
+    var settings = Context.CreateSyncSettings();
 
-        SearchFilter = "*.png",
-        SearchScope = SearchScope.Recursive,
+    settings.BucketName = "cake-s3";
+    settings.SearchFilter = "*.png";
+    settings.SearchScope = SearchScope.Recursive;
+    settings.LowerPaths = true;
+    settings.KeyPrefix = "img/";
 
-        LowerPaths = true,
-        KeyPrefix = "img/"
-    });
+    var invalidate = S3SyncUpload(Directory("./images/"), settings);
 
     //Invalidate the list of keys that were either updated or deleted from the sync.
     CreateInvalidation("distribution", invalidate, Context.CreateCloudFrontSettings());

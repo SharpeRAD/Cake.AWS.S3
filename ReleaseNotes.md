@@ -1,3 +1,9 @@
+### New in 0.5.0 (Released 2017/10/07)
+* [Improvement] Updated Cake reference to v0.22.0
+* [Improvement] Moved to net461 for Cake compatibility
+* [Improvement] Upgraded solution to vs2017
+* [Improvement] New .net core based build scripts
+
 ### New in 0.4.7 (Released 2017/09/11)
 * [Improvement] Use MimeTypesMap over MimeSharp
 
