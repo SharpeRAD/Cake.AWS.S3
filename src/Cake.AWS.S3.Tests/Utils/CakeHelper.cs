@@ -2,6 +2,7 @@
 using System.IO;
 
 using Cake.Core;
+using Cake.Core.IO;
 using Cake.Testing;
 #endregion
 
@@ -28,7 +29,7 @@ namespace Cake.AWS.S3.Tests
         {
             var environment = CakeHelper.CreateEnvironment();
 
-            return new S3Manager(new FakeFileSystem(environment), environment, new DebugLog());
+            return new S3Manager(new FileSystem(), environment, new DebugLog());
         }
         #endregion
     }

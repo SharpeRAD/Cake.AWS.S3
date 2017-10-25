@@ -2,6 +2,8 @@
 using System;
 using System.IO;
 using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 
 using Cake.Core.IO;
 
@@ -39,16 +41,18 @@ namespace Cake.AWS.S3
         /// </summary>
         /// <param name="filePath">The directory path to sync to S3</param>
         /// <param name="settings">The <see cref="SyncSettings"/> required to sync to Amazon S3.</param>
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>The key that require invalidating.</returns>
-        string SyncUpload(FilePath filePath, SyncSettings settings);
+        Task<string> SyncUpload(FilePath filePath, SyncSettings settings, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Syncs the specified file to Amazon S3, checking the modified date of the local files with existing S3Objects and uploading them if its changes.
         /// </summary>
         /// <param name="dirPath">The file path to sync to S3</param>
         /// <param name="settings">The <see cref="SyncSettings"/> required to sync to Amazon S3.</param>
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>A list of keys that require invalidating.</returns>
-        IList<string> SyncUpload(DirectoryPath dirPath, SyncSettings settings);
+        Task<IList<string>> SyncUpload(DirectoryPath dirPath, SyncSettings settings, CancellationToken cancellationToken = default(CancellationToken));
 
 
 
@@ -57,16 +61,18 @@ namespace Cake.AWS.S3
         /// </summary>
         /// <param name="filePath">The file path to sync to S3</param>
         /// <param name="settings">The <see cref="SyncSettings"/> required to sync to Amazon S3.</param>
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>The key that require invalidating.</returns>
-        string SyncDownload(FilePath filePath, SyncSettings settings);
-        
+        Task<string> SyncDownload(FilePath filePath, SyncSettings settings, CancellationToken cancellationToken = default(CancellationToken));
+
         /// <summary>
         /// Syncs the specified directory from Amazon S3, checking the modified date of the local files with existing S3Objects and downloading them if its changed.
         /// </summary>
         /// <param name="dirPath">The directory path to sync to S3</param>
         /// <param name="settings">The <see cref="SyncSettings"/> required to sync to Amazon S3.</param>
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>A list of keys that require invalidating.</returns>
-        IList<string> SyncDownload(DirectoryPath dirPath, SyncSettings settings);
+        Task<IList<string>> SyncDownload(DirectoryPath dirPath, SyncSettings settings, CancellationToken cancellationToken = default(CancellationToken));
 
 
 
@@ -77,7 +83,8 @@ namespace Cake.AWS.S3
         /// <param name="filePath">The file path of the file to upload.</param>
         /// <param name="key">The key under which the Amazon S3 object is stored.</param>
         /// <param name="settings">The <see cref="UploadSettings"/> required to upload to Amazon S3.</param>
-        void Upload(FilePath filePath, string key, UploadSettings settings);
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        Task Upload(FilePath filePath, string key, UploadSettings settings, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Uploads the contents of the specified stream. For large uploads, the file will be divided and uploaded in parts 
@@ -86,7 +93,8 @@ namespace Cake.AWS.S3
         /// <param name="stream">The stream to read to obtain the content to upload.</param>
         /// <param name="key">The key under which the Amazon S3 object is stored.</param>
         /// <param name="settings">The <see cref="UploadSettings"/> required to upload to Amazon S3.</param>
-        void Upload(Stream stream, string key, UploadSettings settings);
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        Task Upload(Stream stream, string key, UploadSettings settings, CancellationToken cancellationToken = default(CancellationToken));
 
 
 
@@ -97,7 +105,8 @@ namespace Cake.AWS.S3
         /// <param name="key">The key under which the Amazon S3 object is stored.</param>
         /// <param name="version">The identifier for the specific version of the object to be downloaded, if required.</param>
         /// <param name="settings">The <see cref="DownloadSettings"/> required to download from Amazon S3.</param>
-        void Download(FilePath filePath, string key, string version, DownloadSettings settings);
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        Task Download(FilePath filePath, string key, string version, DownloadSettings settings, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Opens a stream of the content from Amazon S3
@@ -105,7 +114,8 @@ namespace Cake.AWS.S3
         /// <param name="key">The key under which the Amazon S3 object is stored.</param>
         /// <param name="version">The identifier for the specific version of the object to be downloaded, if required.</param>
         /// <param name="settings">The <see cref="DownloadSettings"/> required to download from Amazon S3.</param>
-        Stream Open(string key, string version, DownloadSettings settings);
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        Task<Stream> Open(string key, string version, DownloadSettings settings, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Get the byte array of the content from Amazon S3
@@ -113,8 +123,9 @@ namespace Cake.AWS.S3
         /// <param name="key">The S3 object key.</param>
         /// <param name="version">The S3 object version.</param>
         /// <param name="settings">The download settings.</param>
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>A byte array.</returns>
-        byte[] GetBytes(string key, string version, DownloadSettings settings);
+        Task<byte[]> GetBytes(string key, string version, DownloadSettings settings, CancellationToken cancellationToken = default(CancellationToken));
 
 
 
@@ -126,7 +137,8 @@ namespace Cake.AWS.S3
         /// <param name="key">The key under which the Amazon S3 object is stored.</param>
         /// <param name="version">The identifier for the specific version of the object to be deleted, if required.</param>
         /// <param name="settings">The <see cref="S3Settings"/> required to delete from Amazon S3.</param>
-        void Delete(string key, string version, S3Settings settings);
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        Task Delete(string key, string version, S3Settings settings, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Removes all objects from the bucket
@@ -134,7 +146,8 @@ namespace Cake.AWS.S3
         /// <param name="prefix">Only delete objects that begin with the specified prefix.</param>
         /// <param name="lastModified">Only delete objects that where modified prior to this date</param>
         /// <param name="settings">The <see cref="S3Settings"/> required to delete from Amazon S3.</param>
-        IList<string> DeleteAll(string prefix, DateTimeOffset lastModified, S3Settings settings);
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        Task<IList<string>> DeleteAll(string prefix, DateTimeOffset lastModified, S3Settings settings, CancellationToken cancellationToken = default(CancellationToken));
 
 
 
@@ -144,7 +157,8 @@ namespace Cake.AWS.S3
         /// <param name="key">The key under which the Amazon S3 object is stored.</param>
         /// <param name="version">The identifier for the specific version of the object to be deleted, if required.</param>
         /// <param name="settings">The <see cref="S3Settings"/> required to download from Amazon S3.</param>
-        MetadataCollection GetObjectMetaData(string key, string version, S3Settings settings);
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        Task<MetadataCollection> GetObjectMetaData(string key, string version, S3Settings settings, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Retrieves object from Amazon S3.
@@ -152,14 +166,16 @@ namespace Cake.AWS.S3
         /// <param name="key">The key under which the Amazon S3 object is stored.</param>
         /// <param name="version">The identifier for the specific version of the object to be deleted, if required.</param>
         /// <param name="settings">The <see cref="S3Settings"/> required to download from Amazon S3.</param>
-        S3Object GetObject(string key, string version, S3Settings settings);
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        Task<S3Object> GetObject(string key, string version, S3Settings settings, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Returns all the objects in a S3 bucket.
         /// </summary>
         /// <param name="prefix">Limits the response to keys that begin with the specified prefix.</param>
         /// <param name="settings">The <see cref="S3Settings"/> required to download from Amazon S3.</param>
-        IList<S3Object> GetObjects(string prefix, S3Settings settings);
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        Task<IList<S3Object>> GetObjects(string prefix, S3Settings settings, CancellationToken cancellationToken = default(CancellationToken));
 
 
 

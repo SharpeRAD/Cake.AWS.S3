@@ -1,4 +1,5 @@
 ﻿#region Using Statements
+using System.Threading.Tasks;
 using System.Collections.Generic;
 
 using Xunit;
@@ -15,7 +16,7 @@ namespace Cake.AWS.S3.Tests
     public class S3Tests
     {
         [Fact]
-        public void Test_Syn()
+        public async Task Test_Syn()
         {
             //Sync Directory
             SyncSettings settings = CakeHelper.CreateEnvironment().CreateSyncSettings();
@@ -23,13 +24,13 @@ namespace Cake.AWS.S3.Tests
             settings.KeyPrefix = "s3.tests";
 
             IS3Manager manager = CakeHelper.CreateS3Manager();
-            IList<string> keys = manager.SyncUpload(new DirectoryPath("./Files"), settings);
+            IList<string> keys = await manager.SyncUpload(new DirectoryPath("./Files"), settings);
             
             keys.ShouldBeEmpty();
         }
 
         [Fact]
-        public void Test_Upload_ContentLength()
+        public async Task Test_Upload_ContentLength()
         {
             //Upload
             UploadSettings settings = CakeHelper.CreateEnvironment().CreateUploadSettings();
@@ -41,25 +42,25 @@ namespace Cake.AWS.S3.Tests
             settings.CacheControl = "private, max-age=86400";
 
             IS3Manager manager = CakeHelper.CreateS3Manager();
-            manager.Upload(new FilePath("./Files/Test.css"), "Tester.css", settings);
+            await manager.Upload(new FilePath("./Files/Test.css"), "Tester.css", settings);
         }
 
 
 
         [Fact]
-        public void Test_Meta()
+        public async Task Test_Meta()
         {
             //Upload
             UploadSettings settings = CakeHelper.CreateEnvironment().CreateUploadSettings();
             settings.BucketName = "cake-aws-s3";
 
             IS3Manager manager = CakeHelper.CreateS3Manager();
-            manager.Upload(new FilePath("./Files/Encoding.txt"), "Encodings.txt", settings);
+            await manager.Upload(new FilePath("./Files/Encoding.txt"), "Encodings.txt", settings);
 
 
 
             //Get Meta
-            MetadataCollection meta = manager.GetObjectMetaData("Encodings.txt", "", settings);
+            MetadataCollection meta = await manager.GetObjectMetaData("Encodings.txt", "", settings);
 
             string metaHash = meta["x-amz-meta-hashtag"];
         }

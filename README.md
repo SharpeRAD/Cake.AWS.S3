@@ -193,6 +193,8 @@ A complete Cake example can be found [here](https://github.com/SharpeRAD/Cake.AW
 
 * Please be aware of the breaking changes that occurred with the release of [Cake v0.22.0](https://cakebuild.net/blog/2017/09/cake-v0.22.0-released), you will need to upgrade Cake in order to use Cake.AWS.S3 v0.5.0 or above.
 
+* Please be aware of the breaking changes that occurred with the release of Cake.AWS.S3 v0.6.0, in order to support netstandard1.6 I had to switch to using async methods.
+
 
 
 ## Plays well with

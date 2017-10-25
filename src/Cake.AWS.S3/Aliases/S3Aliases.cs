@@ -3,6 +3,7 @@ using System;
 using System.IO;
 using System.Text;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 using Cake.Core;
 using Cake.Core.IO;
@@ -40,9 +41,9 @@ namespace Cake.AWS.S3
         [Obsolete("Use S3SyncUpload instead.")]
         [CakeMethodAlias]
         [CakeAliasCategory("S3")]
-        public static IList<string> S3Sync(this ICakeContext context, DirectoryPath dirPath, SyncSettings settings)
+        public static async Task<IList<string>> S3Sync(this ICakeContext context, DirectoryPath dirPath, SyncSettings settings)
         {
-           return context.CreateManager().SyncUpload(dirPath, settings);
+           return await context.CreateManager().SyncUpload(dirPath, settings);
         }
         
 
@@ -56,9 +57,9 @@ namespace Cake.AWS.S3
         /// <returns>AThe key that require invalidating.</returns>
         [CakeMethodAlias]
         [CakeAliasCategory("S3")]
-        public static string S3SyncUpload(this ICakeContext context, FilePath filePath, SyncSettings settings)
+        public static async Task<string> S3SyncUpload(this ICakeContext context, FilePath filePath, SyncSettings settings)
         {
-           return context.CreateManager().SyncUpload(filePath, settings);
+           return await context.CreateManager().SyncUpload(filePath, settings);
         }
 
         /// <summary>
@@ -70,9 +71,9 @@ namespace Cake.AWS.S3
         /// <returns>A list of keys that require invalidating.</returns>
         [CakeMethodAlias]
         [CakeAliasCategory("S3")]
-        public static IList<string> S3SyncUpload(this ICakeContext context, DirectoryPath dirPath, SyncSettings settings)
+        public static async Task<IList<string>> S3SyncUpload(this ICakeContext context, DirectoryPath dirPath, SyncSettings settings)
         {
-           return context.CreateManager().SyncUpload(dirPath, settings);
+           return await context.CreateManager().SyncUpload(dirPath, settings);
         }
                
         
@@ -86,9 +87,9 @@ namespace Cake.AWS.S3
         /// <returns>The key that require invalidating.</returns>
         [CakeMethodAlias]
         [CakeAliasCategory("S3")]
-        public static string S3SyncDownload(this ICakeContext context, FilePath filePath, SyncSettings settings)
+        public static async Task<string> S3SyncDownload(this ICakeContext context, FilePath filePath, SyncSettings settings)
         {
-           return context.CreateManager().SyncDownload(filePath, settings);
+           return await context.CreateManager().SyncDownload(filePath, settings);
         }
 
         /// <summary>
@@ -100,9 +101,9 @@ namespace Cake.AWS.S3
         /// <returns>A list of keys that require invalidating.</returns>
         [CakeMethodAlias]
         [CakeAliasCategory("S3")]
-        public static IList<string> S3SyncDownload(this ICakeContext context, DirectoryPath dirPath, SyncSettings settings)
+        public static async Task<IList<string>> S3SyncDownload(this ICakeContext context, DirectoryPath dirPath, SyncSettings settings)
         {
-           return context.CreateManager().SyncDownload(dirPath, settings);
+           return await context.CreateManager().SyncDownload(dirPath, settings);
         }
 
 
@@ -117,9 +118,9 @@ namespace Cake.AWS.S3
         /// <param name="settings">The <see cref="UploadSettings"/> required to upload to Amazon S3.</param>
         [CakeMethodAlias]
         [CakeAliasCategory("S3")]
-        public static void S3Upload(this ICakeContext context, FilePath filePath, string key, UploadSettings settings)
+        public static async Task S3Upload(this ICakeContext context, FilePath filePath, string key, UploadSettings settings)
         {
-            context.CreateManager().Upload(filePath, key, settings);
+            await context.CreateManager().Upload(filePath, key, settings);
         }
 
         /// <summary>
@@ -132,9 +133,9 @@ namespace Cake.AWS.S3
         /// <param name="settings">The <see cref="UploadSettings"/> required to upload to Amazon S3.</param>
         [CakeMethodAlias]
         [CakeAliasCategory("S3")]
-        public static void S3Upload(this ICakeContext context, Stream stream, string key, UploadSettings settings)
+        public static async Task S3Upload(this ICakeContext context, Stream stream, string key, UploadSettings settings)
         {
-            context.CreateManager().Upload(stream, key, settings);
+            await context.CreateManager().Upload(stream, key, settings);
         }
 
 
@@ -148,9 +149,9 @@ namespace Cake.AWS.S3
         /// <param name="settings">The <see cref="DownloadSettings"/> required to download from Amazon S3.</param>
         [CakeMethodAlias]
         [CakeAliasCategory("S3")]
-        public static void S3Download(this ICakeContext context, FilePath filePath, string key, DownloadSettings settings)
+        public static async Task S3Download(this ICakeContext context, FilePath filePath, string key, DownloadSettings settings)
         {
-            context.CreateManager().Download(filePath, key, "", settings);
+            await context.CreateManager().Download(filePath, key, "", settings);
         }
 
         /// <summary>
@@ -163,9 +164,9 @@ namespace Cake.AWS.S3
         /// <param name="settings">The <see cref="DownloadSettings"/> required to download from Amazon S3.</param>
         [CakeMethodAlias]
         [CakeAliasCategory("S3")]
-        public static void S3Download(this ICakeContext context, FilePath filePath, string key, string version, DownloadSettings settings)
+        public static async Task S3Download(this ICakeContext context, FilePath filePath, string key, string version, DownloadSettings settings)
         {
-            context.CreateManager().Download(filePath, key, version, settings);
+            await context.CreateManager().Download(filePath, key, version, settings);
         }
         
 
@@ -178,9 +179,9 @@ namespace Cake.AWS.S3
         /// <param name="settings">The <see cref="DownloadSettings"/> required to download from Amazon S3.</param>
         [CakeMethodAlias]
         [CakeAliasCategory("S3")]
-        public static Stream S3Open(this ICakeContext context, string key, DownloadSettings settings)
+        public static async Task<Stream> S3Open(this ICakeContext context, string key, DownloadSettings settings)
         {
-            return context.CreateManager().Open(key, "", settings);
+            return await context.CreateManager().Open(key, "", settings);
         }
 
         /// <summary>
@@ -192,9 +193,9 @@ namespace Cake.AWS.S3
         /// <param name="settings">The <see cref="DownloadSettings"/> required to download from Amazon S3.</param>
         [CakeMethodAlias]
         [CakeAliasCategory("S3")]
-        public static Stream S3Open(this ICakeContext context, string key, string version, DownloadSettings settings)
+        public static async Task<Stream> S3Open(this ICakeContext context, string key, string version, DownloadSettings settings)
         {
-            return context.CreateManager().Open(key, version, settings);
+            return await context.CreateManager().Open(key, version, settings);
         }
         
 
@@ -207,9 +208,9 @@ namespace Cake.AWS.S3
         /// <param name="settings">The <see cref="DownloadSettings"/> required to download from Amazon S3.</param>
         [CakeMethodAlias]
         [CakeAliasCategory("S3")]
-        public static byte[] GetS3Bytes(this ICakeContext context, string key, DownloadSettings settings)
+        public static async Task<byte[]> GetS3Bytes(this ICakeContext context, string key, DownloadSettings settings)
         {
-            return context.GetS3Bytes(key, "", settings);
+            return await context.GetS3Bytes(key, "", settings);
         }
 
         /// <summary>
@@ -221,9 +222,9 @@ namespace Cake.AWS.S3
         /// <param name="settings">The <see cref="DownloadSettings"/> required to download from Amazon S3.</param>
         [CakeMethodAlias]
         [CakeAliasCategory("S3")]
-        public static byte[] GetS3Bytes(this ICakeContext context, string key, string version, DownloadSettings settings)
+        public static async Task<byte[]> GetS3Bytes(this ICakeContext context, string key, string version, DownloadSettings settings)
         {
-            return context.CreateManager().GetBytes(key, version, settings);
+            return await context.CreateManager().GetBytes(key, version, settings);
         }
                 
 
@@ -236,9 +237,9 @@ namespace Cake.AWS.S3
         /// <param name="settings">The <see cref="DownloadSettings"/> required to download from Amazon S3.</param>
         [CakeMethodAlias]
         [CakeAliasCategory("S3")]
-        public static string GetS3String(this ICakeContext context, string key, DownloadSettings settings)
+        public static async Task<string> GetS3String(this ICakeContext context, string key, DownloadSettings settings)
         {
-            return context.GetS3String(key, "", settings);
+            return await context.GetS3String(key, "", settings);
         }
 
         /// <summary>
@@ -250,9 +251,9 @@ namespace Cake.AWS.S3
         /// <param name="settings">The <see cref="DownloadSettings"/> required to download from Amazon S3.</param>
         [CakeMethodAlias]
         [CakeAliasCategory("S3")]
-        public static string GetS3String(this ICakeContext context, string key, string version, DownloadSettings settings)
+        public static async Task<string> GetS3String(this ICakeContext context, string key, string version, DownloadSettings settings)
         {
-            byte[] bytes = context.CreateManager().GetBytes(key, version, settings);
+            byte[] bytes = await context.CreateManager().GetBytes(key, version, settings);
             
             if (bytes != null)
             {
@@ -276,9 +277,9 @@ namespace Cake.AWS.S3
         /// <param name="settings">The <see cref="S3Settings"/> required to download from Amazon S3.</param>
         [CakeMethodAlias]
         [CakeAliasCategory("S3")]
-        public static void S3Delete(this ICakeContext context, string key, S3Settings settings)
+        public static async Task S3Delete(this ICakeContext context, string key, S3Settings settings)
         {
-            context.S3Delete(key, "", settings);
+            await context.S3Delete(key, "", settings);
         }
 
         /// <summary>
@@ -292,9 +293,9 @@ namespace Cake.AWS.S3
         /// <param name="settings">The <see cref="S3Settings"/> required to download from Amazon S3.</param>
         [CakeMethodAlias]
         [CakeAliasCategory("S3")]
-        public static void S3Delete(this ICakeContext context, string key, string version, S3Settings settings)
+        public static async Task S3Delete(this ICakeContext context, string key, string version, S3Settings settings)
         {
-            context.CreateManager().Delete(key, version, settings);
+            await context.CreateManager().Delete(key, version, settings);
         }
             
         
@@ -306,9 +307,9 @@ namespace Cake.AWS.S3
         /// <param name="settings">The <see cref="S3Settings"/> required to delete from Amazon S3.</param>
         [CakeMethodAlias]
         [CakeAliasCategory("S3")]
-        public static IList<string> S3DeleteAll(this ICakeContext context, S3Settings settings)
+        public static async Task<IList<string>> S3DeleteAll(this ICakeContext context, S3Settings settings)
         {
-            return context.CreateManager().DeleteAll("", DateTimeOffset.MinValue, settings);
+            return await context.CreateManager().DeleteAll("", DateTimeOffset.MinValue, settings);
         }
 
         /// <summary>
@@ -319,9 +320,9 @@ namespace Cake.AWS.S3
         /// <param name="settings">The <see cref="S3Settings"/> required to delete from Amazon S3.</param>
         [CakeMethodAlias]
         [CakeAliasCategory("S3")]
-        public static IList<string> S3DeleteAll(this ICakeContext context, string prefix, S3Settings settings)
+        public static async Task<IList<string>> S3DeleteAll(this ICakeContext context, string prefix, S3Settings settings)
         {
-            return context.CreateManager().DeleteAll(prefix, DateTimeOffset.MinValue, settings);
+            return await context.CreateManager().DeleteAll(prefix, DateTimeOffset.MinValue, settings);
         }
 
         /// <summary>
@@ -333,9 +334,9 @@ namespace Cake.AWS.S3
         /// <param name="settings">The <see cref="S3Settings"/> required to delete from Amazon S3.</param>
         [CakeMethodAlias]
         [CakeAliasCategory("S3")]
-        public static IList<string> S3DeleteAll(this ICakeContext context, string prefix, DateTimeOffset lastModified, S3Settings settings)
+        public static async Task<IList<string>> S3DeleteAll(this ICakeContext context, string prefix, DateTimeOffset lastModified, S3Settings settings)
         {
-            return context.CreateManager().DeleteAll(prefix, lastModified, settings);
+            return await context.CreateManager().DeleteAll(prefix, lastModified, settings);
         }
 
 
@@ -348,9 +349,9 @@ namespace Cake.AWS.S3
         /// <param name="settings">The <see cref="S3Settings"/> required to download from Amazon S3.</param>
         [CakeMethodAlias]
         [CakeAliasCategory("S3")]
-        public static S3Object GetS3Object(this ICakeContext context, string key, S3Settings settings)
+        public static async Task<S3Object> GetS3Object(this ICakeContext context, string key, S3Settings settings)
         {
-            return context.CreateManager().GetObject(key, "", settings);
+            return await context.CreateManager().GetObject(key, "", settings);
         }
 
         /// <summary>
@@ -362,9 +363,9 @@ namespace Cake.AWS.S3
         /// <param name="settings">The <see cref="S3Settings"/> required to download from Amazon S3.</param>
         [CakeMethodAlias]
         [CakeAliasCategory("S3")]
-        public static S3Object GetS3Object(this ICakeContext context, string key, string version, S3Settings settings)
+        public static async Task<S3Object> GetS3Object(this ICakeContext context, string key, string version, S3Settings settings)
         {
-            return context.CreateManager().GetObject(key, version, settings);
+            return await context.CreateManager().GetObject(key, version, settings);
         }
 
 
@@ -376,9 +377,9 @@ namespace Cake.AWS.S3
         /// <param name="settings">The <see cref="S3Settings"/> required to download from Amazon S3.</param>
         [CakeMethodAlias]
         [CakeAliasCategory("S3")]
-        public static IList<S3Object> GetS3Objects(this ICakeContext context, S3Settings settings)
+        public static async Task<IList<S3Object>> GetS3Objects(this ICakeContext context, S3Settings settings)
         {
-            return context.CreateManager().GetObjects("", settings);
+            return await context.CreateManager().GetObjects("", settings);
         }
 
         /// <summary>
@@ -389,9 +390,9 @@ namespace Cake.AWS.S3
         /// <param name="settings">The <see cref="S3Settings"/> required to download from Amazon S3.</param>
         [CakeMethodAlias]
         [CakeAliasCategory("S3")]
-        public static IList<S3Object> GetS3Objects(this ICakeContext context, string prefix, S3Settings settings)
+        public static async Task<IList<S3Object>> GetS3Objects(this ICakeContext context, string prefix, S3Settings settings)
         {
-            return context.CreateManager().GetObjects(prefix, settings);
+            return await context.CreateManager().GetObjects(prefix, settings);
         }
 
 
@@ -404,9 +405,9 @@ namespace Cake.AWS.S3
         /// <param name="settings">The <see cref="S3Settings"/> required to download from Amazon S3.</param>
         [CakeMethodAlias]
         [CakeAliasCategory("S3")]
-        public static DateTimeOffset S3LastModified(this ICakeContext context, string key, S3Settings settings)
+        public static async Task<DateTimeOffset> S3LastModified(this ICakeContext context, string key, S3Settings settings)
         {
-            return context.S3LastModified(key, "", settings);
+            return await context.S3LastModified(key, "", settings);
         }
 
         /// <summary>
@@ -418,9 +419,9 @@ namespace Cake.AWS.S3
         /// <param name="settings">The <see cref="S3Settings"/> required to download from Amazon S3.</param>
         [CakeMethodAlias]
         [CakeAliasCategory("S3")]
-        public static DateTimeOffset S3LastModified(this ICakeContext context, string key, string version, S3Settings settings)
+        public static async Task<DateTimeOffset> S3LastModified(this ICakeContext context, string key, string version, S3Settings settings)
         {
-            S3Object result = context.CreateManager().GetObject(key, version, settings);
+            S3Object result = await context.CreateManager().GetObject(key, version, settings);
 
             if (result != null)
             {
@@ -442,9 +443,9 @@ namespace Cake.AWS.S3
         /// <param name="settings">The <see cref="S3Settings"/> required to access Amazon S3.</param>
         [CakeMethodAlias]
         [CakeAliasCategory("S3")]
-        public static string S3GetETag(this ICakeContext context, string key, S3Settings settings)
+        public static async Task<string> S3GetETag(this ICakeContext context, string key, S3Settings settings)
         {
-            return context.S3GetETag(key, "", settings);
+            return await context.S3GetETag(key, "", settings);
         }
 
         /// <summary>
@@ -456,9 +457,9 @@ namespace Cake.AWS.S3
         /// <param name="settings">The <see cref="S3Settings"/> required to access Amazon S3.</param>
         [CakeMethodAlias]
         [CakeAliasCategory("S3")]
-        public static string S3GetETag(this ICakeContext context, string key, string version, S3Settings settings)
+        public static async Task<string> S3GetETag(this ICakeContext context, string key, string version, S3Settings settings)
         {
-            S3Object result = context.CreateManager().GetObject(key, version, settings);
+            S3Object result = await context.CreateManager().GetObject(key, version, settings);
 
             if (result != null)
             {
@@ -480,9 +481,9 @@ namespace Cake.AWS.S3
         /// <param name="settings">The <see cref="S3Settings"/> required to access Amazon S3.</param>
         [CakeMethodAlias]
         [CakeAliasCategory("S3")]
-        public static string S3GetHashTag(this ICakeContext context, string key, S3Settings settings)
+        public static async Task<string> S3GetHashTag(this ICakeContext context, string key, S3Settings settings)
         {
-            return context.S3GetHashTag(key, "", settings);
+            return await context.S3GetHashTag(key, "", settings);
         }
 
         /// <summary>
@@ -494,9 +495,9 @@ namespace Cake.AWS.S3
         /// <param name="settings">The <see cref="S3Settings"/> required to access Amazon S3.</param>
         [CakeMethodAlias]
         [CakeAliasCategory("S3")]
-        public static string S3GetHashTag(this ICakeContext context, string key, string version, S3Settings settings)
+        public static async Task<string> S3GetHashTag(this ICakeContext context, string key, string version, S3Settings settings)
         {
-            MetadataCollection result = context.CreateManager().GetObjectMetaData(key, version, settings);
+            MetadataCollection result = await context.CreateManager().GetObjectMetaData(key, version, settings);
 
             if ((result != null) && result.Keys.Contains("x-amz-meta-hashtag"))
             {

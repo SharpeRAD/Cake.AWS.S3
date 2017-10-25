@@ -1,5 +1,6 @@
-### New in 0.5.1 (Released 2017/10/25)
+### New in 0.6.0 (Released 2017/10/25)
 * [Improvement] Move to net46 and netstandard1.6
+* [Improvement] Change to async methods
 
 ### New in 0.5.0 (Released 2017/10/07)
 * [Improvement] Updated Cake reference to v0.22.0
