@@ -61,9 +61,9 @@ or directly in your build script via a cake addin:
 
 Task("Upload-File")
     .Description("Upload a file to S3")
-    .Does(() =>
+    .Does(async () =>
 {
-    S3Upload("C:/Files/test.zip", "test.zip", new UploadSettings()
+    await S3Upload("C:/Files/test.zip", "test.zip", new UploadSettings()
     {
         AccessKey = "blah",
         SecretKey = "blah",
@@ -78,9 +78,9 @@ Task("Upload-File")
 
 Task("Download-File")
     .Description("Download a file from S3")
-    .Does(() =>
+    .Does(async () =>
 {
-    S3Download("C:/Files/test.zip", "test.zip", new DownloadSettings()
+    await S3Download("C:/Files/test.zip", "test.zip", new DownloadSettings()
     {
         AccessKey = "blah",
         SecretKey = "blah",
@@ -97,38 +97,38 @@ Task("Download-File")
 
 Task("Upload-File-Fluent")
     .Description("Upload a file to S3")
-    .Does(() =>
+    .Does(async () =>
 {
-    S3Upload("C:/Files/test.zip", "test.zip",
-        new UploadSettings()
-            .SetAccessKey("blah")
-            .SetSecretKey("blah")
+    await S3Upload("C:/Files/test.zip", "test.zip",
+                new UploadSettings()
+                    .SetAccessKey("blah")
+                    .SetSecretKey("blah")
 
-            .SetRegion("eu-west-1")
-            .SetBucketName("cake-s3")
+                    .SetRegion("eu-west-1")
+                    .SetBucketName("cake-s3")
 
-            .SetCannedACL(S3CannedACL.Private)
-            .SetEncryptionKey("mykey"));
+                    .SetCannedACL(S3CannedACL.Private)
+                    .SetEncryptionKey("mykey"));
 });
 
 Task("Download-File-Fallback")
     .Description("Download a file from S3 using AWS Fallback credentials")
-    .Does(() =>
+    .Does(async () =>
 {
     var settings = Context.CreateDownloadSettings(); 
     settings.BucketName = "cake-s3";
 
-    S3Download("C:/Files/test.zip", "test.zip", settings);
+    await S3Download("C:/Files/test.zip", "test.zip", settings);
 });
 
 
 
 Task("Sync-Directory-To-S3")
     .Description("Syncs a directory to S3 using AWS Fallback credentials (requires Cake.AWS.CloudFront for invalidation)")
-    .Does(() =>
+    .Does(async () =>
 {
     //Scan a local directory for files, comparing the contents against objects already in S3. Deleting missing objects and only uploading changed objects, returning a list of keys that require invalidating.
-    var invalidate = S3SyncUpload("./images/", Context.CreateSyncSettings()
+    var invalidate = await S3SyncUpload("./images/", Context.CreateSyncSettings()
     {
         BucketName = "cake-s3",
 
@@ -151,10 +151,10 @@ Task("Sync-Directory-To-S3")
 
 Task("Sync-Directory-From-S3")
     .Description("Syncs a directory from S3 using AWS Fallback credentials, please be aware this deletes missing files!")
-    .Does(() =>
+    .Does(async () =>
 {
     //Scan a local directory for files, comparing the contents against objects already in S3. Deleting missing files and only downloading changed objects.
-    var invalidate = S3SyncDownload("./images/", Context.CreateSyncSettings()
+    var invalidate = await S3SyncDownload("./images/", Context.CreateSyncSettings()
     {
         BucketName = "cake-s3",
 

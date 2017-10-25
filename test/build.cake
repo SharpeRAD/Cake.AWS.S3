@@ -32,7 +32,7 @@ Setup(context =>
 
 Task("Sync-Directory")
     .Description("Syncs a directory to S3 using AWS Fallback credentials, requires Cake.AWS.CloudFront")
-    .Does(() =>
+    .Does(async () =>
 {
     //Scan a local directory for files, comparing the contents against objects already in S3. Deleting missing objects and only uploading changed objects, returning a list of keys that require invalidating.
     var settings = Context.CreateSyncSettings();
@@ -43,7 +43,7 @@ Task("Sync-Directory")
     settings.LowerPaths = true;
     settings.KeyPrefix = "img/";
 
-    var invalidate = S3SyncUpload(Directory("./images/"), settings);
+    var invalidate = await S3SyncUpload(Directory("./images/"), settings);
 
     //Invalidate the list of keys that were either updated or deleted from the sync.
     CreateInvalidation("distribution", invalidate, Context.CreateCloudFrontSettings());
