@@ -5,7 +5,7 @@
         <PackageId>Cake.AWS.S3</PackageId>
         <OutputType>Library</OutputType>
 
-        <TargetFrameworks>net461;</TargetFrameworks>
+        <TargetFrameworks>net46;netstandard1.6;</TargetFrameworks>
 
         <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
         <GenerateAssemblyVersionAttribute>false</GenerateAssemblyVersionAttribute>
@@ -15,7 +15,7 @@
     </PropertyGroup>
 
     <PropertyGroup>
-        <DocumentationFile>bin\Debug\net461\Cake.AWS.S3.xml</DocumentationFile>
+        <DocumentationFile>bin\Debug\net46\Cake.AWS.S3.xml</DocumentationFile>
     </PropertyGroup>
 
     <ItemGroup>

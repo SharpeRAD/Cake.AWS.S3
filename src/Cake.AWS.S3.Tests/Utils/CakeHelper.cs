@@ -2,7 +2,6 @@
 using System.IO;
 
 using Cake.Core;
-using Cake.Core.IO;
 using Cake.Testing;
 #endregion
 
@@ -16,6 +15,7 @@ namespace Cake.AWS.S3.Tests
         public static ICakeEnvironment CreateEnvironment()
         {
             var environment = FakeEnvironment.CreateWindowsEnvironment();
+
             environment.WorkingDirectory = Directory.GetCurrentDirectory();
             environment.WorkingDirectory = environment.WorkingDirectory.Combine("../../../");
 
@@ -26,7 +26,9 @@ namespace Cake.AWS.S3.Tests
 
         public static IS3Manager CreateS3Manager()
         {
-            return new S3Manager(new FileSystem(), CakeHelper.CreateEnvironment(), new DebugLog());
+            var environment = CakeHelper.CreateEnvironment();
+
+            return new S3Manager(new FakeFileSystem(environment), environment, new DebugLog());
         }
         #endregion
     }

@@ -39,6 +39,8 @@ namespace Cake.AWS.S3
                 ".js",
                 ".json"
             };
+
+            this.CacheControl = "public, max-age=864000";
         }
         #endregion
 
