@@ -25,12 +25,13 @@
     </metadata>
 
     <files>
-        <file src="net46/Cake.AWS.S3.dll" target="lib/net46" />
-        <file src="net46/Cake.AWS.S3.xml" target="lib/net46" />
-        
         <file src="net46/AWSSDK.Core.dll" target="lib/net46" />
         <file src="net46/AWSSDK.S3.dll" target="lib/net46" />
         <file src="net46/MimeTypesMap.dll" target="lib/net46" />
+
+        <file src="net46/Cake.AWS.S3.dll" target="lib/net46" />
+        <file src="net46/Cake.AWS.S3.xml" target="lib/net46" />
+        <file src="net46/Cake.AWS.S3.pdb" target="lib/net46" />
 
         <file src="netstandard1.6/Cake.AWS.S3.dll" target="lib/netstandard1.6" />
         <file src="netstandard1.6/Cake.AWS.S3.xml" target="lib/netstandard1.6" />
