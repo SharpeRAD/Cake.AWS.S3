@@ -56,6 +56,27 @@ namespace Cake.AWS.S3
             return settings;
         }
 
+        /// <summary>
+        /// Specifies the AWS Session Token to use as credentials.
+        /// </summary>
+        /// <param name="settings">The S3 settings.</param>
+        /// <param name="key">The AWS Session Token.</param>
+        /// <returns>The same <see cref="S3Settings"/> instance so that multiple calls can be chained.</returns>
+        public static T SetSessionToken<T>(this T settings, string token) where T : S3Settings
+        {
+            if (settings == null)
+            {
+                throw new ArgumentNullException("settings");
+            }
+            if (string.IsNullOrEmpty(token))
+            {
+                throw new ArgumentNullException("token");
+            }
+
+            settings.SessionToken = token;
+            return settings;
+        }
+
 
 
         /// <summary>
