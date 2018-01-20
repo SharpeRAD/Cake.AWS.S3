@@ -114,12 +114,14 @@ namespace Cake.AWS.S3
                     throw new ArgumentNullException("settings.SecretKey");
                 }
 
-                if(!String.IsNullOrEmpty(settings.SessionToken))
+                if (!String.IsNullOrEmpty(settings.SessionToken))
                 {
                     return new AmazonS3Client(settings.AccessKey, settings.SecretKey, settings.SessionToken, settings.Region);
                 }
-
-                return new AmazonS3Client(settings.AccessKey, settings.SecretKey, settings.Region);
+                else
+                {
+                    return new AmazonS3Client(settings.AccessKey, settings.SecretKey, settings.Region);
+                }
             }
             else
             {
