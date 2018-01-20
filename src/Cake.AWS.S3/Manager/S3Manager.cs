@@ -114,6 +114,11 @@ namespace Cake.AWS.S3
                     throw new ArgumentNullException("settings.SecretKey");
                 }
 
+                if(!String.IsNullOrEmpty(settings.SessionToken))
+                {
+                    return new AmazonS3Client(settings.AccessKey, settings.SecretKey, settings.SessionToken, settings.Region);
+                }
+
                 return new AmazonS3Client(settings.AccessKey, settings.SecretKey, settings.Region);
             }
             else
@@ -761,6 +766,7 @@ namespace Cake.AWS.S3
 
                         AccessKey = settings.AccessKey,
                         SecretKey = settings.SecretKey,
+                        SessionToken = settings.SessionToken,
                         Credentials = settings.Credentials,
 
                         Region = settings.Region,
@@ -1064,6 +1070,7 @@ namespace Cake.AWS.S3
 
                         AccessKey = settings.AccessKey,
                         SecretKey = settings.SecretKey,
+                        SessionToken = settings.SessionToken,
                         Credentials = settings.Credentials,
 
                         Region = settings.Region,
