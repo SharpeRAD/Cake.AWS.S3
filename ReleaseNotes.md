@@ -1,3 +1,6 @@
+### New in 0.6.4 (Released 2018/08/12)
+* [Improvement] Updated Build Scripts
+
 ### New in 0.6.3 (Released 2018/08/12)
 * [Improvement] Update to Cake.Core v0.29
 * [Improvement] Mark Cake.Core reference with PrivateAssets

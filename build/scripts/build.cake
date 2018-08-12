@@ -41,7 +41,7 @@ Task("Build")
 	// Create build settings
 	var buildSettings = new DotNetCoreMSBuildSettings
 	{
-		Verbosity = DotNetCoreVerbosity.Diagnostic
+		Verbosity = DotNetCoreVerbosity.Normal
 	};
 	
 	// Add Logger
