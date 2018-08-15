@@ -94,5 +94,33 @@ namespace Cake.AWS.S3
         /// </summary>
         public string EncryptionKeyMD5 { get; set; }
         #endregion
+
+
+
+
+
+        #region Methods
+        /// <summary>
+        /// Copies the settings to a instance of <see cref="S3Settings" /> class.
+        /// </summary>
+        protected T CopyS3Settings<T>(T copy = null) where T : S3Settings
+        {
+            copy.WorkingDirectory = this.WorkingDirectory;
+
+            copy.AccessKey = this.AccessKey;
+            copy.SecretKey = this.SecretKey;
+            copy.SessionToken = this.SessionToken;
+            copy.Credentials = this.Credentials;
+
+            copy.Region = this.Region;
+            copy.BucketName = this.BucketName;
+
+            copy.EncryptionMethod = this.EncryptionMethod;
+            copy.EncryptionKey = this.EncryptionKey;
+            copy.EncryptionKeyMD5 = this.EncryptionKeyMD5;
+
+            return copy;
+        }
+        #endregion
     }
 }

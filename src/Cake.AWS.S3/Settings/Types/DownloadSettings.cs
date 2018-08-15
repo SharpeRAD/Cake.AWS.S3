@@ -31,5 +31,23 @@ namespace Cake.AWS.S3
         /// </summary>
         public DateTime ModifiedDate { get; set; }
         #endregion
+
+
+
+
+
+        #region Methods
+        /// <summary>
+        /// Creates a new instance of the <see cref="DownloadSettings" /> class with the current settings.
+        /// </summary>
+        public DownloadSettings Copy()
+        {
+            DownloadSettings copy = this.CopyS3Settings(new DownloadSettings());
+
+            copy.ModifiedDate = this.ModifiedDate;
+
+            return copy;
+        }
+        #endregion
     }
 }

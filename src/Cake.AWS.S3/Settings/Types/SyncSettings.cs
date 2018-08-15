@@ -60,5 +60,37 @@ namespace Cake.AWS.S3
         /// </summary>
         public ModifiedCheck ModifiedCheck { get; set; }
         #endregion
+
+
+
+
+
+        #region Methods
+        /// <summary>
+        /// Creates a new instance of the <see cref="SyncSettings" /> class with the current settings.
+        /// </summary>
+        public new SyncSettings Clone()
+        {
+            return this.CopySyncSettings(new SyncSettings());
+        }
+
+        /// <summary>
+        /// Copies the settings to a instance of <see cref="UploadSettings" /> class.
+        /// </summary>
+        protected T CopySyncSettings<T>(T copy = null) where T : SyncSettings
+        {
+            this.CopyUploadSettings(copy);
+
+            copy.SearchFilter = this.SearchFilter;
+            copy.SearchScope = this.SearchScope;
+
+            copy.LowerPaths = this.LowerPaths;
+            copy.KeyPrefix = this.KeyPrefix;
+
+            copy.ModifiedCheck = this.ModifiedCheck;
+
+            return copy;
+        }
+        #endregion
     }
 }

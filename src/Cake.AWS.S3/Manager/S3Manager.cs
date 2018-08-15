@@ -762,48 +762,11 @@ namespace Cake.AWS.S3
             {
                 try
                 {
-                    UploadSettings copied = new UploadSettings()
-                    {
-                        WorkingDirectory = settings.WorkingDirectory,
-
-                        AccessKey = settings.AccessKey,
-                        SecretKey = settings.SecretKey,
-                        SessionToken = settings.SessionToken,
-                        Credentials = settings.Credentials,
-
-                        Region = settings.Region,
-                        BucketName = settings.BucketName,
-
-                        EncryptionMethod = settings.EncryptionMethod,
-                        EncryptionKey = settings.EncryptionKey,
-                        EncryptionKeyMD5 = settings.EncryptionKeyMD5,
-
-                        CannedACL = settings.CannedACL,
-                        StorageClass = settings.StorageClass,
-                        KeyManagementServiceKeyId = settings.KeyManagementServiceKeyId,
-
-                        Headers = new HeadersCollection(),
-
-                        GenerateContentType = settings.GenerateContentType,
-                        DefaultContentType = settings.DefaultContentType,
-                        GenerateContentLength = settings.GenerateContentLength,
-                        GenerateETag = settings.GenerateETag,
-                        GenerateHashTag = settings.GenerateHashTag,
-
-                        CompressContent = settings.CompressContent,
-                        CompressExtensions = settings.CompressExtensions
-                    };
-
-
+                    UploadSettings copied = settings.Clone();
 
                     if (!String.IsNullOrEmpty(path.ETag))
                     {
                         copied.Headers["ETag"] = path.ETag;
-                    }
-
-                    foreach (string header in settings.Headers.Keys)
-                    {
-                        copied.Headers[header] = settings.Headers[header];
                     }
 
                     await this.Upload(path.Path, path.Key, copied, cancellationToken);

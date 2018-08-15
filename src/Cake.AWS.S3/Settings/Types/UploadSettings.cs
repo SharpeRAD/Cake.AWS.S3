@@ -37,7 +37,13 @@ namespace Cake.AWS.S3
             {
                 ".css",
                 ".js",
-                ".json"
+
+                ".json",
+                ".xml",
+                ".txt",
+
+                ".eot",
+                ".ttf"
             };
 
             this.CacheControl = "public, max-age=864000";
@@ -60,8 +66,6 @@ namespace Cake.AWS.S3
         /// </summary>
         public S3StorageClass StorageClass { get; set; }
 
-
-        
         /// <summary>
         /// The id of the AWS Key Management Service key that Amazon S3 should use to encrypt
         /// and decrypt the object. If a key id is not specified, the default key will be
@@ -120,6 +124,65 @@ namespace Cake.AWS.S3
         /// How objects should be cached
         /// </summary>
         public string CacheControl { get; set; }
+        #endregion
+
+
+
+
+
+        #region Methods
+        /// <summary>
+        /// Creates a new instance of the <see cref="SyncSettings" /> class with the current settings.
+        /// </summary>
+        public UploadSettings Clone()
+        {
+            return this.CopyUploadSettings(new UploadSettings());
+        }
+
+        /// <summary>
+        /// Copies the settings to a instance of <see cref="UploadSettings" /> class.
+        /// </summary>
+        protected T CopyUploadSettings<T>(T copy = null) where T : UploadSettings
+        {
+            this.CopyS3Settings(copy);
+
+            copy.CannedACL = this.CannedACL;
+            copy.StorageClass = this.StorageClass;
+            copy.KeyManagementServiceKeyId = this.KeyManagementServiceKeyId;
+
+            copy.GenerateContentType = this.GenerateContentType;
+            copy.DefaultContentType = this.DefaultContentType;
+
+            copy.GenerateContentLength = this.GenerateContentLength;
+            copy.GenerateETag = this.GenerateETag;
+            copy.GenerateHashTag = this.GenerateHashTag;
+
+            copy.CompressContent = this.CompressContent;
+            copy.CompressExtensions = this.CompressExtensions;
+
+            copy.CacheControl = this.CacheControl;
+
+
+
+            // Extensions
+            List<string> extensions = new List<string>();
+
+            extensions.AddRange(this.CompressExtensions);
+
+            copy.CompressExtensions = extensions;
+
+
+
+            // Headers
+            copy.Headers = new HeadersCollection();
+
+            foreach (string header in this.Headers.Keys)
+            {
+                copy.Headers[header] = this.Headers[header];
+            }
+
+            return copy;
+        }
         #endregion
     }
 }
