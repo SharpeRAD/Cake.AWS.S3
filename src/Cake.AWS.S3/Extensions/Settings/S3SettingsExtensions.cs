@@ -121,6 +121,23 @@ namespace Cake.AWS.S3
             return settings;
         }
 
+        /// <summary>
+        /// Enables S3 accelerate by sending requests to the accelerate endpoint instead of the regular region endpoint.
+        /// </summary>
+        /// <param name="settings">The S3 settings.</param>
+        /// <param name="enable">Enable acceleration.</param>
+        /// <returns>The same <see cref="S3Settings"/> instance so that multiple calls can be chained.</returns>
+        public static T SetAccelerate<T>(this T settings, bool enable = true) where T : S3Settings
+        {
+            if (settings == null)
+            {
+                throw new ArgumentNullException("settings");
+            }
+
+            settings.Accelerate = enable;
+            return settings;
+        }
+
 
 
         /// <summary>

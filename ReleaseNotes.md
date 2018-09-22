@@ -1,3 +1,6 @@
+### New in 0.6.6 (Released 2018/09/22)
+* [Improvement] Added Accelerate property to S3Settings
+
 ### New in 0.6.5 (Released 2018/08/15)
 * [Improvement] Not copying cache-control
 * [Improvement] Add web-fonts to default compress extensions

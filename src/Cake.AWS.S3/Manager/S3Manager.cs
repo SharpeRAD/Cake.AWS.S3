@@ -103,6 +103,12 @@ namespace Cake.AWS.S3
                 throw new ArgumentNullException("settings.Region");
             }
 
+            AmazonS3Config config = new AmazonS3Config
+            {
+                RegionEndpoint = settings.Region,
+                UseAccelerateEndpoint = settings.Accelerate
+            };
+
             if (settings.Credentials == null)
             {
                 if (String.IsNullOrEmpty(settings.AccessKey))
@@ -116,16 +122,16 @@ namespace Cake.AWS.S3
 
                 if (!String.IsNullOrEmpty(settings.SessionToken))
                 {
-                    return new AmazonS3Client(settings.AccessKey, settings.SecretKey, settings.SessionToken, settings.Region);
+                    return new AmazonS3Client(settings.AccessKey, settings.SecretKey, settings.SessionToken, config);
                 }
                 else
                 {
-                    return new AmazonS3Client(settings.AccessKey, settings.SecretKey, settings.Region);
+                    return new AmazonS3Client(settings.AccessKey, settings.SecretKey, config);
                 }
             }
             else
             {
-                return new AmazonS3Client(settings.Credentials, settings.Region);
+                return new AmazonS3Client(settings.Credentials, config);
             }
         }
 

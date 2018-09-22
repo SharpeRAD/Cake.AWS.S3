@@ -24,6 +24,7 @@ namespace Cake.AWS.S3
             Region = RegionEndpoint.EUWest1;
 
             EncryptionMethod = ServerSideEncryptionCustomerMethod.None;
+            Accelerate = false;
         }
         #endregion
 
@@ -67,6 +68,11 @@ namespace Cake.AWS.S3
         /// Gets or sets the name of the S3 bucket.
         /// </summary>
         public string BucketName { get; set; }
+
+        /// <summary>
+        /// Enables S3 accelerate by sending requests to the accelerate endpoint instead of the regular region endpoint.
+        /// </summary>
+        public bool Accelerate { get; set; }
 
 
 
@@ -114,6 +120,7 @@ namespace Cake.AWS.S3
 
             copy.Region = this.Region;
             copy.BucketName = this.BucketName;
+            copy.Accelerate = this.Accelerate;
 
             copy.EncryptionMethod = this.EncryptionMethod;
             copy.EncryptionKey = this.EncryptionKey;
