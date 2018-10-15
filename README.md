@@ -39,6 +39,8 @@ Cake Build addin for transfering files to and from Amazon S3
 
 [![NuGet Version](http://img.shields.io/nuget/v/Cake.AWS.S3.svg?style=flat)](https://www.nuget.org/packages/Cake.AWS.S3/)
 
+[![NuGet Downloads](http://img.shields.io/nuget/dt/Cake.AWS.S3.svg?style=flat)](https://www.nuget.org/packages/Cake.AWS.S3/)
+
 Cake.AWS.S3 is available as a nuget package from the package manager console:
 
 ```csharp
