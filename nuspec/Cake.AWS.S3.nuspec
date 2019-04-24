@@ -19,7 +19,7 @@
         <dependencies>
             <dependency id="AWSSDK.Core" version="3.3.100.5" />
             <dependency id="AWSSDK.S3" version="3.3.101.3" />
-            <dependency id="MimeTypesMap" version="1.0.3" />
+            <dependency id="MimeTypesMap" version="1.0.6" />
         </dependencies>
     </metadata>
 
