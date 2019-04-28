@@ -183,7 +183,9 @@ namespace Cake.AWS.S3
                 request.ServerSideEncryptionCustomerMethod = ServerSideEncryptionCustomerMethod.AES256;
             }
 
+#pragma warning disable CS0618
             request.ModifiedSinceDate = settings.ModifiedDate;
+#pragma warning restore CS0618
 
             return request;
         }
@@ -203,7 +205,9 @@ namespace Cake.AWS.S3
                 request.ServerSideEncryptionCustomerMethod = ServerSideEncryptionCustomerMethod.AES256;
             }
 
+#pragma warning disable CS0618
             request.ModifiedSinceDate = settings.ModifiedDate;
+#pragma warning restore CS0618
 
             return request;
         }

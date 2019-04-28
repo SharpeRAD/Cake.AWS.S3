@@ -10,25 +10,20 @@
         <summary>Amazon S3 addon for cake build.</summary>
         <licenseUrl>https://github.com/SharpeRAD/Cake.AWS.S3/LICENSE</licenseUrl>
         <projectUrl>https://github.com/SharpeRAD/Cake.AWS.S3</projectUrl>
-        <iconUrl>https://cdn.rawgit.com/cake-contrib/graphics/a5cf0f881c390650144b2243ae551d5b9f836196/png/cake-contrib-medium.png</iconUrl>
+        <iconUrl>https://cdn.jsdelivr.net/gh/cake-contrib/graphics/png/cake-contrib-medium.png</iconUrl>
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
         <copyright>Copyright (c) Phillip Sharpe 2015</copyright>
         <releaseNotes>Initial Release</releaseNotes>
         <tags>Cake Script Build Amazon S3</tags>
 
         <dependencies>
-            <dependency id="Cake.Core" version="0.29.0" />
-            <dependency id="AWSSDK.Core" version="3.3.17.9" />
-            <dependency id="AWSSDK.S3" version="3.3.11" />
-            <dependency id="MimeTypesMap" version="1.0.2" />
+            <dependency id="AWSSDK.Core" version="3.3.100.8" />
+            <dependency id="AWSSDK.S3" version="3.3.101.6" />
+            <dependency id="MimeTypesMap" version="1.0.6" />
         </dependencies>
     </metadata>
 
     <files>
-        <file src="net46/AWSSDK.Core.dll" target="lib/net46" />
-        <file src="net46/AWSSDK.S3.dll" target="lib/net46" />
-        <file src="net46/MimeTypesMap.dll" target="lib/net46" />
-
         <file src="net46/Cake.AWS.S3.dll" target="lib/net46" />
         <file src="net46/Cake.AWS.S3.xml" target="lib/net46" />
         <file src="net46/Cake.AWS.S3.pdb" target="lib/net46" />
@@ -37,7 +32,7 @@
         <file src="netstandard2.0/Cake.AWS.S3.xml" target="lib/netstandard2.0" />
         <file src="netstandard2.0/Cake.AWS.S3.pdb" target="lib/netstandard2.0" />
         <file src="netstandard2.0/Cake.AWS.S3.deps.json" target="lib/netstandard2.0" />
-        
+
         <file src="LICENSE" />
     </files>
 </package>
