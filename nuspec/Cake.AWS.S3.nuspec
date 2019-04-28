@@ -17,8 +17,6 @@
         <tags>Cake Script Build Amazon S3</tags>
 
         <dependencies>
-            <dependency id="Cake.Core" version="0.33.0" />
-            
             <dependency id="AWSSDK.Core" version="3.3.101.2" />
             <dependency id="AWSSDK.S3" version="3.3.101.9" />
             <dependency id="MimeTypesMap" version="1.0.6" />
