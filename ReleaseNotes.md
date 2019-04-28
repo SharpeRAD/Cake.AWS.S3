@@ -1,3 +1,6 @@
+### New in 0.6.7 (Released 2019/04/28)
+* [Improvement] Update to Cake.Core v0.33
+
 ### New in 0.6.6 (Released 2018/09/22)
 * [Improvement] Added Accelerate property to S3Settings
 
