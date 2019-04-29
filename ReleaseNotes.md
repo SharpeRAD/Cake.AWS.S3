@@ -1,3 +1,6 @@
+### New in 0.6.8 (Released 2019/04/29)
+* [Bug] Add removed net46 dependencies back
+
 ### New in 0.6.7 (Released 2019/04/28)
 * [Improvement] Update to Cake.Core v0.33
 
