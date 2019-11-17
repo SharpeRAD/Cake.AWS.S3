@@ -1,3 +1,6 @@
+### New in 0.6.9 (Released 2019/11/17)
+* [Bug] Missing CakeMethodAlias attributes for CreateSettings methods
+
 ### New in 0.6.8 (Released 2019/04/29)
 * [Bug] Add removed net46 dependencies back
 
