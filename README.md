@@ -49,16 +49,19 @@ Install-Package Cake.AWS.S3
 or directly in your build script via a cake addin:
 
 ```csharp
-#addin "Cake.AWS.S3"
+#addin "Cake.AWS.S3&loaddependencies=true"
 ```
+
+(Due to changes in the latest version of Cake you should include the **loaddependencies** option when referencing the addin)
+
 
 
 
 ## Usage
 
 ```csharp
-#addin "Cake.AWS.S3"
-#addin "Cake.AWS.CloudFront"
+#addin "Cake.AWS.S3&loaddependencies=true"
+#addin "Cake.AWS.CloudFront&loaddependencies=true"
 
 Task("Upload-File")
     .Description("Upload a file to S3")
