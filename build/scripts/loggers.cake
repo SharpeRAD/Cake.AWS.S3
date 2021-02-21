@@ -160,9 +160,6 @@ public JunitResult GetJunitResult(string name, string message, string inner, str
 		}
 	}
 
-	//Warning("LOCATION === " + location);
-	//Warning("INNER === " + inner);
-
 	return new JunitResult()
 	{
 		Message = message.Trim(),

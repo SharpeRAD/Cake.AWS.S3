@@ -6,12 +6,12 @@ Task("Slack")
     .WithCriteria(() => !isPullRequest)
     .Does(() =>
 {
-    // Resolve the API key.
+    // Resolve the webHook Url.
     var webHookUrl = EnvironmentVariable("SLACK_WEBHOOK_URL");
 
     if (string.IsNullOrEmpty(webHookUrl))
     {
-        throw new InvalidOperationException("Could not resolve Slack webHookUrl.");
+        throw new InvalidOperationException("Could not resolve Slack webHook Url.");
     }
 
 
