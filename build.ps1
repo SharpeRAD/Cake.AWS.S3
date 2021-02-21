@@ -56,7 +56,7 @@ Param(
 
 $CakeVersion = "1.0.0"
 $DotNetChannel = "Current";
-$DotNetVersion = "3.1.112";
+$DotNetVersion = "5.0.103";
 $DotNetInstallerUri = "https://dot.net/v1/dotnet-install.ps1";
 $NugetUrl = "https://dist.nuget.org/win-x86-commandline/latest/nuget.exe"
 
@@ -156,19 +156,27 @@ if (Get-Command dotnet -ErrorAction SilentlyContinue)
 if($FoundDotNetCliVersion -ne $DotNetVersion)
 {
     $InstallPath = Join-Path $TOOLS_DIR "DotNet"
-
-    if (!(Test-Path $InstallPath))
-    {
-        mkdir -Force $InstallPath | Out-Null;
+    if (!(Test-Path $InstallPath)) {
+        New-Item -Path $InstallPath -ItemType Directory -Force | Out-Null;
     }
 
-    (New-Object System.Net.WebClient).DownloadFile($DotNetInstallerUri, "$InstallPath\dotnet-install.ps1");
-    & $InstallPath\dotnet-install.ps1 -Channel $DotNetChannel -Version $DotNetVersion -InstallDir $InstallPath;
+    if ($IsMacOS -or $IsLinux) {
+        $ScriptPath = Join-Path $InstallPath 'dotnet-install.sh'
+        (New-Object System.Net.WebClient).DownloadFile($DotNetUnixInstallerUri, $ScriptPath);
+        & bash $ScriptPath --version "$DotNetVersion" --install-dir "$InstallPath" --channel "$DotNetChannel" --no-path
 
-    Remove-PathVariable "$InstallPath"
-    $env:PATH = "$InstallPath;$env:PATH"
-    $env:DOTNET_SKIP_FIRST_TIME_EXPERIENCE=1
-    $env:DOTNET_CLI_TELEMETRY_OPTOUT=1
+        Remove-PathVariable "$InstallPath"
+        $env:PATH = "$($InstallPath):$env:PATH"
+    }
+    else {
+        $ScriptPath = Join-Path $InstallPath 'dotnet-install.ps1'
+        (New-Object System.Net.WebClient).DownloadFile($DotNetInstallerUri, $ScriptPath);
+        & $ScriptPath -Channel $DotNetChannel -Version $DotNetVersion -InstallDir $InstallPath;
+
+        Remove-PathVariable "$InstallPath"
+        $env:PATH = "$InstallPath;$env:PATH"
+    }
+    $env:DOTNET_ROOT=$InstallPath
 }
 
 
