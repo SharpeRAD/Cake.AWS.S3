@@ -400,12 +400,6 @@ public IList<SlackChatMessageAttachment> GetMsBuildAttachments(string path, Exce
 				}
 			}
 
-
-
-			//Warning("PRETEXT === " + name + "/" + file);
-			//Warning("TITLE === " + source);
-			//Warning("TEXT === " + location);
-
 			// Add Attachment
 			attachments.Add(new SlackChatMessageAttachment()
 			{

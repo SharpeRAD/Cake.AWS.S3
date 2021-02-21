@@ -127,12 +127,12 @@ using System.Xml.Linq;
 
 public IList<XunitResult> GetXunitResults(string filePath)
 {
-    //Load Document
+    // Load Document
     XDocument doc = XDocument.Load(filePath);
 
 
 
-    //Get Podcasts
+    // Get Podcasts
     IList<XElement> elements = doc.Descendants("test").Where(e => e.Attribute("result").Value == "Fail").ToList();
     IList<XunitResult> results = new List<XunitResult>();
 

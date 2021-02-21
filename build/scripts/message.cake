@@ -82,12 +82,12 @@ Task("Slack")
     // Check Result
     if (result.Ok)
     {
-        //Posted
+        // Posted
         Information("Message was succcessfully sent to Slack.");
     }
     else
     {
-        //Error
+        // Error
         Error("Failed to send message to Slack: {0}", result.Error);
     }
 });
