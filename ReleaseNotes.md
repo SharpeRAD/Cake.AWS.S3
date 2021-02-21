@@ -1,3 +1,6 @@
+### New in 1.0.0 (Released 2021/02/21)
+* [Improvement] Update to Cake.Core v1.0.0
+
 ### New in 0.6.9 (Released 2019/11/17)
 * [Bug] Missing CakeMethodAlias attributes for CreateSettings methods
 

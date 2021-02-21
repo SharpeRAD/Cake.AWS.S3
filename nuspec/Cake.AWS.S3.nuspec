@@ -2,7 +2,6 @@
 <package xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
     <metadata xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
         <id>Cake.AWS.S3</id>
-        <version>0.0.0</version>
         <authors>Phillip Sharpe</authors>
         <owners>Phillip Sharpe</owners>
         <title>Cake.AWS.S3</title>
@@ -12,25 +11,22 @@
         <projectUrl>https://github.com/SharpeRAD/Cake.AWS.S3</projectUrl>
         <iconUrl>https://cdn.jsdelivr.net/gh/cake-contrib/graphics/png/cake-contrib-medium.png</iconUrl>
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
-        <copyright>Copyright (c) Phillip Sharpe 2015</copyright>
+        <copyright>Copyright (c) Phillip Sharpe 2015 - 2021</copyright>
         <releaseNotes>Initial Release</releaseNotes>
         <tags>Cake Script Build Amazon S3</tags>
 
         <dependencies>
-            <dependency id="AWSSDK.Core" version="3.3.101.2" />
-            <dependency id="AWSSDK.S3" version="3.3.101.9" />
+            <dependency id="AWSSDK.Core" version="3.5.3.1" />
+            <dependency id="AWSSDK.S3" version="3.5.8.7" />
             <dependency id="MimeTypesMap" version="1.0.6" />
         </dependencies>
     </metadata>
 
     <files>
-        <file src="net46/AWSSDK.Core.dll" target="lib/net46" />
-        <file src="net46/AWSSDK.S3.dll" target="lib/net46" />
-        <file src="net46/MimeTypesMap.dll" target="lib/net46" />
-        
-        <file src="net46/Cake.AWS.S3.dll" target="lib/net46" />
-        <file src="net46/Cake.AWS.S3.xml" target="lib/net46" />
-        <file src="net46/Cake.AWS.S3.pdb" target="lib/net46" />
+        <file src="net5.0/Cake.AWS.S3.dll" target="lib/net5.0" />
+        <file src="net5.0/Cake.AWS.S3.xml" target="lib/net5.0" />
+        <file src="net5.0/Cake.AWS.S3.pdb" target="lib/net5.0" />
+        <file src="net5.0/Cake.AWS.S3.deps.json" target="lib/net5.0" />
 
         <file src="netstandard2.0/Cake.AWS.S3.dll" target="lib/netstandard2.0" />
         <file src="netstandard2.0/Cake.AWS.S3.xml" target="lib/netstandard2.0" />

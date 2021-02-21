@@ -23,10 +23,6 @@ namespace Cake.AWS.S3
             {
                 throw new ArgumentNullException("settings");
             }
-            if (modifiedDate == null)
-            {
-                throw new ArgumentNullException("modifiedDate");
-            }
 
             settings.ModifiedDate = modifiedDate;
             return settings;
