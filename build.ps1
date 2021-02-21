@@ -128,18 +128,23 @@ $ENV:CAKE_PATHS_MODULES = $MODULES_DIR
 
 Function Remove-PathVariable([string]$VariableToRemove)
 {
+    $SplitChar = ';'
+    if ($IsMacOS -or $IsLinux) {
+        $SplitChar = ':'
+    }
+
     $path = [Environment]::GetEnvironmentVariable("PATH", "User")
     if ($path -ne $null)
     {
-        $newItems = $path.Split(';', [StringSplitOptions]::RemoveEmptyEntries) | Where-Object { "$($_)" -inotlike $VariableToRemove }
-        [Environment]::SetEnvironmentVariable("PATH", [System.String]::Join(';', $newItems), "User")
+        $newItems = $path.Split($SplitChar, [StringSplitOptions]::RemoveEmptyEntries) | Where-Object { "$($_)" -inotlike $VariableToRemove }
+        [Environment]::SetEnvironmentVariable("PATH", [System.String]::Join($SplitChar, $newItems), "User")
     }
 
     $path = [Environment]::GetEnvironmentVariable("PATH", "Process")
     if ($path -ne $null)
     {
-        $newItems = $path.Split(';', [StringSplitOptions]::RemoveEmptyEntries) | Where-Object { "$($_)" -inotlike $VariableToRemove }
-        [Environment]::SetEnvironmentVariable("PATH", [System.String]::Join(';', $newItems), "Process")
+        $newItems = $path.Split($SplitChar, [StringSplitOptions]::RemoveEmptyEntries) | Where-Object { "$($_)" -inotlike $VariableToRemove }
+        [Environment]::SetEnvironmentVariable("PATH", [System.String]::Join($SplitChar, $newItems), "Process")
     }
 }
 
