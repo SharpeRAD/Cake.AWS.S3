@@ -5,7 +5,7 @@
         <PackageId>Cake.AWS.S3.Tests</PackageId>
         <OutputType>Library</OutputType>
 
-        <TargetFrameworks>net5.0;netcoreapp3.1;</TargetFrameworks>
+        <TargetFrameworks>net5.0;</TargetFrameworks>
 
         <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
         <GenerateAssemblyVersionAttribute>false</GenerateAssemblyVersionAttribute>
