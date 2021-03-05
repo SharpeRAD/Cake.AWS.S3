@@ -18,6 +18,7 @@
         <dependencies>
             <dependency id="AWSSDK.Core" version="3.5.3.1" />
             <dependency id="AWSSDK.S3" version="3.5.8.7" />
+            <dependency id="AWSSDK.SecurityToken" version="3.5.1.56" />
             <dependency id="MimeTypesMap" version="1.0.6" />
         </dependencies>
     </metadata>
