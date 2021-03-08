@@ -47,6 +47,7 @@ namespace Cake.AWS.S3
             };
 
             this.CacheControl = "public, max-age=864000";
+            this.ServerSideEncryptionMethod = ServerSideEncryptionMethod.None;
         }
         #endregion
 
@@ -124,6 +125,13 @@ namespace Cake.AWS.S3
         /// How objects should be cached
         /// </summary>
         public string CacheControl { get; set; }
+
+
+
+        /// <summary>
+        /// The Server-side encryption method.
+        /// </summary>
+        public ServerSideEncryptionMethod ServerSideEncryptionMethod { get; set; }
         #endregion
 
 
@@ -161,6 +169,9 @@ namespace Cake.AWS.S3
             copy.CompressExtensions = this.CompressExtensions;
 
             copy.CacheControl = this.CacheControl;
+
+            copy.ServerSideEncryptionMethod = this.ServerSideEncryptionMethod;
+
 
 
 

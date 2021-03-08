@@ -149,6 +149,8 @@ namespace Cake.AWS.S3
             request.ServerSideEncryptionCustomerProvidedKey = settings.EncryptionKey;
             request.ServerSideEncryptionCustomerProvidedKeyMD5 = settings.EncryptionKeyMD5;
             request.ServerSideEncryptionCustomerMethod = settings.EncryptionMethod;
+            
+            request.ServerSideEncryptionMethod = settings.ServerSideEncryptionMethod;
 
             if (!String.IsNullOrEmpty(settings.EncryptionKey))
             {
@@ -221,6 +223,8 @@ namespace Cake.AWS.S3
             request.ServerSideEncryptionCustomerProvidedKey = settings.EncryptionKey;
             request.ServerSideEncryptionCustomerProvidedKeyMD5 = settings.EncryptionKeyMD5;
             request.ServerSideEncryptionCustomerMethod = settings.EncryptionMethod;
+
+            request.ServerSideEncryptionMethod = settings.ServerSideEncryptionMethod;
 
             if (!String.IsNullOrEmpty(settings.EncryptionKey))
             {
