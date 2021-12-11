@@ -13,7 +13,7 @@
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
         <copyright>Copyright (c) Phillip Sharpe 2015 - 2021</copyright>
         <releaseNotes>Initial Release</releaseNotes>
-        <tags>Cake Script Build Amazon S3</tags>
+        <tags>cake;cake-addin;cake-build;addin;build;script;amazon;s3</tags>
 
         <dependencies>
             <dependency id="AWSSDK.Core" version="3.7.5.5" />
