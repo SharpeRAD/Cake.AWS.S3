@@ -9,7 +9,7 @@
         <summary>Amazon S3 addon for cake build.</summary>
         <licenseUrl>https://github.com/SharpeRAD/Cake.AWS.S3/LICENSE</licenseUrl>
         <projectUrl>https://github.com/SharpeRAD/Cake.AWS.S3</projectUrl>
-        <iconUrl>https://cdn.jsdelivr.net/gh/cake-contrib/graphics/png/cake-contrib-medium.png</iconUrl>
+        <iconUrl>https://cdn.jsdelivr.net/gh/cake-contrib/graphics/png/addin/cake-contrib-addin-medium.png</iconUrl>
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
         <copyright>Copyright (c) Phillip Sharpe 2015 - 2021</copyright>
         <releaseNotes>Initial Release</releaseNotes>
