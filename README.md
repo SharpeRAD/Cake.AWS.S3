@@ -37,8 +37,8 @@ Cake Build addin for transfering files to and from Amazon S3
 
 ## Referencing
 
-[![NuGet Version](http://img.shields.io/nuget/v/Cake.AWS.S3.svg?style=flat)](https://www.nuget.org/packages/Cake.AWS.S3/)
-[![NuGet Downloads](http://img.shields.io/nuget/dt/Cake.AWS.S3.svg?style=flat)](https://www.nuget.org/packages/Cake.AWS.S3/)
+[![NuGet Version](https://img.shields.io/nuget/v/Cake.AWS.S3.svg?style=flat)](https://www.nuget.org/packages/Cake.AWS.S3/)
+[![NuGet Downloads](https://img.shields.io/nuget/dt/Cake.AWS.S3.svg?style=flat)](https://www.nuget.org/packages/Cake.AWS.S3/)
 
 Cake.AWS.S3 is available as a nuget package from the package manager console:
 
@@ -119,7 +119,7 @@ Task("Download-File-Fallback")
     .Description("Download a file from S3 using AWS Fallback credentials")
     .Does(async () =>
 {
-    var settings = Context.CreateDownloadSettings(); 
+    var settings = Context.CreateDownloadSettings();
     settings.BucketName = "cake-s3";
 
     await S3Download("C:/Files/test.zip", "test.zip", settings);
@@ -207,6 +207,13 @@ If your S3 buckets are linked to CloudFront distributions its worth checking out
 
 If your looking for a way to trigger cake tasks based on windows events or at scheduled intervals then check out [CakeBoss](https://github.com/SharpeRAD/CakeBoss).
 
+
+
+## Discussion
+
+For questions and to discuss ideas & feature requests, use the [GitHub discussions on the Cake GitHub repository](https://github.com/cake-build/cake/discussions), under the [Extension Q&A](https://github.com/cake-build/cake/discussions/categories/extension-q-a) category.
+
+[![Join in the discussion on the Cake repository](https://img.shields.io/badge/GitHub-Discussions-green?logo=github)](https://github.com/cake-build/cake/discussions)
 
 
 ## License
