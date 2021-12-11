@@ -23,15 +23,20 @@
     </metadata>
 
     <files>
+        <file src="netcoreapp3.1/Cake.AWS.S3.dll" target="lib/netcoreapp3.1" />
+        <file src="netcoreapp3.1/Cake.AWS.S3.xml" target="lib/netcoreapp3.1" />
+        <file src="netcoreapp3.1/Cake.AWS.S3.pdb" target="lib/netcoreapp3.1" />
+        <file src="netcoreapp3.1/Cake.AWS.S3.deps.json" target="lib/netcoreapp3.1" />
+
         <file src="net5.0/Cake.AWS.S3.dll" target="lib/net5.0" />
         <file src="net5.0/Cake.AWS.S3.xml" target="lib/net5.0" />
         <file src="net5.0/Cake.AWS.S3.pdb" target="lib/net5.0" />
         <file src="net5.0/Cake.AWS.S3.deps.json" target="lib/net5.0" />
 
-        <file src="netstandard2.0/Cake.AWS.S3.dll" target="lib/netstandard2.0" />
-        <file src="netstandard2.0/Cake.AWS.S3.xml" target="lib/netstandard2.0" />
-        <file src="netstandard2.0/Cake.AWS.S3.pdb" target="lib/netstandard2.0" />
-        <file src="netstandard2.0/Cake.AWS.S3.deps.json" target="lib/netstandard2.0" />
+        <file src="net6.0/Cake.AWS.S3.dll" target="lib/net6.0" />
+        <file src="net6.0/Cake.AWS.S3.xml" target="lib/net6.0" />
+        <file src="net6.0/Cake.AWS.S3.pdb" target="lib/net6.0" />
+        <file src="net6.0/Cake.AWS.S3.deps.json" target="lib/net6.0" />
 
         <file src="LICENSE" />
     </files>
